@@ -21,12 +21,23 @@ type User {
   accessToken: String
 }
 
+type State {
+  id: String!
+  name: String!
+  createdBy: Float!
+}
+
 type Query {
   user(id: String!): User
+  getAllState: [State!]!
+  getState(id: String!): State!
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): User!
+  createState(createStateInput: CreateStateInput!): State!
+  updateState(id: String!, updateStateInput: UpdateStateInput!): State!
+  removeState(id: String!): State!
 }
 
 input CreateUserInput {
@@ -45,4 +56,14 @@ input CreateUserInput {
   userCategory: String
   tempToken: Float
   accessToken: String
+}
+
+input CreateStateInput {
+  name: String!
+  createdBy: Float!
+}
+
+input UpdateStateInput {
+  name: String!
+  createdBy: Float!
 }

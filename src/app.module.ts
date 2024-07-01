@@ -5,6 +5,7 @@ import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma/prisma.service';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { StateModule } from './state/state.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     UserModule,
+    StateModule,
   ],
   providers: [PrismaService],
 })
