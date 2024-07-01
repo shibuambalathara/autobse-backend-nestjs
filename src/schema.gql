@@ -1,0 +1,48 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  email: String!
+  username: String!
+  firstName: String!
+  lastName: String!
+  businessName: String!
+  mobile: String!
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String!
+  idProofNo: String!
+  country: String!
+  city: String!
+  userCategory: String!
+  tempToken: Float
+  accessToken: String
+}
+
+type Query {
+  user(id: String!): User
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+}
+
+input CreateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String!
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  accessToken: String
+}

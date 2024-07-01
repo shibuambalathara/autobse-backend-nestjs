@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql" // or mysql or sqlite
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                        String               @id @default(cuid())
+  idNo                      Int                  @unique @default(autoincrement())
+  dealerId                  String               @default("")
+  firstName                 String               @default("")
+  lastName                  String               @default("")
+  email                     String               @default("")
+  username                  String               @default("")
+  // phone                     String               @default("")
+  businessName              String               @default("")
+  // category                  EventType[]          @relation("EventType_users")
+  mobile                    String               @unique @default("")
+  password                  String?
+  BalanceEMDAmount        Int?                 @default(0)
+  // specialVehicleBuyingLimit Int?                 @default(0)
+  image_filesize            Int?
+  image_extension           String?
+  image_width               Int?
+  image_height              Int?
+  image_id                  String?
+  pancard_filesize          Int?
+  pancard_extension         String?
+  pancard_width             Int?
+  pancard_height            Int?
+  pancard_id                String?
+  pancardNo                 String               @default("")
+  idProof_filesize          Int?
+  idProof_extension         String?
+  idProof_width             Int?
+  idProof_height            Int?
+  idProof_id                String?
+  idProofBack_filesize      Int?
+  idProofBack_extension     String?
+  idProofBack_width         Int?
+  idProofBack_height        Int?
+  idProofBack_id            String?
+  // idProofType               UserIdProofTypeType?
+  idProofNo                 String               @default("")
+  dealership_filesize       Int?
+  dealership_extension      String?
+  dealership_width          Int?
+  dealership_height         Int?
+  dealership_id             String?
+  country                   String               @default("")
+  city                      String               @default("")
+  // role                      UserRoleType?        @default(dealer)
+  // watchList                 Vehicle[]            @relation("User_watchList")
+  // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
+  // payments                  Payment[]            @relation("Payment_user")
+  // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
+  // paymentByAdmin            Payment?             @relation("Payment_createdBy")
+  // status                    UserStatusType?      @default(pending)
+  // state                     String               @default("")
+  // states                    State[]              @relation("State_users")
+  // activeBids                Vehicle[]            @relation("Vehicle_currentBidUser")
+  // quotedBids                Bid[]                @relation("Bid_user")
+  // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
+  // coupenDetail              Coupen[]             @relation("Coupen_userDetail")
+  // eventDetail               Event[]              @relation("Event_participants")
+  // workSheetDetail           WorkSheet[]          @relation("WorkSheet_userDetail")
+  // deletedBid                DeletedBid[]         @relation("DeletedBid_user")
+  // sellACar                  SellACar[]           @relation("SellACar_user")
+  // notification              Notification[]       @relation("Notification_user")
+  userCategory              String               @default("")
+  tempToken                 Int?                 @unique
+  createdAt                 DateTime?            @default(now())
+  updatedAt                 DateTime?            @updatedAt
+  accessToken           String?
+  // magicAuthIssuedAt         DateTime?
+  // magicAuthRedeemedAt       DateTime?
+
+}
