@@ -24,20 +24,37 @@ type User {
 type State {
   id: String!
   name: String!
-  createdBy: Float!
+  createdBy: String!
+}
+
+type Location {
+  id: String!
+  name: String!
+  state: String!
 }
 
 type Query {
   user(id: String!): User
   getAllState: [State!]!
-  getState(id: String!): State!
+  getState(where: UniqueInput!): State!
+  getAllDeletedState: [State!]!
+  getDeletedState(where: UniqueInput!): State!
+  location(id: Int!): Location!
+}
+
+input UniqueInput {
+  id: ID!
+  name: String
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): User!
   createState(createStateInput: CreateStateInput!): State!
-  updateState(id: String!, updateStateInput: UpdateStateInput!): State!
-  removeState(id: String!): State!
+  updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
+  removeState(where: UniqueInput!): State!
+  createLocation(createLocationInput: CreateLocationInput!): Location!
+  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
+  removeLocation(id: Int!): Location!
 }
 
 input CreateUserInput {
@@ -60,10 +77,21 @@ input CreateUserInput {
 
 input CreateStateInput {
   name: String!
-  createdBy: Float!
+  createdBy: String!
 }
 
 input UpdateStateInput {
   name: String!
-  createdBy: Float!
+  createdBy: String!
+}
+
+input CreateLocationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLocationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

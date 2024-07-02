@@ -91,6 +91,18 @@ model state{
   name               String        @unique @default("")
   createdAt          DateTime?     @default(now())
   updatedAt          DateTime?     @updatedAt
-  createdBy          Int
-  is_deleted         Boolean       @default(false)
+  createdBy          String
+  isDeleted          Boolean       @default(false)
+  location           location[]
+}
+
+model location{
+  id                String         @id @default(cuid())
+  name              String         @unique @default("")
+  country           String         @default("india")
+  state             state          @relation(fields: [stateId], references: [id])
+  stateId           String         @unique
+  createdAt         DateTime?      @default(now())
+  updatedAt         DateTime?      @updatedAt
+  isDeleted         Boolean        @default(false)
 }

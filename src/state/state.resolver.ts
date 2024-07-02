@@ -4,6 +4,7 @@ import { State } from './models/state.model';
 import { CreateStateInput } from './dto/create-state.input';
 import { UpdateStateInput } from './dto/update-state.input';
 import { NotFoundException } from '@nestjs/common';
+import { UniqueInput } from './dto/unique-state.input';
 
 @Resolver(() => State)
 export class StateResolver {
@@ -21,19 +22,29 @@ export class StateResolver {
   }
 
   @Query(() => State)
-  async getState(@Args('id') id: string) {
-    return this.stateService.getState(id);
-    
-  }
-
-  @Mutation(() => State)
-  async updateState(@Args('id') id:string, @Args('updateStateInput') updateStateInput: UpdateStateInput) {
-   return this.stateService.updateState(id, updateStateInput);
+  async getState(@Args('where') where:UniqueInput) {
+    return this.stateService.getState(where.id);
 
   }
 
+  @Query(()=> [State])
+  async getAllDeletedState(){
+    return this.stateService.getAllDeletedState()
+  }
+
+  @Query(()=>State)
+  async getDeletedState(@Args('where') where: UniqueInput){
+    return this.stateService.getDeletedState(where.id);
+  }
+
   @Mutation(() => State)
-  async removeState(@Args('id') id: string) {
-    return this.stateService.removeState(id);
+  async updateState(@Args('where') where:UniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput) {
+   return this.stateService.updateState(where.id, updateStateInput);
+
+  }
+
+  @Mutation(() => State)
+  async removeState(@Args('where') where: UniqueInput) {
+    return this.stateService.removeState(where.id);
   }
 }

@@ -9,7 +9,7 @@ export class CreateStateInput {
   name:string;
 
   @Field()
-  createdBy:number;
+  createdBy:string;
 
 
 }

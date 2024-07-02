@@ -7,5 +7,5 @@ export class UpdateStateInput extends PartialType(CreateStateInput) {
   name:string;
 
   @Field()
-  createdBy:number;
+  createdBy:string;
 }

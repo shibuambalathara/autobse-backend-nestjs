@@ -22,14 +22,14 @@ export class StateService {
       }
 
   async getAllState() {
-    const state = await this.prisma.state.findMany({where:{is_deleted:false}});
-    if(!state) throw new NotFoundException("State Not Found!");
+    const state = await this.prisma.state.findMany({where:{isDeleted:false}});
+    if(!state) throw new NotFoundException("State Not Found!");    
     return state;
   }
 
   async getState(id: string) {
     const state = await this.prisma.state.findUnique({
-      where: { id , is_deleted:false},
+      where: { id , isDeleted:false},
     });
     if (!state) throw new NotFoundException('State Not Found!');
     return state;
@@ -37,7 +37,7 @@ export class StateService {
 
  async updateState(id: string, updateStateInput: UpdateStateInput) {
   try {
-      const state = await this.prisma.state.findUnique({where:{id,is_deleted:false,}})
+      const state = await this.prisma.state.findUnique({where:{id,isDeleted:false,}})
       if(!state) throw new NotFoundException("State Not Found");
       return await this.prisma.state.update({
           where:{
@@ -56,13 +56,26 @@ export class StateService {
     }
  
  async removeState(id: string) {
-  const state = await this.prisma.state.findUnique({where:{id,is_deleted:false,}})
+  const state = await this.prisma.state.findUnique({where:{id,isDeleted:false,}})
   if(!state) throw new NotFoundException("State Not Found");
   return await this.prisma.state.update({
       where:{id},
       data:{
-        is_deleted:true,
+        isDeleted:true,
       }
     });
+  }
+  
+
+  async getAllDeletedState(){
+    const state = await this.prisma.state.findMany({where:{isDeleted:true,}});
+    if(!state) throw new NotFoundException("State Not Found");
+    return state;
+  }
+
+  async getDeletedState(id:string){
+      const state = await this.prisma.state.findUnique({where:{id,isDeleted:true}});
+      if(!state) throw new NotFoundException("State Not Found");
+      return state;
   }
 }
