@@ -39,11 +39,20 @@ type Query {
   getState(where: UniqueInput!): State!
   getAllDeletedState: [State!]!
   getDeletedState(where: UniqueInput!): State!
-  location(id: Int!): Location!
+  locations: [Location!]!
+  location(where: UniqueLocationInput!): Location!
+  deletedLocations: [Location!]!
+  deletedLocation(where: UniqueLocationInput!): Location!
 }
 
 input UniqueInput {
   id: ID!
+  name: String
+}
+
+input UniqueLocationInput {
+  id: ID!
+  isDeleted: Boolean!
   name: String
 }
 
@@ -52,9 +61,9 @@ type Mutation {
   createState(createStateInput: CreateStateInput!): State!
   updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
   removeState(where: UniqueInput!): State!
-  createLocation(createLocationInput: CreateLocationInput!): Location!
-  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
-  removeLocation(id: Int!): Location!
+  createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
+  updateLocation(where: UniqueLocationInput!, updateLocationInput: UpdateLocationInput!): Location!
+  deleteLocation(where: UniqueLocationInput!): Location!
 }
 
 input CreateUserInput {
@@ -86,12 +95,10 @@ input UpdateStateInput {
 }
 
 input CreateLocationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
 }
 
 input UpdateLocationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String!
+  stateId: String!
 }

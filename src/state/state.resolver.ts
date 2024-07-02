@@ -6,6 +6,7 @@ import { UpdateStateInput } from './dto/update-state.input';
 import { NotFoundException } from '@nestjs/common';
 import { UniqueInput } from './dto/unique-state.input';
 
+
 @Resolver(() => State)
 export class StateResolver {
   constructor(private readonly stateService: StateService) {}
