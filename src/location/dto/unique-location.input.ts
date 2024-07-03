@@ -7,11 +7,4 @@ export class UniqueLocationInput {
   @Field(()=>ID)
   id:string;
 
-  @Field()
-  isDeleted?:boolean;
- 
-  @Field({ nullable: true })
-  name?: string;
-
-
 }

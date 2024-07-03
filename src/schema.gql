@@ -35,10 +35,10 @@ type Location {
 
 type Query {
   user(id: String!): User
-  getAllState: [State!]!
-  getState(where: UniqueInput!): State!
-  getAllDeletedState: [State!]!
-  getDeletedState(where: UniqueInput!): State!
+  States: [State!]!
+  State(where: UniqueInput!): State!
+  deletedStates: [State!]!
+  deletedState(where: UniqueInput!): State!
   locations: [Location!]!
   location(where: UniqueLocationInput!): Location!
   deletedLocations: [Location!]!
@@ -47,20 +47,17 @@ type Query {
 
 input UniqueInput {
   id: ID!
-  name: String
 }
 
 input UniqueLocationInput {
   id: ID!
-  isDeleted: Boolean!
-  name: String
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): User!
   createState(createStateInput: CreateStateInput!): State!
+  deleteState(where: UniqueInput!): State!
   updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
-  removeState(where: UniqueInput!): State!
   createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: UniqueLocationInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: UniqueLocationInput!): Location!

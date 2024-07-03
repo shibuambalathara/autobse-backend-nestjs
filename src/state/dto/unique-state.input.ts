@@ -6,9 +6,5 @@ export class UniqueInput {
 
   @Field(()=>ID)
   id:string;
- 
-  @Field({ nullable: true })
-  name?: string;
-
 
 }

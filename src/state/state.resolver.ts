@@ -17,25 +17,20 @@ export class StateResolver {
   }
 
   @Query(() => [State])
-  async getAllState() {
-    return this.stateService.getAllState();
+  async States() {
+    return this.stateService.States();
     
   }
 
   @Query(() => State)
-  async getState(@Args('where') where:UniqueInput) {
-    return this.stateService.getState(where.id);
+  async State(@Args('where') where:UniqueInput) {
+    return this.stateService.State(where.id);
 
   }
 
-  @Query(()=> [State])
-  async getAllDeletedState(){
-    return this.stateService.getAllDeletedState()
-  }
-
-  @Query(()=>State)
-  async getDeletedState(@Args('where') where: UniqueInput){
-    return this.stateService.getDeletedState(where.id);
+  @Mutation(() => State)
+  async deleteState(@Args('where') where: UniqueInput){
+    return this.stateService.deleteState(where.id);
   }
 
   @Mutation(() => State)
@@ -44,8 +39,13 @@ export class StateResolver {
 
   }
 
-  @Mutation(() => State)
-  async removeState(@Args('where') where: UniqueInput) {
-    return this.stateService.removeState(where.id);
+  @Query(()=> [State])
+  async deletedStates(){
+    return this.stateService.deletedStates()
+  }
+
+  @Query(()=>State)
+  async deletedState(@Args('where') where: UniqueInput) {
+    return this.stateService.deletedState(where.id);
   }
 }

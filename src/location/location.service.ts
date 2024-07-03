@@ -56,7 +56,7 @@ export class LocationService {
     }
   
 
-  async deleteLocation(id: string) {
+  async deleteLocation(id: string) :Promise<location> {
     const result = await this.prisma.location.findUnique({where:{id,isDeleted:false,}})
     if(!result) throw new NotFoundException("Location Not Found");
     return await this.prisma.location.update({
