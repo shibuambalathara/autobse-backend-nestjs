@@ -86,24 +86,50 @@ model User {
 
 }
 
-model state{
+model State{
   id                 String        @id @default(cuid())
   name               String        @unique @default("")
   createdAt          DateTime?     @default(now())
   updatedAt          DateTime?     @updatedAt
-  createdBy          String
+  createdById        String?
   isDeleted          Boolean       @default(false)
-  location           location[]
+  location           Location[]
 }
-model location{
+model Location{
   id                String         @id @default(cuid())
   name              String         @unique @default("")
   country           String         @default("india")
-  state             state          @relation(fields: [stateId], references: [id])
+  state             State          @relation(fields: [stateId], references: [id])
   stateId           String         
+  createdById       String?
   createdAt         DateTime?      @default(now())
   updatedAt         DateTime?      @updatedAt
   isDeleted         Boolean        @default(false)
+}
+
+model VehicleCategory{
+  id                String        @id @default(cuid())
+  name              String        @unique @default("")
+  createdAt         DateTime?      @default(now())
+  updatedAt         DateTime?      @updatedAt
+  createdById       String?
+  isDeleted         Boolean        @default(false)
+}
+
+model Seller {
+  id                   String      @id @default(cuid())
+  name                 String      @default("")
+  contactPerson        String      @default("")
+  GSTNumbber           String      @default("")
+  billingContactPerson String      @default("")
+  mobile               String      @default("")
+  nationalHead         String      @default("")
+  logo                 String      @default("")
+  createdAt            DateTime?   @default(now())
+  updatedAt            DateTime?   @updatedAt
+  createdById          String?
+  isDeleted            Boolean     @default(false)
+
 }
 
 

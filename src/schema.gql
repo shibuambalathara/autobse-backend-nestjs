@@ -24,13 +24,28 @@ type User {
 type State {
   id: String!
   name: String!
-  createdBy: String!
 }
 
 type Location {
   id: String!
   name: String!
   state: String!
+}
+
+type VehicleCategory {
+  id: String!
+  name: String!
+}
+
+type Seller {
+  id: String!
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
 }
 
 type Query {
@@ -43,6 +58,12 @@ type Query {
   location(where: UniqueLocationInput!): Location!
   deletedLocations: [Location!]!
   deletedLocation(where: UniqueLocationInput!): Location!
+  vehicleCategories: [VehicleCategory!]!
+  vehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  deletedVehicleCategories: [VehicleCategory!]!
+  deletedVehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  sellers: [Seller!]!
+  seller(where: UniqueSellerInput!): Seller!
 }
 
 input UniqueInput {
@@ -50,6 +71,14 @@ input UniqueInput {
 }
 
 input UniqueLocationInput {
+  id: ID!
+}
+
+input UniqueVehicleCategoryInput {
+  id: ID!
+}
+
+input UniqueSellerInput {
   id: ID!
 }
 
@@ -61,6 +90,12 @@ type Mutation {
   createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: UniqueLocationInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: UniqueLocationInput!): Location!
+  createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
+  updateVehicleCategory(where: UniqueVehicleCategoryInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
+  deleteVehiclecategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  createSeller(createSellerInput: CreateSellerInput!): Seller!
+  updateSeller(where: UniqueSellerInput!, updateSellerInput: UpdateSellerInput!): Seller!
+  deleteSeller(where: UniqueSellerInput!): Seller!
 }
 
 input CreateUserInput {
@@ -83,12 +118,11 @@ input CreateUserInput {
 
 input CreateStateInput {
   name: String!
-  createdBy: String!
 }
 
 input UpdateStateInput {
   name: String!
-  createdBy: String!
+  createdById: String!
 }
 
 input CreateLocationInput {
@@ -98,4 +132,32 @@ input CreateLocationInput {
 input UpdateLocationInput {
   name: String!
   stateId: String!
+}
+
+input CreateVehiclecategoryInput {
+  name: String!
+}
+
+input UpdateVehiclecategoryInput {
+  name: String!
+}
+
+input CreateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
+}
+
+input UpdateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
 }
