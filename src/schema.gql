@@ -4,8 +4,10 @@
 
 type User {
   id: String!
+  idNo: Float!
   email: String!
   username: String!
+  role: String!
   firstName: String!
   lastName: String!
   businessName: String!
@@ -19,6 +21,10 @@ type User {
   userCategory: String!
   tempToken: Float
   accessToken: String
+}
+
+type LoginResponse {
+  access_token: String!
 }
 
 type State {
@@ -49,7 +55,10 @@ type Seller {
 }
 
 type Query {
-  user(id: String!): User
+  users: [User]!
+  user(where: UserWhereUniqueInput!): User
+  deletedUser(where: UserWhereUniqueInput!): User
+  deletedUsers: [User]!
   States: [State!]!
   State(where: UniqueInput!): State!
   deletedStates: [State!]!
@@ -66,6 +75,13 @@ type Query {
   seller(where: UniqueSellerInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: UniqueSellerInput!): Seller!
+}
+
+input UserWhereUniqueInput {
+  id: String
+  mobile: String
+  tempToken: Float
+  idNo: Float
 }
 
 input UniqueInput {
@@ -86,6 +102,9 @@ input UniqueSellerInput {
 
 type Mutation {
   createUser(data: CreateUserInput!): User!
+  updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
   createState(createStateInput: CreateStateInput!): State!
   deleteState(where: UniqueInput!): State!
   updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
@@ -116,6 +135,29 @@ input CreateUserInput {
   userCategory: String
   tempToken: Float
   accessToken: String
+}
+
+input UpdateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  accessToken: String
+}
+
+input LoginUserInput {
+  mobile: String!
+  password: String!
 }
 
 input CreateStateInput {

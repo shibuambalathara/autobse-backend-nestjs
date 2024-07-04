@@ -58,7 +58,7 @@ model User {
   dealership_id             String?
   country                   String               @default("")
   city                      String               @default("")
-  // role                      UserRoleType?        @default(dealer)
+  role                      UserRoleType        @default(dealer)
   // watchList                 Vehicle[]            @relation("User_watchList")
   // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
   // payments                  Payment[]            @relation("Payment_user")
@@ -81,10 +81,19 @@ model User {
   createdAt                 DateTime?            @default(now())
   updatedAt                 DateTime?            @updatedAt
   accessToken           String?
+  isDeleted               Boolean               @default(false)
   // magicAuthIssuedAt         DateTime?
   // magicAuthRedeemedAt       DateTime?
 
 }
+
+enum UserRoleType {
+  admin
+  staff
+  seller
+  dealer
+}
+
 
 model State{
   id                 String        @id @default(cuid())
