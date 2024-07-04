@@ -197,11 +197,11 @@ input CreateSellerInput {
 }
 
 input UpdateSellerInput {
-  name: String!
-  contactPerson: String!
-  GSTNumbber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
+  name: String
+  contactPerson: String
+  GSTNumbber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
 }
