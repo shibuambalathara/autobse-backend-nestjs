@@ -4,13 +4,18 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 export class User {
   @Field()
   id: string;
+  
+  @Field()
+  idNo: number;
 
   @Field()
   email: string;
 
-
   @Field()
   username: string;
+
+  @Field()
+  role: string;
 
   @Field()
   firstName: string;
