@@ -64,6 +64,8 @@ type Query {
   deletedVehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
   sellers: [Seller!]!
   seller(where: UniqueSellerInput!): Seller!
+  deletedSellers: [Seller!]!
+  deletedSeller(where: UniqueSellerInput!): Seller!
 }
 
 input UniqueInput {
