@@ -27,11 +27,52 @@ type LoginResponse {
   access_token: String!
 }
 
+type State {
+  id: String!
+  name: String!
+}
+
+type Location {
+  id: String!
+  name: String!
+  state: String!
+}
+
+type VehicleCategory {
+  id: String!
+  name: String!
+}
+
+type Seller {
+  id: String!
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
+  States: [State!]!
+  State(where: UniqueInput!): State!
+  deletedStates: [State!]!
+  deletedState(where: UniqueInput!): State!
+  locations: [Location!]!
+  location(where: UniqueLocationInput!): Location!
+  deletedLocations: [Location!]!
+  deletedLocation(where: UniqueLocationInput!): Location!
+  vehicleCategories: [VehicleCategory!]!
+  vehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  deletedVehicleCategories: [VehicleCategory!]!
+  deletedVehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  sellers: [Seller!]!
+  seller(where: UniqueSellerInput!): Seller!
 }
 
 input UserWhereUniqueInput {
@@ -41,11 +82,39 @@ input UserWhereUniqueInput {
   idNo: Float
 }
 
+input UniqueInput {
+  id: ID!
+}
+
+input UniqueLocationInput {
+  id: ID!
+}
+
+input UniqueVehicleCategoryInput {
+  id: ID!
+}
+
+input UniqueSellerInput {
+  id: ID!
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  createState(createStateInput: CreateStateInput!): State!
+  deleteState(where: UniqueInput!): State!
+  updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
+  createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
+  updateLocation(where: UniqueLocationInput!, updateLocationInput: UpdateLocationInput!): Location!
+  deleteLocation(where: UniqueLocationInput!): Location!
+  createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
+  updateVehicleCategory(where: UniqueVehicleCategoryInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
+  deleteVehiclecategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
+  createSeller(createSellerInput: CreateSellerInput!): Seller!
+  updateSeller(where: UniqueSellerInput!, updateSellerInput: UpdateSellerInput!): Seller!
+  deleteSeller(where: UniqueSellerInput!): Seller!
 }
 
 input CreateUserInput {
@@ -87,4 +156,50 @@ input UpdateUserInput {
 input LoginUserInput {
   mobile: String!
   password: String!
+}
+
+input CreateStateInput {
+  name: String!
+}
+
+input UpdateStateInput {
+  name: String!
+  createdById: String!
+}
+
+input CreateLocationInput {
+  name: String!
+}
+
+input UpdateLocationInput {
+  name: String!
+  stateId: String!
+}
+
+input CreateVehiclecategoryInput {
+  name: String!
+}
+
+input UpdateVehiclecategoryInput {
+  name: String!
+}
+
+input CreateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
+}
+
+input UpdateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumbber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
 }
