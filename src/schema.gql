@@ -53,6 +53,76 @@ type Seller {
   logo: String!
 }
 
+type Vehicle {
+  id: String!
+  vehicleIndexNo: Float!
+  registrationNumber: String!
+  bidTimeExpire: String!
+  bidStartTime: String!
+  bidAmountUpdate: Float
+  currentBidAmount: Float
+  startBidAmount: Float
+  loanAgreementNo: String!
+  registeredOwnerName: String!
+  quoteIncreament: Float
+  make: String!
+  model: String!
+  varient: String!
+  categoty: String!
+  fuel: String!
+  type: String!
+  rcStatus: String!
+  yearOfManufacture: Float
+  ownership: Float
+  mileage: Float
+  kmReading: Float
+  insuranceStatus: String!
+  yardLocation: String!
+  startPrice: Float
+  reservePrice: Float
+  repoDt: String
+  veicleLocation: String!
+  vehicleRemarks: String!
+  auctionManager: String!
+  parkingCharges: String!
+  insurance: String!
+  insuranceValidTill: String
+  tax: String!
+  taxValidityDate: String
+  fitness: String!
+  permit: String!
+  fitnessPermit: String!
+  engineNo: String!
+  chassisNo: String!
+  image: String!
+  inspectionLink: String!
+  autobseContact: String!
+  autobse_contact_person: String!
+  vehicleCondition: String!
+  powerSteering: String!
+  shape: String!
+  color: String!
+  state: String!
+  city: String!
+  area: String!
+  paymentTerms: String!
+  dateOfRegistration: String
+  hypothication: String!
+  climateControl: String!
+  doorCount: Float
+  gearBox: String!
+  buyerFees: String!
+  rtoFine: String!
+  parkingRate: String!
+  approxParkingCharges: String!
+  clientContactPerson: String!
+  clientContactNo: String!
+  additionalRemarks: String!
+  lotNumber: Float
+  createdAt: String
+  updatedAt: String
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -74,6 +144,10 @@ type Query {
   seller(where: UniqueSellerInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: UniqueSellerInput!): Seller!
+  vehicles: [Vehicle!]!
+  vehicle(where: UniqueVehicleInput!): Vehicle!
+  deletedVehicles: [Vehicle!]!
+  deletedVehicle(where: UniqueVehicleInput!): Vehicle!
 }
 
 input UserWhereUniqueInput {
@@ -99,6 +173,11 @@ input UniqueSellerInput {
   id: ID!
 }
 
+input UniqueVehicleInput {
+  id: String
+  vehicleIndexNo: Float
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
@@ -116,6 +195,9 @@ type Mutation {
   createSeller(createSellerInput: CreateSellerInput!): Seller!
   updateSeller(where: UniqueSellerInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: UniqueSellerInput!): Seller!
+  createVehicle(userId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  updateVehicle(where: UniqueVehicleInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
+  deleteVehicle(where: UniqueVehicleInput!): Vehicle!
 }
 
 input CreateUserInput {
@@ -203,4 +285,136 @@ input UpdateSellerInput {
   mobile: String
   nationalHead: String
   logo: String
+}
+
+input CreateVehicleInput {
+  registrationNumber: String!
+  bidTimeExpire: String!
+  bidStartTime: String!
+  bidAmountUpdate: Float!
+  currentBidAmount: Float!
+  startBidAmount: Float!
+  loanAgreementNo: String!
+  registeredOwnerName: String!
+  quoteIncreament: Float!
+  make: String!
+  model: String!
+  varient: String!
+  categoty: String!
+  fuel: String!
+  type: String!
+  rcStatus: String!
+  yearOfManufacture: Float!
+  ownership: Float!
+  mileage: Float!
+  kmReading: Float!
+  insuranceStatus: String!
+  yardLocation: String!
+  startPrice: Float!
+  reservePrice: Float!
+  repoDt: String!
+  veicleLocation: String!
+  vehicleRemarks: String!
+  auctionManager: String!
+  parkingCharges: String!
+  insurance: String!
+  insuranceValidTill: String!
+  tax: String!
+  taxValidityDate: String!
+  fitness: String!
+  permit: String!
+  fitnessPermit: String!
+  engineNo: String!
+  chassisNo: String!
+  image: String!
+  inspectionLink: String!
+  autobseContact: String!
+  autobse_contact_person: String!
+  vehicleCondition: String!
+  powerSteering: String!
+  shape: String!
+  color: String!
+  state: String!
+  city: String!
+  area: String!
+  paymentTerms: String!
+  dateOfRegistration: String!
+  hypothication: String!
+  climateControl: String!
+  doorCount: Float!
+  gearBox: String!
+  buyerFees: String!
+  rtoFine: String!
+  parkingRate: String!
+  approxParkingCharges: String!
+  clientContactPerson: String!
+  clientContactNo: String!
+  additionalRemarks: String!
+  lotNumber: Float!
+}
+
+input UpdateVehicleInput {
+  registrationNumber: String
+  bidTimeExpire: String
+  bidStartTime: String
+  bidAmountUpdate: Float
+  currentBidAmount: Float
+  startBidAmount: Float
+  loanAgreementNo: String
+  registeredOwnerName: String
+  quoteIncreament: Float
+  make: String
+  model: String
+  varient: String
+  categoty: String
+  fuel: String
+  type: String
+  rcStatus: String
+  yearOfManufacture: Float
+  ownership: Float
+  mileage: Float
+  kmReading: Float
+  insuranceStatus: String
+  yardLocation: String
+  startPrice: Float
+  reservePrice: Float
+  repoDt: String
+  veicleLocation: String
+  vehicleRemarks: String
+  auctionManager: String
+  parkingCharges: String
+  insurance: String
+  insuranceValidTill: String
+  tax: String
+  taxValidityDate: String
+  fitness: String
+  permit: String
+  fitnessPermit: String
+  engineNo: String
+  chassisNo: String
+  image: String
+  inspectionLink: String
+  autobseContact: String
+  autobse_contact_person: String
+  vehicleCondition: String
+  powerSteering: String
+  shape: String
+  color: String
+  state: String
+  city: String
+  area: String
+  paymentTerms: String
+  dateOfRegistration: String
+  hypothication: String
+  climateControl: String
+  doorCount: Float
+  gearBox: String
+  buyerFees: String
+  rtoFine: String
+  parkingRate: String
+  approxParkingCharges: String
+  clientContactPerson: String
+  clientContactNo: String
+  additionalRemarks: String
+  lotNumber: Float
 }

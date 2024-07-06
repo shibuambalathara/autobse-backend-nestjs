@@ -11,6 +11,7 @@ import { StateModule } from './state/state.module';
 import { LocationModule } from './location/location.module';
 import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module';
 import { SellerModule } from './seller/seller.module';
+import { VehicleModule } from './vehicle/vehicle.module';
 
 
 
@@ -28,6 +29,7 @@ import { SellerModule } from './seller/seller.module';
     LocationModule,
     VehiclecategoryModule,
     SellerModule,
+    VehicleModule,
   ],
   providers: [PrismaService],
 })
