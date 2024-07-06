@@ -13,6 +13,7 @@ import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module'
 import { SellerModule } from './seller/seller.module';
 
 
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({

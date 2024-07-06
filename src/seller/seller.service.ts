@@ -34,16 +34,24 @@ export class SellerService {
   }
 
   async updateSeller(id:string,updateSellerInput: UpdateSellerInput) : Promise<Seller>{
-    try{
-      return await this.prisma.seller.update({where:{id,isDeleted:false},
-      data:{
-        ...updateSellerInput,
-      }})
+    try {
+      const seller = await this.prisma.seller.findUnique({where:{id,isDeleted:false,}})
+      if(!seller) throw new NotFoundException("Seller Not Found");
+      return await this.prisma.seller.update({
+          where:{
+            id,
+          },
+          data:{
+            ...updateSellerInput,
+          }
+        });
+      }
+    catch (error) {
+        if (error instanceof NotFoundException) {
+          throw new Error(error.message); 
+          }
+        }
     }
-    catch(error){
-      throw new Error(error.message);
-    }
-  }
 
   async deleteSeller(id: string):Promise<Seller> {
     try{
@@ -55,5 +63,17 @@ export class SellerService {
     catch(error){
       throw new Error(error.message);
     }
+  }
+
+  async deletedSellers():Promise<Seller[]|null>{
+    const seller = await this.prisma.seller.findMany({where:{isDeleted:true}});
+    if(!seller) throw new NotFoundException("Seller Not Found");
+    return seller;
+  }
+
+  async deletedSeller(id:string):Promise<Seller|null>{
+    const seller = await this.prisma.seller.findUnique({where:{id,isDeleted:true}});
+    if(!seller) throw new NotFoundException("Seller Not Found");
+    return seller;
   }
 }

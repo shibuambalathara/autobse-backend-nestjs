@@ -33,4 +33,14 @@ export class SellerResolver {
   async deleteSeller(@Args('where') where:UniqueSellerInput) {
     return this.sellerService.deleteSeller(where.id);
   }
+
+  @Query(returns => [Seller])
+  async deletedSellers(){
+    return this.sellerService.deletedSellers();
+  }
+
+  @Query(returns => Seller)
+  async deletedSeller(@Args('where') where:UniqueSellerInput){
+    return this.sellerService.deletedSeller(where.id);
+  }
 }
