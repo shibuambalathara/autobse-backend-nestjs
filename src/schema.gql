@@ -72,6 +72,8 @@ type Query {
   deletedVehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
   sellers: [Seller!]!
   seller(where: UniqueSellerInput!): Seller!
+  deletedSellers: [Seller!]!
+  deletedSeller(where: UniqueSellerInput!): Seller!
 }
 
 input UserWhereUniqueInput {
@@ -194,11 +196,11 @@ input CreateSellerInput {
 }
 
 input UpdateSellerInput {
-  name: String!
-  contactPerson: String!
-  GSTNumbber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
+  name: String
+  contactPerson: String
+  GSTNumbber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
 }

@@ -13,6 +13,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+
+enum UserRoleType {
+  admin
+  staff
+  seller
+  dealer
+}
+
 model User {
   id                        String               @id @default(cuid())
   idNo                      Int                  @unique @default(autoincrement())
@@ -58,7 +67,7 @@ model User {
   dealership_id             String?
   country                   String               @default("")
   city                      String               @default("")
-   role                      UserRoleType        @default(dealer)
+  role                      UserRoleType        @default(dealer)
   // watchList                 Vehicle[]            @relation("User_watchList")
   // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
   // payments                  Payment[]            @relation("Payment_user")
@@ -67,7 +76,7 @@ model User {
   // status                    UserStatusType?      @default(pending)
   // state                     String               @default("")
   // states                    State[]              @relation("State_users")
-  // activeBids                Vehicle[]            @relation("Vehicle_currentBidUser")
+  //activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
   // quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
   // coupenDetail              Coupen[]             @relation("Coupen_userDetail")
@@ -87,12 +96,6 @@ model User {
 
 }
 
-enum UserRoleType {
-  admin
-  staff
-  seller
-  dealer
-}
 
 
 model State{
@@ -138,7 +141,7 @@ model Seller {
   updatedAt            DateTime?   @updatedAt
   createdById          String?
   isDeleted            Boolean     @default(false)
-
 }
+
 
 
