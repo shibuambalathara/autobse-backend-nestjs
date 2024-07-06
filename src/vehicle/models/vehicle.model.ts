@@ -3,25 +3,31 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 @ObjectType()
 export class Vehicle {
   @Field()
-  registrationNumber:String;
+  id :string;
 
   @Field()
-  bidTimeExpire:Date;
+  vehicleIndexNo :number;
+  
+  @Field()
+  registrationNumber:string;
 
   @Field()
-  bidStartTime:Date;
+  bidTimeExpire:string;
 
   @Field()
-  bidAmountUpdate:number;
+  bidStartTime:string;
 
-  @Field()
-  currentBidAmount:number;
+  @Field({nullable:true})
+  bidAmountUpdate?:number;
 
-  @Field()
-  startBidAmount:number;
+  @Field({nullable:true})
+  currentBidAmount?:number;
+
+  @Field({nullable:true})
+  startBidAmount?:number;
  
-  @Field()
-  bidStatus:string;
+  // @Field()
+  // bidStatus:string;
 
   @Field()
   loanAgreementNo:string;
@@ -29,173 +35,177 @@ export class Vehicle {
   @Field()
   registeredOwnerName:string;
 
-  @Field()
-  quoteIncreament:number;
+  @Field({nullable:true})
+  quoteIncreament?:number;
 
   @Field()
-  make:String;
+  make:string;
 
   @Field()
-  model: String ;
+  model: string ;
 
   @Field()
-  varient:String;
+  varient:string;
 
   @Field()
-  categoty:String;
+  categoty:string;
 
   @Field()
-  fuel:String;
+  fuel:string;
   
   @Field()
-  type:String;
+  type:string;
 
   @Field()
-  rcStatus:String ;
+  rcStatus:string ;
+
+  @Field({nullable:true})
+  yearOfManufacture?:number;
+
+  @Field({nullable:true})
+  ownership ?:number;
+
+  @Field({nullable:true})
+  mileage ?:number;
+
+  @Field({nullable:true})
+  kmReading?:number;
 
   @Field()
-  yearOfManufacture:number;
+  insuranceStatus:string;
+  
+  @Field()
+  yardLocation:string;  
+  
+  @Field({nullable:true})
+  startPrice?:number;
+  
+  @Field({nullable:true})
+  reservePrice?:number;
+  
+  @Field({nullable:true})
+  repoDt?:string;
 
   @Field()
-  ownership :number;
+  veicleLocation:string;
+  
+  @Field()
+  vehicleRemarks:string;
+  
+  @Field()
+  auctionManager:string;
+  
+  @Field()
+  parkingCharges:string;
+  
+  @Field()
+  insurance:string;
+  
+  @Field({nullable:true})
+  insuranceValidTill?:string;
 
   @Field()
-  mileage :number;
+  tax:string;
+  
+  @Field({nullable:true})
+  taxValidityDate?:string;
 
   @Field()
-  kmReading:number;
+  fitness:string;
+  
+  @Field()
+  permit:string;
+  
+  @Field()
+  fitnessPermit:string;
+  
+  @Field()
+  engineNo :string;
+  
+  @Field()
+  chassisNo :string;
+  
+  @Field()
+  image :string;  
+  
+  @Field()
+  inspectionLink:string;
 
   @Field()
-  insuranceStatus:String;
-  
-  @Field()
-  yardLocation:String;  
-  
-  @Field()
-  startPrice:number;
-  
-  @Field()
-  reservePrice:number;
-  
-  @Field()
-  repoDt:Date;
+  autobseContact:string;
 
   @Field()
-  veicleLocation:String;
-  
-  @Field()
-  vehicleRemarks:String;
-  
-  @Field()
-  auctionManager:String;
-  
-  @Field()
-  parkingCharges:String;
-  
-  @Field()
-  insurance:String;
-  
-  @Field()
-  insuranceValidTill:Date;
+  autobse_contact_person:string;
 
   @Field()
-  tax:String;
-  
-  @Field()
-  taxValidityDate:Date;
+  vehicleCondition:string;
 
   @Field()
-  fitness:String;
-  
-  @Field()
-  permit:String;
-  
-  @Field()
-  fitnessPermit:String;
-  
-  @Field()
-  engineNo :String;
-  
-  @Field()
-  chassisNo :String ;
-  
-  @Field()
-  image :String;  
-  
-  @Field()
-  inspectionLink:String;
-
-  @Field()
-  autobseContact:String;
-
-  @Field()
-  autobse_contact_person:String;
-
-  @Field()
-  vehicleCondition:String;
-
-  @Field()
-  powerSteering:String ;
+  powerSteering:string;
   
   @Field() 
-  shape:String;
+  shape:string;
 
   @Field()
-  color:String;
+  color:string;
 
   @Field()
-  state:String;
+  state:string;
 
   @Field()
-  city:String;
+  city:string;
 
   @Field()      
-  area:String;
+  area:string;
 
   @Field()
-  paymentTerms:String;
+  paymentTerms:string;
+
+  @Field({nullable:true})
+  dateOfRegistration?:string;
 
   @Field()
-  dateOfRegistration:Date;
+  hypothication:string;
 
   @Field()
-  hypothication:String;
+  climateControl:string;
+
+  @Field({nullable:true})
+  doorCount?:number;
 
   @Field()
-  climateControl:String;
+  gearBox:string;
 
   @Field()
-  doorCount:number;
+  buyerFees:string;
 
   @Field()
-  gearBox:String;
+  rtoFine:string;
 
   @Field()
-  buyerFees:String;
+  parkingRate:string;
 
   @Field()
-  rtoFine:String;
-
-  @Field()
-  parkingRate:String;
-
-  @Field()
-  approxParkingCharges:String ;
+  approxParkingCharges:string;
 
 
   @Field()
-  clientContactPerson:String;
+  clientContactPerson:string;
   
 
   @Field()
-  clientContactNo:String ;
+  clientContactNo:string;
 
   @Field()
-  additionalRemarks: String;
+  additionalRemarks: string;
   
-  @Field()
-  lotNumber:number;
+  @Field({nullable:true})
+  lotNumber?:number;
 
-                  
+  @Field({nullable:true})
+  createdAt?:string;
 
+  @Field({nullable:true})
+  updatedAt?:string;
+             
 }

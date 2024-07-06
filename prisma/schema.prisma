@@ -182,15 +182,15 @@ model Vehicle {
   yardLocation           String                @default("")
   startPrice             Float?                @default(0)
   reservePrice           Float?                @default(0)
-  repoDt                 DateTime?
+  repoDt                 String?
   veicleLocation         String                @default("")
   vehicleRemarks         String                @default("")
   auctionManager         String                @default("")
   parkingCharges         String                @default("")
   insurance              String                @default("")
-  insuranceValidTill     DateTime?
+  insuranceValidTill     String?
   tax                    String                @default("")
-  taxValidityDate        DateTime?
+  taxValidityDate        String?
   fitness                String                @default("")
   permit                 String                @default("")
   fitnessPermit          String                @default("")
@@ -208,7 +208,7 @@ model Vehicle {
   city                   String                @default("")
   area                   String                @default("")
   paymentTerms           String                @default("")
-  dateOfRegistration     DateTime?
+  dateOfRegistration     String?
   hypothication          String                @default("")
   climateControl         String                @default("")
   doorCount              Int?

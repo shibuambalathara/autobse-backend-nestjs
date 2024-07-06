@@ -3,33 +3,44 @@ import { VehicleService } from './vehicle.service';
 import { Vehicle } from './models/vehicle.model';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
+import { UniqueVehicleInput } from './dto/unique-vehicle.input';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
   constructor(private readonly vehicleService: VehicleService) {}
 
-  @Mutation(() => Vehicle)
-  createVehicle(@Args('createVehicleInput') createVehicleInput: CreateVehicleInput) {
-    return this.vehicleService.create(createVehicleInput);
+  @Mutation(returns => Vehicle)
+  async createVehicle(@Args('userId') userId:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput) {
+    return this.vehicleService.createVehicle(userId,createVehicleInput);
   }
 
-  @Query(() => [Vehicle], { name: 'vehicle' })
-  findAll() {
-    return this.vehicleService.findAll();
+  @Query(returns => [Vehicle])
+  async vehicles() {
+    return this.vehicleService.vehicles();
   }
 
-  @Query(() => Vehicle, { name: 'vehicle' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.vehicleService.findOne(id);
+  @Query(returns => Vehicle)
+  async vehicle(@Args('where') where:UniqueVehicleInput) {
+    return this.vehicleService.vehicle(where.id);
   }
 
-  @Mutation(() => Vehicle)
-  updateVehicle(@Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput) {
-    return this.vehicleService.update(updateVehicleInput.id, updateVehicleInput);
+  @Mutation(returns => Vehicle)
+  updateVehicle(@Args('where') where:UniqueVehicleInput,@Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput) {
+    return this.vehicleService.updateVehicle(where.id,updateVehicleInput);
   }
 
-  @Mutation(() => Vehicle)
-  removeVehicle(@Args('id', { type: () => Int }) id: number) {
-    return this.vehicleService.remove(id);
+  @Mutation(returns => Vehicle)
+  async deleteVehicle(@Args('where') where:UniqueVehicleInput) {
+    return this.vehicleService.deleteVehicle(where.id);
+  }
+
+  @Query(returns => [Vehicle])
+  async deletedVehicles(){
+    return this.vehicleService.deletedVehicles();
+  }
+
+  @Query(returns => Vehicle)
+  async deletedVehicle(@Args('where') where:UniqueVehicleInput){
+    return this.vehicleService.deletedVehicle(where.id);
   }
 }
