@@ -4,12 +4,15 @@ import { Seller } from './models/seller.model';
 import { CreateSellerInput } from './dto/create-seller.input';
 import { UpdateSellerInput } from './dto/update-seller.input';
 import { UniqueSellerInput } from './dto/unique-seller.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Resolver(() => Seller)
 export class SellerResolver {
   constructor(private readonly sellerService: SellerService) {}
 
   @Mutation(returns => Seller)
+  @UseGuards(GqlAuthGuard)
   async createSeller(@Args('createSellerInput') createSellerInput: CreateSellerInput) {
     return this.sellerService.createSeller(createSellerInput);
   }
@@ -25,21 +28,25 @@ export class SellerResolver {
   }
 
   @Mutation(returns => Seller)
+  @UseGuards(GqlAuthGuard)
   async updateSeller(@Args('where') where:UniqueSellerInput,@Args('updateSellerInput') updateSellerInput: UpdateSellerInput) {
     return this.sellerService.updateSeller(where.id,updateSellerInput);
   }
 
   @Mutation(returns => Seller)
+  @UseGuards(GqlAuthGuard)
   async deleteSeller(@Args('where') where:UniqueSellerInput) {
     return this.sellerService.deleteSeller(where.id);
   }
 
   @Query(returns => [Seller])
+  @UseGuards(GqlAuthGuard)
   async deletedSellers(){
     return this.sellerService.deletedSellers();
   }
 
   @Query(returns => Seller)
+  @UseGuards(GqlAuthGuard)
   async deletedSeller(@Args('where') where:UniqueSellerInput){
     return this.sellerService.deletedSeller(where.id);
   }

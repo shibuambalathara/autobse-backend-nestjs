@@ -7,6 +7,7 @@ import { NotFoundException, UseGuards } from '@nestjs/common';
 import { UniqueInput } from './dto/unique-state.input';
 import { AuthGuard } from '@nestjs/passport';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UserRoleType } from '@prisma/client';
 
 
 @Resolver(() => State)
@@ -15,6 +16,7 @@ export class StateResolver {
 
   @Mutation(() => State)
    @UseGuards(GqlAuthGuard)
+   
   async createState(@Args('createStateInput') createStateInput: CreateStateInput) {
     return this.stateService.createState(createStateInput);
   }
@@ -32,22 +34,26 @@ export class StateResolver {
   }
 
   @Mutation(() => State)
+  @UseGuards(GqlAuthGuard)
   async deleteState(@Args('where') where: UniqueInput){
     return this.stateService.deleteState(where.id);
   }
 
   @Mutation(() => State)
+  @UseGuards(GqlAuthGuard)
   async updateState(@Args('where') where:UniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput) {
    return this.stateService.updateState(where.id, updateStateInput);
 
   }
 
   @Query(()=> [State])
+  @UseGuards(GqlAuthGuard)
   async deletedStates(){
     return this.stateService.deletedStates()
   }
 
   @Query(()=>State)
+  @UseGuards(GqlAuthGuard)
   async deletedState(@Args('where') where: UniqueInput) {
     return this.stateService.deletedState(where.id);
   }
