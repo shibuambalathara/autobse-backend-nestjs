@@ -20,7 +20,6 @@ type User {
   city: String!
   userCategory: String!
   tempToken: Float
-  accessToken: String
 }
 
 type LoginResponse {
@@ -102,7 +101,7 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
-  login(loginUserInput: LoginUserInput!): LoginResponse!
+  login(loginInput: LoginUserInput!): LoginResponse!
   createState(createStateInput: CreateStateInput!): State!
   deleteState(where: UniqueInput!): State!
   updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!

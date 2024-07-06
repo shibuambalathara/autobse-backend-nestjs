@@ -3,8 +3,10 @@ import { StateService } from './state.service';
 import { State } from './models/state.model';
 import { CreateStateInput } from './dto/create-state.input';
 import { UpdateStateInput } from './dto/update-state.input';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { UniqueInput } from './dto/unique-state.input';
+import { AuthGuard } from '@nestjs/passport';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 
 
 @Resolver(() => State)
@@ -12,6 +14,7 @@ export class StateResolver {
   constructor(private readonly stateService: StateService) {}
 
   @Mutation(() => State)
+   @UseGuards(GqlAuthGuard)
   async createState(@Args('createStateInput') createStateInput: CreateStateInput) {
     return this.stateService.createState(createStateInput);
   }
