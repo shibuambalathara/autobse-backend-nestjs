@@ -53,8 +53,8 @@ export class User {
   @Field({ nullable: true })
   tempToken?: number;
 
-  @Field({ nullable: true })
-  accessToken?: string;
+  // @Field({ nullable: true })
+  // accessToken?: string;
 
 
 }

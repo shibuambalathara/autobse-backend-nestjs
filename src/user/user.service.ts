@@ -28,10 +28,13 @@ export class UserService {
     });
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {
-console.log("mobile",mobile)
+
     const user=await this.prisma.user.findUnique({ where: {mobile} });
-    console.log("user",user)
+   
     return user
+  }
+  async saveAccessToken(id: string, token: string): Promise<void> {
+    await this.prisma.user.update({data:{accessToken:token},where:{id}});
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
