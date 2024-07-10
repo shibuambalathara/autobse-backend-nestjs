@@ -70,11 +70,11 @@ export class VehiclecategoryService {
     return result;
   }
 
-  async restoreVehicleCategory(id:string):Promise<VehicleCategory|null>{
-    const vehicle = await this.prisma.vehicleCategory.findUnique({where:{id,isDeleted:true}});
+  async restoreVehicleCategory(where:VehicleCategoryWhereUniqueInput):Promise<VehicleCategory|null>{
+    const vehicle = await this.prisma.vehicleCategory.findUnique({where:{...where,isDeleted:true}});
     if(!vehicle) throw new NotFoundException("vehicleCategory Not Found");
     return await this.prisma.vehicleCategory.update({
-      where:{id},
+      where:{...where as Prisma.VehicleCategoryWhereUniqueInput},
       data:{
         isDeleted:false,
       }

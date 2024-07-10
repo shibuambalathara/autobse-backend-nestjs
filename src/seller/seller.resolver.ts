@@ -54,7 +54,7 @@ export class SellerResolver {
   @Query(returns=>Seller)
   @UseGuards(GqlAuthGuard)
   async restoreSeller(@Args('where') where:SellerWhereUniqueInput):Promise<Seller|null>{
-    return this.sellerService.restoreSeller(where.id);
+    return this.sellerService.restoreSeller(where);
   }
 
 

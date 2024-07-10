@@ -54,6 +54,6 @@ export class VehicleResolver {
   @Query(returns => Vehicle)
   @UseGuards(GqlAuthGuard)
   async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
-    return this.vehicleService.restoreVehicle(where.id);
+    return this.vehicleService.restoreVehicle(where);
   }
 }

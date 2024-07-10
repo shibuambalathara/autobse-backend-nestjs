@@ -55,7 +55,7 @@ export class LocationResolver {
   @Query(returns=>Location)
   @UseGuards(GqlAuthGuard)
   async restoreLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
-    return this.locationService.restoreLocation(where.id);
+    return this.locationService.restoreLocation(where);
   }
 
 }

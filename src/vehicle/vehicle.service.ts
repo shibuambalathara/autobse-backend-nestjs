@@ -79,11 +79,11 @@ export class VehicleService {
     return vehicle;
   }
    
-  async restoreVehicle(id:string):Promise<Vehicle|null>{
-    const vehicle = await this.prisma.vehicle.findUnique({where:{id,isDeleted:true}});
+  async restoreVehicle(where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
+    const vehicle = await this.prisma.vehicle.findUnique({where:{...where as Prisma.VehicleWhereUniqueInput,isDeleted:true}});
     if(!vehicle) throw new NotFoundException("vehicle Not Found");
     return await this.prisma.vehicle.update({
-      where:{id},
+      where:{...where as Prisma.VehicleWhereUniqueInput},
       data:{
         isDeleted:false,
       }

@@ -81,11 +81,11 @@ export class LocationService {
     return result;
   }
 
-  async restoreLocation(id:string):Promise<Location|null>{
-    const location = await this.prisma.location.findUnique({where:{id,isDeleted:true}});
+  async restoreLocation(where:LocationWhereUniqueInput):Promise<Location|null>{
+    const location = await this.prisma.location.findUnique({where:{...(where as Prisma.LocationWhereUniqueInput),isDeleted:true}});
     if(!location) throw new NotFoundException("Location Not Found");
     return await this.prisma.location.update({
-      where:{id},
+      where:{...where as Prisma.LocationWhereUniqueInput},
       data:{
         isDeleted:false,
       }

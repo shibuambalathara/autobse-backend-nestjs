@@ -61,7 +61,7 @@ export class StateResolver {
   @Query(returns=>State)
   @UseGuards(GqlAuthGuard)
   async restoreState(@Args('where') where:StateWhereUniqueInput):Promise<State|null>{
-    return this.stateService.restoreState(where.id);
+    return this.stateService.restoreState(where);
 
   }
 }

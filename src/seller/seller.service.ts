@@ -80,11 +80,11 @@ export class SellerService {
     return seller;
   }
 
-  async restoreSeller(id:string):Promise<Seller|null>{
-    const seller = await this.prisma.seller.findUnique({where:{id,isDeleted:true}});
+  async restoreSeller(where:SellerWhereUniqueInput):Promise<Seller|null>{
+    const seller = await this.prisma.seller.findUnique({where:{...where as Prisma.SellerWhereUniqueInput,isDeleted:true}});
     if(!seller) throw new NotFoundException("Seller Not Found");
     return await this.prisma.seller.update({
-      where:{id},
+      where:{...where as Prisma.SellerWhereUniqueInput},
       data:{
         isDeleted:false,
       }
