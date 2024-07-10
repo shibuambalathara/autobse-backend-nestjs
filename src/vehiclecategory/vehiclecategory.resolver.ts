@@ -50,4 +50,11 @@ export class VehiclecategoryResolver {
   async deletedVehicleCategory(@Args('where') where:VehicleCategoryWhereUniqueInput):Promise<VehicleCategory|null>{
     return this.vehiclecategoryService.deletedVehicleCategory(where.id)
   }
+
+  @Query(returns=>VehicleCategory)
+  @UseGuards(GqlAuthGuard)
+  async restoreVehicleCategory(@Args('where') where:VehicleCategoryWhereUniqueInput):Promise<VehicleCategory|null>{
+    return this.vehiclecategoryService.restoreVehicleCategory(where.id);
+  }
+
 }

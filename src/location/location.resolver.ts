@@ -50,7 +50,12 @@ export class LocationResolver {
   @UseGuards(GqlAuthGuard)
   async deletedLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
     return this.locationService.deletedLocation(where.id);
+  }
 
+  @Query(returns=>Location)
+  @UseGuards(GqlAuthGuard)
+  async restoreLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
+    return this.locationService.restoreLocation(where.id);
   }
 
 }

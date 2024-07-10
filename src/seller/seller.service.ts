@@ -79,4 +79,15 @@ export class SellerService {
     if(!seller) throw new NotFoundException("Seller Not Found");
     return seller;
   }
+
+  async restoreSeller(id:string):Promise<Seller|null>{
+    const seller = await this.prisma.seller.findUnique({where:{id,isDeleted:true}});
+    if(!seller) throw new NotFoundException("Seller Not Found");
+    return await this.prisma.seller.update({
+      where:{id},
+      data:{
+        isDeleted:false,
+      }
+    });
+  }
 }

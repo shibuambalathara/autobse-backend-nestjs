@@ -50,4 +50,10 @@ export class VehicleResolver {
   async deletedVehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
     return this.vehicleService.deletedVehicle(where.id);
   }
+
+  @Query(returns => Vehicle)
+  @UseGuards(GqlAuthGuard)
+  async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
+    return this.vehicleService.restoreVehicle(where.id);
+  }
 }

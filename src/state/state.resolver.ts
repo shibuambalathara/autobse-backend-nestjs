@@ -14,47 +14,54 @@ import { UserRoleType } from '@prisma/client';
 export class StateResolver {
   constructor(private readonly stateService: StateService) {}
 
-  @Mutation(() => State)
+  @Mutation(returns => State)
    @UseGuards(GqlAuthGuard)
    
   async createState(@Args('userId') userId:string,@Args('createStateInput') createStateInput: CreateStateInput) : Promise<State | null> {
     return this.stateService.createState(userId,createStateInput);
   }
 
-  @Query(() => [State])
+  @Query(returns => [State])
   async States(): Promise<State[] | null> {
     return this.stateService.States();
     
   }
 
-  @Query(() => State)
+  @Query(returns => State)
   async State(@Args('where') where:StateWhereUniqueInput):Promise<State|null> {
     return this.stateService.State(where);
 
   }
 
-  @Mutation(() => State)
+  @Mutation(returns => State)
   @UseGuards(GqlAuthGuard)
   async deleteState(@Args('where') where: StateWhereUniqueInput):Promise<State|null>{
     return this.stateService.deleteState(where.id);
   }
 
-  @Mutation(() => State)
+  @Mutation(returns => State)
   @UseGuards(GqlAuthGuard)
   async updateState(@Args('where') where:StateWhereUniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput):Promise<State|null> {
    return this.stateService.updateState(where.id, updateStateInput);
 
   }
 
-  @Query(()=> [State])
+  @Query(returns=> [State])
   @UseGuards(GqlAuthGuard)
   async deletedStates():Promise<State[]|null>{
     return this.stateService.deletedStates()
   }
 
-  @Query(()=>State)
+  @Query(returns=>State)
   @UseGuards(GqlAuthGuard)
   async deletedState(@Args('where') where: StateWhereUniqueInput) :Promise<State|null>{
     return this.stateService.deletedState(where.id);
+  }
+
+  @Query(returns=>State)
+  @UseGuards(GqlAuthGuard)
+  async restoreState(@Args('where') where:StateWhereUniqueInput):Promise<State|null>{
+    return this.stateService.restoreState(where.id);
+
   }
 }

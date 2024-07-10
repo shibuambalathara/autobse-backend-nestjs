@@ -151,22 +151,27 @@ type Query {
   State(where: StateWhereUniqueInput!): State!
   deletedStates: [State!]!
   deletedState(where: StateWhereUniqueInput!): State!
+  restoreState(where: StateWhereUniqueInput!): State!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
   deletedLocation(where: LocationWhereUniqueInput!): Location!
+  restoreLocation(where: LocationWhereUniqueInput!): Location!
   vehicleCategories: [VehicleCategory!]!
   vehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   deletedVehicleCategories: [VehicleCategory!]!
   deletedVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  restoreVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   sellers: [Seller!]!
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
+  restoreSeller(where: SellerWhereUniqueInput!): Seller!
   vehicles: [Vehicle!]!
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
 }
 
 input UserWhereUniqueInput {

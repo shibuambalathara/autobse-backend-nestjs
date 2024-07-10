@@ -81,4 +81,15 @@ export class StateService {
       if(!state) throw new NotFoundException("State Not Found");
       return state;
   }
+
+  async restoreState(id:string):Promise<State|null>{
+    const state = await this.prisma.state.findUnique({where:{id,isDeleted:true}});
+    if(!state) throw new NotFoundException("State Not Found");
+    return await this.prisma.state.update({
+      where:{id},
+      data:{
+        isDeleted:false,
+      }
+    });
+  }
 }
