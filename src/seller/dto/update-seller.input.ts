@@ -17,7 +17,7 @@ export class UpdateSellerInput extends PartialType(CreateSellerInput) {
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
-  GSTNumbber?:string;
+  GSTNumber?:string;
 
   @Field({ nullable: true })
   @IsString()

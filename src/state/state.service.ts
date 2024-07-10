@@ -3,16 +3,18 @@ import { CreateStateInput } from './dto/create-state.input';
 import { UpdateStateInput } from './dto/update-state.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { error } from 'console';
-import { State } from '@prisma/client';
+import { Prisma, State } from '@prisma/client';
+import { StateWhereUniqueInput } from './dto/unique-state.input';
 
 @Injectable()
 export class StateService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createState(createStateInput: CreateStateInput) : Promise<State>{
+  async createState(userId:string,createStateInput: CreateStateInput) : Promise<State|null>{
     try{
         return await this.prisma.state.create({
         data:{
+            createdById:userId,
             ...createStateInput,
           }
         });
@@ -28,15 +30,15 @@ export class StateService {
     return state;
   }
 
-  async State(id: string) : Promise<State | null> {
+  async State(where:StateWhereUniqueInput) : Promise<State | null> {
     const state = await this.prisma.state.findUnique({
-      where: { id , isDeleted:false},
+      where: {...where as Prisma.StateWhereUniqueInput,isDeleted:false},
     });
     if (!state) throw new NotFoundException('State Not Found!');
     return state;
   }
 
- async updateState(id: string, updateStateInput: UpdateStateInput) : Promise<State> {
+ async updateState(id: string, updateStateInput: UpdateStateInput) : Promise<State|null> {
   try {
       const state = await this.prisma.state.findUnique({where:{id,isDeleted:false,}})
       if(!state) throw new NotFoundException("State Not Found");
@@ -56,7 +58,7 @@ export class StateService {
         }
     }
  
- async deleteState(id: string) : Promise<State> {
+ async deleteState(id: string) : Promise<State | null> {
   const state = await this.prisma.state.findUnique({where:{id,isDeleted:false,}})
   if(!state) throw new NotFoundException("State Not Found");
   return await this.prisma.state.update({
@@ -78,5 +80,16 @@ export class StateService {
       const state = await this.prisma.state.findUnique({where:{id,isDeleted:true}});
       if(!state) throw new NotFoundException("State Not Found");
       return state;
+  }
+
+  async restoreState(where:StateWhereUniqueInput):Promise<State|null>{
+    const state = await this.prisma.state.findUnique({where:{...where as Prisma.StateWhereUniqueInput,isDeleted:true}});
+    if(!state) throw new NotFoundException("State Not Found");
+    return await this.prisma.state.update({
+      where:{...where as Prisma.StateWhereUniqueInput},
+      data:{
+        isDeleted:false,
+      }
+    });
   }
 }

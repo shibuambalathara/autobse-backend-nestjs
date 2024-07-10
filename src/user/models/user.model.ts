@@ -30,9 +30,6 @@ export class User {
   mobile: string;
 
   @Field({ nullable: true })
-  password?: string;
-
-  @Field({ nullable: true })
   BalanceEMDAmount?: number;
 
   @Field()

@@ -14,13 +14,14 @@ export class AuthService {
     const user = await this.usersService.findOneByMobile(mobile);
     if (user && await bcrypt.compare(pass, user.password)) {
       const { password, ...result } = user;
+  
       return result;
     }
     return null;
   }
 
   async login(user: any) {
-    const payload = { mobile: user.mobile, sub: user.id, roles: user.roles };
+    const payload = { mobile: user?.mobile, sub: user?.id, roles: user?.role };
     return {
       access_token: this.jwtService.sign(payload),
     };

@@ -12,10 +12,10 @@ export class Vehicle {
   registrationNumber:string;
 
   @Field()
-  bidTimeExpire:string;
+  bidTimeExpire:Date;
 
   @Field()
-  bidStartTime:string;
+  bidStartTime:Date;
 
   @Field({nullable:true})
   bidAmountUpdate?:number;
@@ -203,9 +203,12 @@ export class Vehicle {
   lotNumber?:number;
 
   @Field({nullable:true})
-  createdAt?:string;
+  createdAt?:Date;
 
   @Field({nullable:true})
-  updatedAt?:string;
+  updatedAt?:Date;
+
+  @Field({nullable:true})
+  createdById?:string;
              
 }

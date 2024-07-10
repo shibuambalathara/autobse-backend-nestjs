@@ -14,7 +14,7 @@ export class CreateSellerInput {
 
   @Field()
   @IsString()
-  GSTNumbber:string;
+  GSTNumber:string;
 
   @Field()
   @IsString()

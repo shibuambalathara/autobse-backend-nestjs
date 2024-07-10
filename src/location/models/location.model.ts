@@ -10,6 +10,18 @@ export class Location {
   name:string;
 
   @Field()
-  state:string;
+  stateId:string;
+
+  @Field({nullable:true})
+  createdAt?:Date;
+
+  @Field({nullable:true})
+  updatedAt?:Date;
+
+  @Field({nullable:true})
+  country?:string;
+
+  @Field({nullable:true})
+  createdById?:string;
   
 }
