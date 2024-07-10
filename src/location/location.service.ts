@@ -2,16 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLocationInput } from './dto/create-location.input';
 import { UpdateLocationInput } from './dto/update-location.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Location } from '@prisma/client';
+import { Location, Prisma } from '@prisma/client';
+import { LocationWhereUniqueInput } from './dto/unique-location.input';
 
 @Injectable()
 export class LocationService {
   constructor(private readonly prisma:PrismaService){}
   
-  async createLocation(stateId:string,createLocationInput: CreateLocationInput): Promise<Location> {
+  async createLocation(userId:string,stateId:string,createLocationInput: CreateLocationInput): Promise<Location|null> {
    try{
     return await this.prisma.location.create({
       data:{
+        createdById:userId,
         stateId:stateId,
         name:createLocationInput.name
       }
@@ -29,13 +31,13 @@ export class LocationService {
     
   }
 
-  async location(id: string) : Promise<Location | null> {
-    const result = await this.prisma.location.findUnique({where:{id,isDeleted:false}});
+  async location(where:LocationWhereUniqueInput) : Promise<Location | null> {
+    const result = await this.prisma.location.findUnique({where:{...where as Prisma.LocationWhereUniqueInput,isDeleted:false}});
     if(!result) throw new NotFoundException("Location not found")
     return result;
   }
 
-  async updateLocation(id: string, updateLocationInput: UpdateLocationInput) : Promise<Location>{
+  async updateLocation(id: string, updateLocationInput: UpdateLocationInput) : Promise<Location|null>{
     try {
       const state = await this.prisma.location.findUnique({where:{id,isDeleted:false,}})
       if(!state) throw new NotFoundException("Location Not Found");
@@ -56,7 +58,7 @@ export class LocationService {
     }
   
 
-  async deleteLocation(id: string) :Promise<Location> {
+  async deleteLocation(id: string) :Promise<Location|null> {
     const result = await this.prisma.location.findUnique({where:{id,isDeleted:false,}})
     if(!result) throw new NotFoundException("Location Not Found");
     return await this.prisma.location.update({
@@ -79,5 +81,16 @@ export class LocationService {
     return result;
   }
 
-  
+  async restoreLocation(where:LocationWhereUniqueInput):Promise<Location|null>{
+    const location = await this.prisma.location.findUnique({where:{...(where as Prisma.LocationWhereUniqueInput),isDeleted:true}});
+    if(!location) throw new NotFoundException("Location Not Found");
+    return await this.prisma.location.update({
+      where:{...where as Prisma.LocationWhereUniqueInput},
+      data:{
+        isDeleted:false,
+      }
+    });
+  }
+
+
 }

@@ -14,6 +14,12 @@ generator client {
 }
 
 
+enum VehicleBidStatusType {
+  pending
+  approved
+  fulfilled
+  declined
+}
 
 enum UserRoleType {
   admin
@@ -75,8 +81,12 @@ model User {
   // paymentByAdmin            Payment?             @relation("Payment_createdBy")
   // status                    UserStatusType?      @default(pending)
   // state                     String               @default("")
-  // states                    State[]              @relation("State_users")
-  //activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
+  stateCreatedBy               State[]              @relation("state_createdBy")
+  locationCreatedBy            Location[]           @relation("location_createdBy")
+  VehicleCategoryCreatedBy     VehicleCategory[]    @relation("vehiclecategory_createdBy")
+  sellerCreatedBy              Seller[]             @relation("seller_createdBy")
+  vehicleCreatedBy             Vehicle[]            @relation("vehicle_createdBy")
+  activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
   // quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
   // coupenDetail              Coupen[]             @relation("Coupen_userDetail")
@@ -93,7 +103,6 @@ model User {
   isDeleted               Boolean               @default(false)
   // magicAuthIssuedAt         DateTime?
   // magicAuthRedeemedAt       DateTime?
-
 }
 
 
@@ -103,6 +112,7 @@ model State{
   name               String        @unique @default("")
   createdAt          DateTime?     @default(now())
   updatedAt          DateTime?     @updatedAt
+  createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
   createdById        String?
   isDeleted          Boolean       @default(false)
   location           Location[]
@@ -112,7 +122,8 @@ model Location{
   name              String         @unique @default("")
   country           String         @default("india")
   state             State          @relation(fields: [stateId], references: [id])
-  stateId           String         
+  stateId           String  
+  createdBy         User?         @relation("location_createdBy", fields: [createdById], references: [id])             
   createdById       String?
   createdAt         DateTime?      @default(now())
   updatedAt         DateTime?      @updatedAt
@@ -120,27 +131,111 @@ model Location{
 }
 
 model VehicleCategory{
-  id                String        @id @default(cuid())
-  name              String        @unique @default("")
+  id                String         @id @default(cuid())
+  name              String         @unique @default("")
   createdAt         DateTime?      @default(now())
   updatedAt         DateTime?      @updatedAt
+  createdBy         User?          @relation("vehiclecategory_createdBy",fields: [createdById], references: [id])             
   createdById       String?
   isDeleted         Boolean        @default(false)
 }
 
 model Seller {
   id                   String      @id @default(cuid())
-  name                 String      @default("")
+  name                 String      @unique @default("")
   contactPerson        String      @default("")
-  GSTNumbber           String      @default("")
+  GSTNumber           String      @default("")
   billingContactPerson String      @default("")
   mobile               String      @default("")
   nationalHead         String      @default("")
   logo                 String      @default("")
   createdAt            DateTime?   @default(now())
   updatedAt            DateTime?   @updatedAt
+  createdBy            User?       @relation("seller_createdBy",fields: [createdById], references: [id])             
   createdById          String?
   isDeleted            Boolean     @default(false)
+}
+
+model Vehicle {
+  id                     String                @id @default(cuid())
+  vehicleIndexNo         Int                   @default(autoincrement())
+  registrationNumber     String                @default("")
+  bidTimeExpire          DateTime
+  bidStartTime           DateTime
+  bidAmountUpdate        Int?
+  currentBidAmount       Int?                  @default(0)
+  startBidAmount         Float?                @default(0)
+  currentBidUser         User?                 @relation("Vehicle_currentBidUser", fields: [currentBidUserId], references: [id])
+  currentBidUserId       String?               
+  //event                  Event?                @relation("Vehicle_event", fields: [eventId], references: [id])
+  //eventId                String?               @map("event")
+  bidStatus              VehicleBidStatusType? @default(pending)
+  //userVehicleBids        Bid[]                 @relation("Bid_bidVehicle")
+  loanAgreementNo        String                @default("")
+  registeredOwnerName    String                @default("")
+  quoteIncreament        Int?                  @default(1000)
+  make                   String                @default("")
+  model                  String                @default("")
+  varient                String                @default("")
+  categoty               String                @default("")
+  fuel                   String                @default("")
+  type                   String                @default("")
+  rcStatus               String                @default("")
+  yearOfManufacture      Int?
+  ownership              Int?
+  mileage                Int?
+  kmReading              Int?                  @default(0)
+  insuranceStatus        String                @default("")
+  yardLocation           String                @default("")
+  startPrice             Float?                @default(0)
+  reservePrice           Float?                @default(0)
+  repoDt                 String?
+  veicleLocation         String                @default("")
+  vehicleRemarks         String                @default("")
+  auctionManager         String                @default("")
+  parkingCharges         String                @default("")
+  insurance              String                @default("")
+  insuranceValidTill     String?
+  tax                    String                @default("")
+  taxValidityDate        String?
+  fitness                String                @default("")
+  permit                 String                @default("")
+  fitnessPermit          String                @default("")
+  engineNo               String                @default("")
+  chassisNo              String                @default("")
+  image                  String                @default("")
+  inspectionLink         String                @default("")
+  autobseContact         String                @default("")
+  autobse_contact_person String                @default("")
+  vehicleCondition       String                @default("")
+  powerSteering          String                @default("")
+  shape                  String                @default("")
+  color                  String                @default("")
+  state                  String                @default("")
+  city                   String                @default("")
+  area                   String                @default("")
+  paymentTerms           String                @default("")
+  dateOfRegistration     String?
+  hypothication          String                @default("")
+  climateControl         String                @default("")
+  doorCount              Int?
+  gearBox                String                @default("")
+  buyerFees              String                @default("")
+  rtoFine                String                @default("")
+  parkingRate            String                @default("")
+  approxParkingCharges   String                @default("")
+  clientContactPerson    String                @default("")
+  clientContactNo        String                @default("")
+  additionalRemarks      String                @default("")
+  //ExcelFile              ExcelUpload?          @relation("Vehicle_ExcelFile", fields: [ExcelFileId], references: [id])
+  //ExcelFileId            String?               @map("ExcelFile")
+  lotNumber              Int?
+  //coupenDetail           Coupen?               @relation("Coupen_vehicleDetail")
+  createdAt              DateTime?             @default(now())
+  updatedAt              DateTime?             @updatedAt
+  createdBy              User?                 @relation("vehicle_createdBy",fields: [createdById], references: [id])             
+  createdById            String?
+  isDeleted              Boolean               @default(false)
 }
 
 

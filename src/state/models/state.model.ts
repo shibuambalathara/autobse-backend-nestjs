@@ -9,4 +9,13 @@ export class State {
   @Field()
   name:string;
 
+  @Field({nullable:true})
+  createdAt?:Date;
+
+  @Field({nullable:true})
+  updatedAt?:Date;
+
+  @Field()
+  createdById?:string;
+
 }

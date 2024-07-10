@@ -12,7 +12,7 @@ export class Seller {
   contactPerson:string;
 
   @Field()
-  GSTNumbber:string;
+  GSTNumber:string;
 
   @Field()
   billingContactPerson:string;
@@ -23,8 +23,18 @@ export class Seller {
   @Field()
   nationalHead:string;
   
-
   @Field()
   logo:string;
+
+  @Field()
+  createdAt?:Date;
+
+  @Field()
+  updatedAt?:Date;
+
+  @Field()
+  createdById?:string;
+
+  
   
 }
