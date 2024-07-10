@@ -29,33 +29,287 @@ type LoginResponse {
 type State {
   id: String!
   name: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Location {
   id: String!
   name: String!
-  state: String!
+  stateId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  country: String
+  createdById: String
 }
 
 type VehicleCategory {
   id: String!
   name: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
 }
 
 type Seller {
   id: String!
   name: String!
   contactPerson: String!
-  GSTNumbber: String!
+  GSTNumber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdById: String!
+}
+
+type Vehicle {
+  id: String!
+  vehicleIndexNo: Float!
+  registrationNumber: String!
+  bidTimeExpire: DateTime!
+  bidStartTime: DateTime!
+  bidAmountUpdate: Float
+  currentBidAmount: Float
+  startBidAmount: Float
+  loanAgreementNo: String!
+  registeredOwnerName: String!
+  quoteIncreament: Float
+  make: String!
+  model: String!
+  varient: String!
+  categoty: String!
+  fuel: String!
+  type: String!
+  rcStatus: String!
+  yearOfManufacture: Float
+  ownership: Float
+  mileage: Float
+  kmReading: Float
+  insuranceStatus: String!
+  yardLocation: String!
+  startPrice: Float
+  reservePrice: Float
+  repoDt: String
+  veicleLocation: String!
+  vehicleRemarks: String!
+  auctionManager: String!
+  parkingCharges: String!
+  insurance: String!
+  insuranceValidTill: String
+  tax: String!
+  taxValidityDate: String
+  fitness: String!
+  permit: String!
+  fitnessPermit: String!
+  engineNo: String!
+  chassisNo: String!
+  image: String!
+  inspectionLink: String!
+  autobseContact: String!
+  autobse_contact_person: String!
+  vehicleCondition: String!
+  powerSteering: String!
+  shape: String!
+  color: String!
+  state: String!
+  city: String!
+  area: String!
+  paymentTerms: String!
+  dateOfRegistration: String
+  hypothication: String!
+  climateControl: String!
+  doorCount: Float
+  gearBox: String!
+  buyerFees: String!
+  rtoFine: String!
+  parkingRate: String!
+  approxParkingCharges: String!
+  clientContactPerson: String!
+  clientContactNo: String!
+  additionalRemarks: String!
+  lotNumber: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+}
+
+type Query {
+  users: [User]!
+  user(where: UserWhereUniqueInput!): User
+  deletedUser(where: UserWhereUniqueInput!): User
+  deletedUsers: [User]!
+  States: [State!]!
+  State(where: StateWhereUniqueInput!): State!
+  deletedStates: [State!]!
+  deletedState(where: StateWhereUniqueInput!): State!
+  locations: [Location!]!
+  location(where: LocationWhereUniqueInput!): Location!
+  deletedLocations: [Location!]!
+  deletedLocation(where: LocationWhereUniqueInput!): Location!
+  vehicleCategories: [VehicleCategory!]!
+  vehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  deletedVehicleCategories: [VehicleCategory!]!
+  deletedVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  sellers: [Seller!]!
+  seller(where: SellerWhereUniqueInput!): Seller!
+  deletedSellers: [Seller!]!
+  deletedSeller(where: SellerWhereUniqueInput!): Seller!
+  vehicles: [Vehicle!]!
+  vehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  deletedVehicles: [Vehicle!]!
+  deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+}
+
+input UserWhereUniqueInput {
+  id: String
+  mobile: String
+  tempToken: Float
+  idNo: Float
+}
+
+input StateWhereUniqueInput {
+  id: String
+  name: String
+}
+
+input LocationWhereUniqueInput {
+  id: String
+  name: String
+}
+
+input VehicleCategoryWhereUniqueInput {
+  id: String
+  name: String
+}
+
+input SellerWhereUniqueInput {
+  id: String
+  name: String
+}
+
+input VehicleWhereUniqueInput {
+  id: String
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User!
+  login(loginInput: LoginUserInput!): LoginResponse!
+  createState(userId: String!, createStateInput: CreateStateInput!): State!
+  deleteState(where: StateWhereUniqueInput!): State!
+  updateState(where: StateWhereUniqueInput!, updateStateInput: UpdateStateInput!): State!
+  createLocation(userId: String!, stateId: String!, createLocationInput: CreateLocationInput!): Location!
+  updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
+  deleteLocation(where: LocationWhereUniqueInput!): Location!
+  createVehiclecategory(userId: String!, createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
+  updateVehicleCategory(where: VehicleCategoryWhereUniqueInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
+  deleteVehiclecategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  createSeller(userId: String!, createSellerInput: CreateSellerInput!): Seller!
+  updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
+  deleteSeller(where: SellerWhereUniqueInput!): Seller!
+  createVehicle(userId: String!, createdBy: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
+  deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+}
+
+input CreateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String!
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  accessToken: String
+}
+
+input UpdateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  accessToken: String
+}
+
+input LoginUserInput {
+  mobile: String!
+  password: String!
+}
+
+input CreateStateInput {
+  name: String!
+}
+
+input UpdateStateInput {
+  name: String
+  createdById: String
+}
+
+input CreateLocationInput {
+  name: String!
+}
+
+input UpdateLocationInput {
+  name: String
+  stateId: String
+}
+
+input CreateVehiclecategoryInput {
+  name: String!
+}
+
+input UpdateVehiclecategoryInput {
+  name: String
+}
+
+input CreateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumber: String!
   billingContactPerson: String!
   mobile: String!
   nationalHead: String!
   logo: String!
 }
 
-type Vehicle {
-  id: String!
-  vehicleIndexNo: Float!
+input UpdateSellerInput {
+  name: String
+  contactPerson: String
+  GSTNumber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
+}
+
+input CreateVehicleInput {
   registrationNumber: String!
   bidTimeExpire: String!
   bidStartTime: String!
@@ -119,238 +373,6 @@ type Vehicle {
   clientContactNo: String!
   additionalRemarks: String!
   lotNumber: Float
-  createdAt: String
-  updatedAt: String
-}
-
-type Query {
-  users: [User]!
-  user(where: UserWhereUniqueInput!): User
-  deletedUser(where: UserWhereUniqueInput!): User
-  deletedUsers: [User]!
-  States: [State!]!
-  State(where: UniqueInput!): State!
-  deletedStates: [State!]!
-  deletedState(where: UniqueInput!): State!
-  locations: [Location!]!
-  location(where: UniqueLocationInput!): Location!
-  deletedLocations: [Location!]!
-  deletedLocation(where: UniqueLocationInput!): Location!
-  vehicleCategories: [VehicleCategory!]!
-  vehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
-  deletedVehicleCategories: [VehicleCategory!]!
-  deletedVehicleCategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
-  sellers: [Seller!]!
-  seller(where: UniqueSellerInput!): Seller!
-  deletedSellers: [Seller!]!
-  deletedSeller(where: UniqueSellerInput!): Seller!
-  vehicles: [Vehicle!]!
-  vehicle(where: UniqueVehicleInput!): Vehicle!
-  deletedVehicles: [Vehicle!]!
-  deletedVehicle(where: UniqueVehicleInput!): Vehicle!
-}
-
-input UserWhereUniqueInput {
-  id: String
-  mobile: String
-  tempToken: Float
-  idNo: Float
-}
-
-input UniqueInput {
-  id: ID!
-}
-
-input UniqueLocationInput {
-  id: ID!
-}
-
-input UniqueVehicleCategoryInput {
-  id: ID!
-}
-
-input UniqueSellerInput {
-  id: ID!
-}
-
-input UniqueVehicleInput {
-  id: String
-  vehicleIndexNo: Float
-}
-
-type Mutation {
-  createUser(data: CreateUserInput!): User!
-  updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
-  deleteUser(where: UserWhereUniqueInput!): User!
-  login(loginInput: LoginUserInput!): LoginResponse!
-  createState(createStateInput: CreateStateInput!): State!
-  deleteState(where: UniqueInput!): State!
-  updateState(where: UniqueInput!, updateStateInput: UpdateStateInput!): State!
-  createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
-  updateLocation(where: UniqueLocationInput!, updateLocationInput: UpdateLocationInput!): Location!
-  deleteLocation(where: UniqueLocationInput!): Location!
-  createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
-  updateVehicleCategory(where: UniqueVehicleCategoryInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
-  deleteVehiclecategory(where: UniqueVehicleCategoryInput!): VehicleCategory!
-  createSeller(createSellerInput: CreateSellerInput!): Seller!
-  updateSeller(where: UniqueSellerInput!, updateSellerInput: UpdateSellerInput!): Seller!
-  deleteSeller(where: UniqueSellerInput!): Seller!
-  createVehicle(userId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
-  updateVehicle(where: UniqueVehicleInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
-  deleteVehicle(where: UniqueVehicleInput!): Vehicle!
-}
-
-input CreateUserInput {
-  email: String
-  username: String
-  firstName: String
-  lastName: String
-  businessName: String
-  mobile: String!
-  password: String
-  BalanceEMDAmount: Float
-  pancardNo: String
-  idProofNo: String
-  country: String
-  city: String
-  userCategory: String
-  tempToken: Float
-  accessToken: String
-}
-
-input UpdateUserInput {
-  email: String
-  username: String
-  firstName: String
-  lastName: String
-  businessName: String
-  mobile: String
-  password: String
-  BalanceEMDAmount: Float
-  pancardNo: String
-  idProofNo: String
-  country: String
-  city: String
-  userCategory: String
-  tempToken: Float
-  accessToken: String
-}
-
-input LoginUserInput {
-  mobile: String!
-  password: String!
-}
-
-input CreateStateInput {
-  name: String!
-}
-
-input UpdateStateInput {
-  name: String!
-  createdById: String!
-}
-
-input CreateLocationInput {
-  name: String!
-}
-
-input UpdateLocationInput {
-  name: String!
-  stateId: String!
-}
-
-input CreateVehiclecategoryInput {
-  name: String!
-}
-
-input UpdateVehiclecategoryInput {
-  name: String!
-}
-
-input CreateSellerInput {
-  name: String!
-  contactPerson: String!
-  GSTNumbber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
-}
-
-input UpdateSellerInput {
-  name: String
-  contactPerson: String
-  GSTNumbber: String
-  billingContactPerson: String
-  mobile: String
-  nationalHead: String
-  logo: String
-}
-
-input CreateVehicleInput {
-  registrationNumber: String!
-  bidTimeExpire: String!
-  bidStartTime: String!
-  bidAmountUpdate: Float!
-  currentBidAmount: Float!
-  startBidAmount: Float!
-  loanAgreementNo: String!
-  registeredOwnerName: String!
-  quoteIncreament: Float!
-  make: String!
-  model: String!
-  varient: String!
-  categoty: String!
-  fuel: String!
-  type: String!
-  rcStatus: String!
-  yearOfManufacture: Float!
-  ownership: Float!
-  mileage: Float!
-  kmReading: Float!
-  insuranceStatus: String!
-  yardLocation: String!
-  startPrice: Float!
-  reservePrice: Float!
-  repoDt: String!
-  veicleLocation: String!
-  vehicleRemarks: String!
-  auctionManager: String!
-  parkingCharges: String!
-  insurance: String!
-  insuranceValidTill: String!
-  tax: String!
-  taxValidityDate: String!
-  fitness: String!
-  permit: String!
-  fitnessPermit: String!
-  engineNo: String!
-  chassisNo: String!
-  image: String!
-  inspectionLink: String!
-  autobseContact: String!
-  autobse_contact_person: String!
-  vehicleCondition: String!
-  powerSteering: String!
-  shape: String!
-  color: String!
-  state: String!
-  city: String!
-  area: String!
-  paymentTerms: String!
-  dateOfRegistration: String!
-  hypothication: String!
-  climateControl: String!
-  doorCount: Float!
-  gearBox: String!
-  buyerFees: String!
-  rtoFine: String!
-  parkingRate: String!
-  approxParkingCharges: String!
-  clientContactPerson: String!
-  clientContactNo: String!
-  additionalRemarks: String!
-  lotNumber: Float!
 }
 
 input UpdateVehicleInput {

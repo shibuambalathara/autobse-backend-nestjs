@@ -13,13 +13,13 @@ export class CreateVehicleInput {
   @Field()
   bidStartTime:string;
 
-  @Field()
+  @Field({nullable:true})
   bidAmountUpdate?:number;
 
-  @Field()
+  @Field({nullable:true})
   currentBidAmount?:number;
 
-  @Field()
+  @Field({nullable:true})
   startBidAmount?:number;
 
   // @Field()
@@ -36,7 +36,7 @@ export class CreateVehicleInput {
   @IsString()
   registeredOwnerName:string;
 
-  @Field()
+  @Field({nullable:true})
   quoteIncreament?:number;
 
   @Field()
@@ -63,16 +63,16 @@ export class CreateVehicleInput {
   @Field()
   rcStatus:string ;
 
-  @Field()
+  @Field({nullable:true})
   yearOfManufacture?:number;
 
-  @Field()
+  @Field({nullable:true})
   ownership ?:number;
 
-  @Field()
+  @Field({nullable:true})
   mileage ?:number;
 
-  @Field()
+  @Field({nullable:true})
   kmReading?:number;
 
   @Field()
@@ -81,13 +81,13 @@ export class CreateVehicleInput {
   @Field()
   yardLocation:string;  
   
-  @Field()
+  @Field({nullable:true})
   startPrice?:number;
   
-  @Field()
+  @Field({nullable:true})
   reservePrice?:number;
   
-  @Field()
+  @Field({nullable:true})
   repoDt?:string;
 
   @Field()
@@ -105,13 +105,13 @@ export class CreateVehicleInput {
   @Field()
   insurance:string;
   
-  @Field()
+  @Field({nullable:true})
   insuranceValidTill?:string;
 
   @Field()
   tax:string;
   
-  @Field()
+  @Field({nullable:true})
   taxValidityDate?:string;
 
   @Field()
@@ -165,7 +165,7 @@ export class CreateVehicleInput {
   @Field()
   paymentTerms:string;
 
-  @Field()
+  @Field({nullable:true})
   dateOfRegistration?:string;
 
   @Field()
@@ -174,7 +174,7 @@ export class CreateVehicleInput {
   @Field()
   climateControl:string;
 
-  @Field()
+  @Field({nullable:true})
   doorCount?:number;
 
   @Field()
@@ -203,7 +203,7 @@ export class CreateVehicleInput {
   @Field()
   additionalRemarks:string;
   
-  @Field()
+  @Field({nullable:true})
   lotNumber?:number;
 
 }

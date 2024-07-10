@@ -4,7 +4,7 @@ import { State } from './models/state.model';
 import { CreateStateInput } from './dto/create-state.input';
 import { UpdateStateInput } from './dto/update-state.input';
 import { NotFoundException, UseGuards } from '@nestjs/common';
-import { UniqueInput } from './dto/unique-state.input';
+import { StateWhereUniqueInput } from './dto/unique-state.input';
 import { AuthGuard } from '@nestjs/passport';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserRoleType } from '@prisma/client';
@@ -17,44 +17,44 @@ export class StateResolver {
   @Mutation(() => State)
    @UseGuards(GqlAuthGuard)
    
-  async createState(@Args('createStateInput') createStateInput: CreateStateInput) {
-    return this.stateService.createState(createStateInput);
+  async createState(@Args('userId') userId:string,@Args('createStateInput') createStateInput: CreateStateInput) : Promise<State | null> {
+    return this.stateService.createState(userId,createStateInput);
   }
 
   @Query(() => [State])
-  async States() {
+  async States(): Promise<State[] | null> {
     return this.stateService.States();
     
   }
 
   @Query(() => State)
-  async State(@Args('where') where:UniqueInput) {
-    return this.stateService.State(where.id);
+  async State(@Args('where') where:StateWhereUniqueInput):Promise<State|null> {
+    return this.stateService.State(where);
 
   }
 
   @Mutation(() => State)
   @UseGuards(GqlAuthGuard)
-  async deleteState(@Args('where') where: UniqueInput){
+  async deleteState(@Args('where') where: StateWhereUniqueInput):Promise<State|null>{
     return this.stateService.deleteState(where.id);
   }
 
   @Mutation(() => State)
   @UseGuards(GqlAuthGuard)
-  async updateState(@Args('where') where:UniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput) {
+  async updateState(@Args('where') where:StateWhereUniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput):Promise<State|null> {
    return this.stateService.updateState(where.id, updateStateInput);
 
   }
 
   @Query(()=> [State])
   @UseGuards(GqlAuthGuard)
-  async deletedStates(){
+  async deletedStates():Promise<State[]|null>{
     return this.stateService.deletedStates()
   }
 
   @Query(()=>State)
   @UseGuards(GqlAuthGuard)
-  async deletedState(@Args('where') where: UniqueInput) {
+  async deletedState(@Args('where') where: StateWhereUniqueInput) :Promise<State|null>{
     return this.stateService.deletedState(where.id);
   }
 }

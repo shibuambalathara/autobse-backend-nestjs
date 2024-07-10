@@ -2,17 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVehiclecategoryInput } from './dto/create-vehiclecategory.input';
 import { UpdateVehiclecategoryInput } from './dto/update-vehiclecategory.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { VehicleCategory } from '@prisma/client';
+import { Prisma, VehicleCategory } from '@prisma/client';
+import { VehicleCategoryWhereUniqueInput } from './dto/unique-vehiclecategory.input';
 
 
 @Injectable()
 export class VehiclecategoryService {
   constructor(private readonly prisma:PrismaService){}
   
-  async createVehicleCategory(createVehiclecategoryInput: CreateVehiclecategoryInput):Promise<VehicleCategory> {
+  async createVehicleCategory(userId:string,createVehiclecategoryInput: CreateVehiclecategoryInput):Promise<VehicleCategory|null> {
     try{
       return await this.prisma.vehicleCategory.create({
         data:{
+          createdById:userId,
           ...createVehiclecategoryInput,
         }
       })
@@ -28,13 +30,13 @@ export class VehiclecategoryService {
     return result;
   }
 
-  async vehicleCategory(id:string): Promise<VehicleCategory|null> {
-    const result = await this.prisma.vehicleCategory.findUnique({where:{id,isDeleted:false}});
+  async vehicleCategory(where:VehicleCategoryWhereUniqueInput): Promise<VehicleCategory|null> {
+    const result = await this.prisma.vehicleCategory.findUnique({where:{...where as Prisma.VehicleCategoryWhereUniqueInput,isDeleted:false}});
     if(!result) throw new NotFoundException("VehicleCategory Not Found");
     return result;
   }
 
-  async updateVehicleCategory(id:string,updateVehiclecategoryInput: UpdateVehiclecategoryInput):Promise<VehicleCategory> {
+  async updateVehicleCategory(id:string,updateVehiclecategoryInput: UpdateVehiclecategoryInput):Promise<VehicleCategory|null> {
     try{
       return await this.prisma.vehicleCategory.update({where:{id,isDeleted:false},
       data:{
@@ -46,7 +48,7 @@ export class VehiclecategoryService {
     }
   }
 
-  async deleteVehicleCategory(id: string):Promise<VehicleCategory> {
+  async deleteVehicleCategory(id: string):Promise<VehicleCategory|null> {
     const result = await this.prisma.vehicleCategory.update({where:{id,isDeleted:false},
       data:{
         isDeleted:true,
