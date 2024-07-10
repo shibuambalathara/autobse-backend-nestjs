@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEmail, IsString } from 'class-validator';
+import { UserRoleType } from 'src/role/use.role';
 @InputType()
 
 
@@ -53,6 +54,8 @@ export class CreateUserInput {
   @Field({ nullable: true })
   accessToken?: string;
 
+  @Field(() => UserRoleType, { nullable: true })
+  role: UserRoleType;
 
 }
 

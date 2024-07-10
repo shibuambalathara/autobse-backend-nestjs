@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEmail, IsString, IsOptional } from 'class-validator';
+import { UserRoleType } from 'src/role/use.role';
 
 @InputType()
 export class UpdateUserInput {
@@ -61,9 +62,11 @@ export class UpdateUserInput {
   @IsOptional()
   tempToken?: number;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  accessToken?: string;
+  @Field(() => UserRoleType)
+  role: UserRoleType;  
+  // @Field({ nullable: true })
+  // @IsOptional()
+  // accessToken?: string;
 
 
 }
