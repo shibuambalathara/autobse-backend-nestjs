@@ -6,13 +6,16 @@ import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/role/role.decorator';
+import { RolesGuard } from 'src/role/role.guard';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async createVehicle(@Args('userId') userId:string,@Args('createdBy') createdBy:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput):Promise<Vehicle|null> {
     return this.vehicleService.createVehicle(userId,createdBy,createVehicleInput);
   }
@@ -28,31 +31,36 @@ export class VehicleResolver {
   }
 
   @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   updateVehicle(@Args('where') where:VehicleWhereUniqueInput,@Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput):Promise<Vehicle|null> {
     return this.vehicleService.updateVehicle(where.id,updateVehicleInput);
   }
 
   @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deleteVehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null> {
     return this.vehicleService.deleteVehicle(where.id);
   }
 
   @Query(returns => [Vehicle])
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedVehicles():Promise<Vehicle[]|null>{
     return this.vehicleService.deletedVehicles();
   }
 
   @Query(returns => Vehicle)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedVehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
     return this.vehicleService.deletedVehicle(where.id);
   }
 
   @Query(returns => Vehicle)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
     return this.vehicleService.restoreVehicle(where);
   }

@@ -31,45 +31,49 @@ export class StateResolver {
 
   @Query(returns => [State])
   async States(): Promise<State[] | null> {
-    return this.stateService.States();
-    
+    return this.stateService.States();  
   }
 
   @Query(returns => State)
   async State(@Args('where') where:StateWhereUniqueInput):Promise<State|null> {
     return this.stateService.State(where);
-
   }
 
+ 
   @Mutation(returns => State)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deleteState(@Args('where') where: StateWhereUniqueInput):Promise<State|null>{
     return this.stateService.deleteState(where.id);
   }
 
   @Mutation(returns => State)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async updateState(@Args('where') where:StateWhereUniqueInput, @Args('updateStateInput') updateStateInput: UpdateStateInput):Promise<State|null> {
    return this.stateService.updateState(where.id, updateStateInput);
 
   }
 
   @Query(returns=> [State])
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedStates():Promise<State[]|null>{
     return this.stateService.deletedStates()
   }
-
+  
+  
   @Query(returns=>State)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedState(@Args('where') where: StateWhereUniqueInput) :Promise<State|null>{
     return this.stateService.deletedState(where.id);
   }
 
   @Query(returns=>State)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async restoreState(@Args('where') where:StateWhereUniqueInput):Promise<State|null>{
     return this.stateService.restoreState(where);
-
   }
 }
