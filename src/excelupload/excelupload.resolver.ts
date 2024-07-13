@@ -7,18 +7,28 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+// import { GraphQLUpload ,FileUpload} from 'graphql-upload';
+// import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
+// import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
+
 
 @Resolver(() => Excelupload)
 export class ExceluploadResolver {
   constructor(private readonly exceluploadService: ExceluploadService) {}
 
-  @Mutation(returns => Excelupload)
+
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin', 'staff')
-  async createExcelupload(@Args('createExceluploadInput') createExceluploadInput: CreateExceluploadInput,@Context() context) : Promise<Excelupload|null> {
-    const {id}=context.req.user   
-    return this.exceluploadService.createExcelUpload(id,createExceluploadInput);
+  @Mutation(() => Excelupload)
+  async createExcelupload(
+    @Args('createExceluploadInput') createExceluploadInput: CreateExceluploadInput,
+    @Context() context
+  ): Promise<Excelupload|null|Boolean> {
+    const { id } = context.req.user;
+    return this.exceluploadService.createExcelUpload( id, createExceluploadInput);
   }
+
 
   @Query(() => [Excelupload], { name: 'excelupload' })
   findAll() {
