@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { StateService } from './state.service';
 import { State } from './models/state.model';
 import { CreateStateInput } from './dto/create-state.input';
@@ -24,8 +24,12 @@ export class StateResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin', 'staff')
    
-  async createState(@Args('userId') userId:string,@Args('createStateInput') createStateInput: CreateStateInput) : Promise<State | null> {
-    return this.stateService.createState(userId,createStateInput);
+  async createState(
+    @Args('createStateInput') createStateInput: CreateStateInput,
+    @Context() context
+  ) : Promise<State | null> {
+    const {id}=context.req.user   
+    return this.stateService.createState(id,createStateInput);
 
   }
 
