@@ -102,6 +102,7 @@ model User {
   sellerCreatedBy              Seller[]             @relation("seller_createdBy")
   vehicleCreatedBy             Vehicle[]            @relation("vehicle_createdBy")
   eventCreatedBy               Event[]              @relation("event_createdBy")
+  execlUploadCreatedBy         ExcelUpload[]        @relation("excelupload_createdBy")
   activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
   // quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
@@ -292,18 +293,19 @@ model Event {
   isDeleted                 Boolean           @default(false)
 }
 
-
-model Sample{
+model ExcelUpload {
   id            String    @id @default(cuid())
-  file_field          String    @default("")
+  name          String    @default("")
+  file_filename String?
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime? @updatedAt
+  createdBy     User?     @relation("excelupload_createdBy",fields: [createdById], references: [id])             
+  createdById   String?
+  isDeleted     Boolean   @default(false)
 }
 
-model Demo{
-    id            String    @id @default(cuid())
-    name          String
-    age           Int
 
 
-}
+
 
 

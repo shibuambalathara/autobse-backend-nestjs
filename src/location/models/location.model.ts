@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { State } from 'src/state/models/state.model';
 
 @ObjectType()
 export class Location {
@@ -11,6 +12,9 @@ export class Location {
 
   @Field()
   stateId:string;
+
+  @Field(() => State, { nullable: true })
+  state?:State;
 
   @Field({nullable:true})
   createdAt?:Date;

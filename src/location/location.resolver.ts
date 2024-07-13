@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { LocationService } from './location.service';
 
 import { CreateLocationInput } from './dto/create-location.input';
@@ -17,8 +17,9 @@ export class LocationResolver {
   @Mutation(returns => Location)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createLocation(@Args('userId') userId:string,@Args('stateId') stateId:string, @Args('createLocationInput') createLocationInput: CreateLocationInput):Promise<Location|null> {
-    return this.locationService.createLocation(userId,stateId,createLocationInput);
+  async createLocation(@Args('stateId') stateId:string, @Args('createLocationInput') createLocationInput: CreateLocationInput ,@Context() context):Promise<Location|null> {
+    const {id}=context.req.user   
+    return this.locationService.createLocation(id,stateId,createLocationInput);
   }
 
   @Query(returns=> [Location])

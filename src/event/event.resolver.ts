@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { EventService } from './event.service';
 import { Event } from './models/event.model';
 import { CreateEventInput } from './dto/create-event.input';
@@ -7,52 +7,55 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
-import { EventWhereUniqueInput } from './dto/unique-event.input';
+import { EventWhereUniqueInput } from './dto/unique-event.input'
+
+
 
 @Resolver(() => Event)
 export class EventResolver {
   constructor(private readonly eventService: EventService) {}
 
   @Mutation(returns => Event)
-  // @UseGuards(GqlAuthGuard,RolesGuard)
-  // @Roles('admin','staff')
-  async createEvent(@Args('createEventInput') createEventInput: CreateEventInput) {
-    return this.eventService.createEvent(createEventInput);
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
+  async createEvent(@Args('createEventInput') createEventInput: CreateEventInput, @Context() context):Promise<Event|null> {
+    const {id}=context.req.user   
+    return this.eventService.createEvent(id,createEventInput);
   }
 
   @Query(returns => [Event])
-  async events() {
+  async events() : Promise<Event[]|null>{
     return this.eventService.events();
   }
 
   @Query(returns => Event)
-  async event(@Args('where') where: EventWhereUniqueInput) {
+  async event(@Args('where') where: EventWhereUniqueInput) :Promise<Event|null>{
     return this.eventService.event(where);
   }
 
   @Mutation(returns => Event)
-  async updateEvent(@Args('where') where:EventWhereUniqueInput,@Args('updateEventInput') updateEventInput: UpdateEventInput) {
+  async updateEvent(@Args('where') where:EventWhereUniqueInput,@Args('updateEventInput') updateEventInput: UpdateEventInput):Promise<Event|null> {
     return this.eventService.updateEvent(where.id,updateEventInput);
   }
 
   @Mutation(returns => Event)
-  async deleteEvent(@Args('where') where:EventWhereUniqueInput) {
+  async deleteEvent(@Args('where') where:EventWhereUniqueInput) :Promise<Event|null>{
     return this.eventService.deleteEvent(where.id);
   }
 
 
   @Query(returns => [Event])
-  async deletedEvents(){
+  async deletedEvents():Promise<Event[]|null>{
     return this.eventService.deletedEvents();
   }
 
   @Query(returns => Event)
-  async deletedEvent(@Args('where') where:EventWhereUniqueInput){
+  async deletedEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.deletedEvent(where.id);
   }
 
   @Query(returns=>Event)
-  async restoreEvent(@Args('where') where:EventWhereUniqueInput){
+  async restoreEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.restoreEvent(where);
   }
 }

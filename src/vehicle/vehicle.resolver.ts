@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './models/vehicle.model';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
@@ -16,8 +16,9 @@ export class VehicleResolver {
   @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createVehicle(@Args('userId') userId:string,@Args('createdBy') createdBy:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput):Promise<Vehicle|null> {
-    return this.vehicleService.createVehicle(userId,createdBy,createVehicleInput);
+  async createVehicle(@Args('createdBy') createdBy:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,@Context() context):Promise<Vehicle|null> {
+    const {id}=context.req.user   
+    return this.vehicleService.createVehicle(id,createdBy,createVehicleInput);
   }
 
   @Query(returns => [Vehicle])

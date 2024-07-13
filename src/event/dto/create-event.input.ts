@@ -51,9 +51,6 @@ export class CreateEventInput {
   termsAndConditions:string;
 
 
-  @Field()
-  createdById:string;
-
   @Field({nullable:true})
   extraTimeTrigerIn?:number;
 

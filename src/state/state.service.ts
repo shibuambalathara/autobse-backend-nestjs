@@ -10,11 +10,11 @@ import { StateWhereUniqueInput } from './dto/unique-state.input';
 export class StateService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createState(userId:string,createStateInput: CreateStateInput) : Promise<State|null>{
+  async createState(id:string,createStateInput: CreateStateInput) : Promise<State|null>{
     try{
         return await this.prisma.state.create({
         data:{
-            createdById:userId,
+          createdById:id,
             ...createStateInput,
           }
         });

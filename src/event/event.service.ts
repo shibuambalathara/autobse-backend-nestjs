@@ -5,32 +5,34 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EventWhereUniqueInput } from './dto/unique-event.input';
 import { Prisma } from '@prisma/client';
 import { Args } from '@nestjs/graphql';
+import { Event } from './models/event.model';
 
 @Injectable()
 export class EventService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createEvent(createEventInput: CreateEventInput) {
+  async createEvent(id:string,createEventInput: CreateEventInput) :Promise<Event|null>{
     return await this.prisma.event.create({
       data:{
+        createdById:id,
         ...createEventInput,
       }
     });
   }
 
-  async events() {
+  async events() : Promise<Event[]|null>{
     const result =  await this.prisma.event.findMany({where:{isDeleted:false}});
     if(!result) throw new NotFoundException("Event Not Found!");    
     return result;
   }
 
-  async event(@Args('where') where:EventWhereUniqueInput) {
+  async event(@Args('where') where:EventWhereUniqueInput):Promise<Event|null> {
     const result = await this.prisma.event.findUnique({where:{...where as Prisma.EventWhereUniqueInput,isDeleted:false}});
     if(!result) throw new NotFoundException("Event not found")
     return result;
   }
 
-  async updateEvent( id:string,updateEventInput: UpdateEventInput) {
+  async updateEvent( id:string,updateEventInput: UpdateEventInput):Promise<Event|null> {
     try {
       const event = await this.prisma.event.findUnique({where:{id,isDeleted:false,}})
       if(!event) throw new NotFoundException("Event Not Found");
@@ -50,7 +52,7 @@ export class EventService {
         }
     }
 
-  async deleteEvent(id: string) {
+  async deleteEvent(id: string):Promise<Event|null> {
     const event = await this.prisma.event.findUnique({where:{id,isDeleted:false,}})
     if(!event) throw new NotFoundException("Location Not Found");
     return await this.prisma.event.update({
@@ -61,19 +63,19 @@ export class EventService {
       });
     }
 
-  async deletedEvents(){
+  async deletedEvents():Promise<Event[]|null>{
       const event = await this.prisma.event.findMany({where:{isDeleted:true,}});
       if(!event) throw new NotFoundException("Event Not Found");
       return event;
     }
   
-  async deletedEvent(id:string){
+  async deletedEvent(id:string):Promise<Event|null>{
       const result = await this.prisma.event.findUnique({where:{id,isDeleted:true}});
       if(!result) throw new NotFoundException("Event Not Found");
       return result;
     }
   
-  async restoreEvent(where:EventWhereUniqueInput){
+  async restoreEvent(where:EventWhereUniqueInput):Promise<Event|null>{
       const event = await this.prisma.event.findUnique({where:{...(where as Prisma.EventWhereUniqueInput),isDeleted:true}});
       if(!event) throw new NotFoundException("Event Not Found");
       return await this.prisma.event.update({

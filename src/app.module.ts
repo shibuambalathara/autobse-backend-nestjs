@@ -13,8 +13,8 @@ import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module'
 import { SellerModule } from './seller/seller.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { EventModule } from './event/event.module';
-import { SampleModule } from './sample/sample.module';
-import { DemoModule } from './demo/demo.module';
+import { ExceluploadModule } from './excelupload/excelupload.module';
+
 
 @Module({
   imports: [
@@ -33,8 +33,8 @@ import { DemoModule } from './demo/demo.module';
     SellerModule,
     VehicleModule,
     EventModule,
-    SampleModule,
-    DemoModule,
+    ExceluploadModule,
+
     
   ],
   providers: [

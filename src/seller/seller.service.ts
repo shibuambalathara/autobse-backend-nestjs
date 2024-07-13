@@ -10,11 +10,11 @@ import { Prisma } from '@prisma/client';
 export class SellerService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createSeller(userId:string,createSellerInput: CreateSellerInput):Promise<Seller|null> {
+  async createSeller(id:string,createSellerInput: CreateSellerInput):Promise<Seller|null> {
     try{
       return await this.prisma.seller.create({
         data:{
-          createdById:userId,
+          createdById:id,
           ...createSellerInput,
         }
       })

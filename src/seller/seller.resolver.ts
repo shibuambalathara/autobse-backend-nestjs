@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { SellerService } from './seller.service';
 import { Seller } from './models/seller.model';
 import { CreateSellerInput } from './dto/create-seller.input';
@@ -16,8 +16,9 @@ export class SellerResolver {
   @Mutation(returns => Seller)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createSeller(@Args('userId') userId:string,@Args('createSellerInput') createSellerInput: CreateSellerInput):Promise<Seller|null> {
-    return this.sellerService.createSeller(userId,createSellerInput);
+  async createSeller(@Args('createSellerInput') createSellerInput: CreateSellerInput,@Context() context):Promise<Seller|null> {
+    const {id}=context.req.user   
+    return this.sellerService.createSeller(id,createSellerInput);
   }
 
   @Query(returns => [Seller])

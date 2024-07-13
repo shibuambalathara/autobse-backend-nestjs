@@ -1,14 +1,15 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Location } from 'src/location/models/location.model';
 
 @ObjectType()
-export class State {
-
+export class Excelupload {
   @Field()
   id:string;
   
+  @Field({nullable:true})
+  name?:string;
+
   @Field()
-  name:string;
+  file_filename:string;
 
   @Field({nullable:true})
   createdAt?:Date;
@@ -19,8 +20,4 @@ export class State {
   @Field()
   createdById?:string;
   
-  @Field()
-  location?:Location;
-
-
 }

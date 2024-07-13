@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { VehiclecategoryService } from './vehiclecategory.service';
 import { VehicleCategory } from './models/vehiclecategory.model';
 import { CreateVehiclecategoryInput } from './dto/create-vehiclecategory.input';
@@ -16,8 +16,9 @@ export class VehiclecategoryResolver {
   @Mutation(returns => VehicleCategory)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createVehiclecategory(@Args('userId') userId:string,@Args('createVehiclecategoryInput') createVehiclecategoryInput: CreateVehiclecategoryInput):Promise<VehicleCategory|null> {
-    return this.vehiclecategoryService.createVehicleCategory(userId,createVehiclecategoryInput);
+  async createVehiclecategory(@Args('createVehiclecategoryInput') createVehiclecategoryInput: CreateVehiclecategoryInput,@Context() context):Promise<VehicleCategory|null> {
+    const {id}=context.req.user   
+    return this.vehiclecategoryService.createVehicleCategory(id,createVehiclecategoryInput);
   }
 
   @Query(returns => [VehicleCategory])

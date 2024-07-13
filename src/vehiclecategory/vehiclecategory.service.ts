@@ -10,11 +10,11 @@ import { VehicleCategoryWhereUniqueInput } from './dto/unique-vehiclecategory.in
 export class VehiclecategoryService {
   constructor(private readonly prisma:PrismaService){}
   
-  async createVehicleCategory(userId:string,createVehiclecategoryInput: CreateVehiclecategoryInput):Promise<VehicleCategory|null> {
+  async createVehicleCategory(id:string,createVehiclecategoryInput: CreateVehiclecategoryInput):Promise<VehicleCategory|null> {
     try{
       return await this.prisma.vehicleCategory.create({
         data:{
-          createdById:userId,
+          createdById:id,
           ...createVehiclecategoryInput,
         }
       })

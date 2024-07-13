@@ -9,11 +9,11 @@ import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 export class VehicleService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createVehicle(createdBy:string,userId:string,createVehicleInput: CreateVehicleInput) : Promise<Vehicle|null>{
+  async createVehicle(id:string,userId:string,createVehicleInput: CreateVehicleInput) : Promise<Vehicle|null>{
     try{
     return await this.prisma.vehicle.create({
       data:{
-        createdById:createdBy,
+        createdById:id,
         currentBidUserId:userId,
         ...createVehicleInput,
       }

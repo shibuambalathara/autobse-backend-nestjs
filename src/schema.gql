@@ -29,6 +29,7 @@ type Location {
   id: String!
   name: String!
   stateId: String!
+  state: State
   createdAt: DateTime
   updatedAt: DateTime
   country: String
@@ -166,14 +167,13 @@ type Event {
   gapInBetweenVehicles: Float
 }
 
-type Sample {
-  name: String!
-  age: Float!
-}
-
-type Demo {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type Excelupload {
+  id: String!
+  name: String
+  file_filename: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
 }
 
 type Query {
@@ -211,8 +211,7 @@ type Query {
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
   restoreEvent(where: EventWhereUniqueInput!): Event!
-  sample(id: Int!): Sample!
-  demo(id: Int!): Demo!
+  excelupload(id: Int!): Excelupload!
 }
 
 input UserWhereUniqueInput {
@@ -258,27 +257,24 @@ type Mutation {
   createState(createStateInput: CreateStateInput!): State!
   deleteState(where: StateWhereUniqueInput!): State!
   updateState(where: StateWhereUniqueInput!, updateStateInput: UpdateStateInput!): State!
-  createLocation(userId: String!, stateId: String!, createLocationInput: CreateLocationInput!): Location!
+  createLocation(stateId: String!, createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: LocationWhereUniqueInput!): Location!
-  createVehiclecategory(userId: String!, createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
+  createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
   updateVehicleCategory(where: VehicleCategoryWhereUniqueInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
   deleteVehiclecategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
-  createSeller(userId: String!, createSellerInput: CreateSellerInput!): Seller!
+  createSeller(createSellerInput: CreateSellerInput!): Seller!
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
-  createVehicle(userId: String!, createdBy: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  createVehicle(createdBy: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   createEvent(createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
-  createSample(createSampleInput: CreateSampleInput!): Sample!
-  updateSample(updateSampleInput: UpdateSampleInput!): Sample!
-  removeSample(id: Int!): Sample!
-  createDemo(createDemoInput: CreateDemoInput!): Demo!
-  updateDemo(updateDemoInput: UpdateDemoInput!): Demo!
-  removeDemo(id: Int!): Demo!
+  createExcelupload(createExceluploadInput: CreateExceluploadInput!): Excelupload!
+  updateExcelupload(updateExceluploadInput: UpdateExceluploadInput!): Excelupload!
+  removeExcelupload(id: Int!): Excelupload!
 }
 
 input CreateUserInput {
@@ -521,7 +517,6 @@ input CreateEventInput {
   downloadableFile_filesize: Float
   downloadableFile_filename: String
   termsAndConditions: String!
-  createdById: String!
   extraTimeTrigerIn: Float
   extraTime: Float
   vehicleLiveTimeIn: Float
@@ -543,7 +538,6 @@ input UpdateEventInput {
   downloadableFile_filesize: Float
   downloadableFile_filename: String
   termsAndConditions: String
-  createdById: String
   extraTimeTrigerIn: Float
   extraTime: Float
   vehicleLiveTimeIn: Float
@@ -554,24 +548,12 @@ input UpdateEventInput {
   updatedAt: DateTime
 }
 
-input CreateSampleInput {
+input CreateExceluploadInput {
   name: String!
-  age: Float!
+  file_filename: String!
 }
 
-input UpdateSampleInput {
-  name: String
-  age: Float
-  id: Int!
-}
-
-input CreateDemoInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateDemoInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input UpdateExceluploadInput {
+  name: String!
+  file_filename: String!
 }
