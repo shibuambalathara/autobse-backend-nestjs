@@ -14,6 +14,21 @@ generator client {
 }
 
 
+enum EventStatusType {
+  pending
+  blocked
+  active
+  inactive
+  stop
+  pause
+}
+
+enum EventBidLockType {
+  locked
+  unlocked
+}
+
+
 enum VehicleBidStatusType {
   pending
   approved
@@ -86,11 +101,12 @@ model User {
   VehicleCategoryCreatedBy     VehicleCategory[]    @relation("vehiclecategory_createdBy")
   sellerCreatedBy              Seller[]             @relation("seller_createdBy")
   vehicleCreatedBy             Vehicle[]            @relation("vehicle_createdBy")
+  eventCreatedBy               Event[]              @relation("event_createdBy")
   activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
   // quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
   // coupenDetail              Coupen[]             @relation("Coupen_userDetail")
-  // eventDetail               Event[]              @relation("Event_participants")
+  eventDetail                  Event[]              @relation("Event_participants")
   // workSheetDetail           WorkSheet[]          @relation("WorkSheet_userDetail")
   // deletedBid                DeletedBid[]         @relation("DeletedBid_user")
   // sellACar                  SellACar[]           @relation("SellACar_user")
@@ -128,6 +144,7 @@ model Location{
   createdAt         DateTime?      @default(now())
   updatedAt         DateTime?      @updatedAt
   isDeleted         Boolean        @default(false)
+  events             Event[]       @relation("Event_location")
 }
 
 model VehicleCategory{
@@ -138,6 +155,7 @@ model VehicleCategory{
   createdBy         User?          @relation("vehiclecategory_createdBy",fields: [createdById], references: [id])             
   createdById       String?
   isDeleted         Boolean        @default(false)
+  events             Event[]        @relation("Event_vehicleCategory")
 }
 
 model Seller {
@@ -154,6 +172,7 @@ model Seller {
   createdBy            User?       @relation("seller_createdBy",fields: [createdById], references: [id])             
   createdById          String?
   isDeleted            Boolean     @default(false)
+  events                Event[]     @relation("Event_seller")
 }
 
 model Vehicle {
@@ -167,8 +186,8 @@ model Vehicle {
   startBidAmount         Float?                @default(0)
   currentBidUser         User?                 @relation("Vehicle_currentBidUser", fields: [currentBidUserId], references: [id])
   currentBidUserId       String?               
-  //event                  Event?                @relation("Vehicle_event", fields: [eventId], references: [id])
-  //eventId                String?               @map("event")
+  event                  Event?                @relation("Vehicle_event", fields: [eventId], references: [id])
+  eventId                String?               
   bidStatus              VehicleBidStatusType? @default(pending)
   //userVehicleBids        Bid[]                 @relation("Bid_bidVehicle")
   loanAgreementNo        String                @default("")
@@ -238,5 +257,53 @@ model Vehicle {
   isDeleted              Boolean               @default(false)
 }
 
+model Event {
+  id                        String            @id @default(cuid())
+  eventNo                   Int               @default(autoincrement())
+  eventCategory             String?
+  startDate                 DateTime
+  endDate                   DateTime
+  pauseDate                 DateTime?
+  pausedTotalTime           Int?              @default(0)
+  seller                    Seller?           @relation("Event_seller", fields: [sellerId], references: [id])
+  sellerId                  String?           
+  vehicleCategory           VehicleCategory?  @relation("Event_vehicleCategory", fields:[vehicleCategoryId], references:[id])
+  vehicleCategoryId         String?         
+  location                  Location?         @relation("Event_location", fields: [locationId], references: [id])
+  locationId                String?           
+  vehicles                  Vehicle[]         @relation("Vehicle_event")
+  noOfBids                  Int
+  participants              User[]            @relation("Event_participants")
+  status                    EventStatusType?  @default(active)
+  //ExcelFile                 ExcelUpload?      @relation("Event_ExcelFile", fields: [ExcelFileId], references: [id])
+  //ExcelFileId               String?           @unique @map("ExcelFile")
+  downloadableFile_filesize Int?
+  downloadableFile_filename String?
+  termsAndConditions        String            @default("")
+  createdAt                 DateTime?         @default(now())
+  updatedAt                 DateTime?         @updatedAt
+  createdBy                 User?             @relation("event_createdBy",fields: [createdById], references: [id])             
+  createdById               String?
+  bidLock                   EventBidLockType? @default(unlocked)
+  extraTimeTrigerIn         Int?              @default(2)
+  extraTime                 Int?              @default(2)
+  vehicleLiveTimeIn         Int?              @default(0)
+  gapInBetweenVehicles      Int?              @default(0)
+  isDeleted                 Boolean           @default(false)
+}
+
+
+model Sample{
+  id            String    @id @default(cuid())
+  file_field          String    @default("")
+}
+
+model Demo{
+    id            String    @id @default(cuid())
+    name          String
+    age           Int
+
+
+}
 
 

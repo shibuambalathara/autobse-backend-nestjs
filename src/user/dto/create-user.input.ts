@@ -56,6 +56,7 @@ export class CreateUserInput {
 
   @Field(() => UserRoleType, { nullable: true })
   role: UserRoleType;
+  
 
 }
 

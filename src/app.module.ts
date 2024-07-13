@@ -12,6 +12,9 @@ import { LocationModule } from './location/location.module';
 import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module';
 import { SellerModule } from './seller/seller.module';
 import { VehicleModule } from './vehicle/vehicle.module';
+import { EventModule } from './event/event.module';
+import { SampleModule } from './sample/sample.module';
+import { DemoModule } from './demo/demo.module';
 
 @Module({
   imports: [
@@ -29,6 +32,10 @@ import { VehicleModule } from './vehicle/vehicle.module';
     VehiclecategoryModule,
     SellerModule,
     VehicleModule,
+    EventModule,
+    SampleModule,
+    DemoModule,
+    
   ],
   providers: [
     PrismaService,

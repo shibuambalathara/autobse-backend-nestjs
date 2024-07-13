@@ -141,6 +141,40 @@ type Vehicle {
   createdById: String
 }
 
+type Event {
+  id: String!
+  eventNo: Float!
+  eventCategory: String
+  startDate: DateTime!
+  endDate: DateTime!
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  sellerId: String!
+  vehicleCategoryId: String!
+  locationId: String!
+  noOfBids: Float!
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+}
+
+type Sample {
+  name: String!
+  age: Float!
+}
+
+type Demo {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -171,6 +205,13 @@ type Query {
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  events: [Event!]!
+  event(where: EventWhereUniqueInput!): Event!
+  deletedEvents: [Event!]!
+  deletedEvent(where: EventWhereUniqueInput!): Event!
+  restoreEvent(where: EventWhereUniqueInput!): Event!
+  sample(id: Int!): Sample!
+  demo(id: Int!): Demo!
 }
 
 input UserWhereUniqueInput {
@@ -204,6 +245,10 @@ input VehicleWhereUniqueInput {
   id: String
 }
 
+input EventWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
@@ -224,6 +269,15 @@ type Mutation {
   createVehicle(userId: String!, createdBy: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  createEvent(createEventInput: CreateEventInput!): Event!
+  updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
+  deleteEvent(where: EventWhereUniqueInput!): Event!
+  createSample(createSampleInput: CreateSampleInput!): Sample!
+  updateSample(updateSampleInput: UpdateSampleInput!): Sample!
+  removeSample(id: Int!): Sample!
+  createDemo(createDemoInput: CreateDemoInput!): Demo!
+  updateDemo(updateDemoInput: UpdateDemoInput!): Demo!
+  removeDemo(id: Int!): Demo!
 }
 
 input CreateUserInput {
@@ -451,4 +505,72 @@ input UpdateVehicleInput {
   clientContactNo: String
   additionalRemarks: String
   lotNumber: Float
+}
+
+input CreateEventInput {
+  eventCategory: String
+  startDate: DateTime!
+  endDate: DateTime!
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  sellerId: String!
+  vehicleCategoryId: String!
+  locationId: String!
+  noOfBids: Float!
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String!
+  createdById: String!
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+  bidLock: String = "unlocked"
+  status: String = "active"
+}
+
+input UpdateEventInput {
+  eventCategory: String
+  startDate: DateTime
+  endDate: DateTime
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  sellerId: String
+  vehicleCategoryId: String
+  locationId: String
+  noOfBids: Float
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String
+  createdById: String
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+  bidLock: String = "unlocked"
+  status: String = "active"
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input CreateSampleInput {
+  name: String!
+  age: Float!
+}
+
+input UpdateSampleInput {
+  name: String
+  age: Float
+  id: Int!
+}
+
+input CreateDemoInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateDemoInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
