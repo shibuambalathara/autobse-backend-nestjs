@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Location } from 'src/location/models/location.model';
 
 @ObjectType()
 export class State {
@@ -17,5 +18,8 @@ export class State {
 
   @Field()
   createdById?:string;
+  @Field()
+  location?:Location;
+
 
 }

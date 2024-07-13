@@ -52,6 +52,7 @@ export class UserService {
       });
     } catch (err) {
       console.log(err);
+      throw err
     }
   }
   async updateUserField(

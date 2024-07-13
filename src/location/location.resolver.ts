@@ -7,13 +7,16 @@ import { Location } from './models/location.model';
 import { LocationWhereUniqueInput } from './dto/unique-location.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/role/role.decorator';
+import { RolesGuard } from 'src/role/role.guard';
 
 @Resolver(() => Location)
 export class LocationResolver {
   constructor(private readonly locationService: LocationService) {}
 
   @Mutation(returns => Location)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async createLocation(@Args('userId') userId:string,@Args('stateId') stateId:string, @Args('createLocationInput') createLocationInput: CreateLocationInput):Promise<Location|null> {
     return this.locationService.createLocation(userId,stateId,createLocationInput);
   }
@@ -29,31 +32,36 @@ export class LocationResolver {
   }
 
   @Mutation(returns => Location)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async updateLocation(@Args('where') where:LocationWhereUniqueInput,@Args('updateLocationInput') updateLocationInput: UpdateLocationInput):Promise<Location|null> {
     return this.locationService.updateLocation(where.id, updateLocationInput);
   }
 
   @Mutation(returns => Location)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deleteLocation(@Args('where') where: LocationWhereUniqueInput):Promise<Location|null> {
     return this.locationService.deleteLocation(where.id);
   }
 
   @Query(returns => [Location])
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedLocations():Promise<Location[]|null>{
     return this.locationService.deletedLocations();
   }
 
   @Query(returns => Location)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async deletedLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
     return this.locationService.deletedLocation(where.id);
   }
 
   @Query(returns=>Location)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   async restoreLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
     return this.locationService.restoreLocation(where);
   }
