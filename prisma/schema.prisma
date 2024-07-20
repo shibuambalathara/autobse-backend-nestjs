@@ -43,6 +43,39 @@ enum UserRoleType {
   dealer
 }
 
+enum StateNames {
+  Maharashtra
+  Bihar
+  Chhattisgarh
+  Karnataka
+  Manipur
+  Arunachal_Pradesh
+  Assam
+  Gujarat
+  Punjab
+  Mizoram
+  Andhra_Pradesh
+  West_Bengal
+  Goa
+  Haryana
+  Himachal_Pradesh
+  Kerala
+  Rajasthan
+  Jharkhand
+  Madhya_Pradesh
+  Odisha
+  Nagaland
+  TamilNadu
+  Uttar_Pradesh
+  Telangana
+  Meghalaya
+  Sikkim
+  Tripura
+  Uttarakhand
+  Jammu_and_Kashmir
+  Delhi
+}
+
 model User {
   id                        String               @id @default(cuid())
   idNo                      Int                  @unique @default(autoincrement())
@@ -95,8 +128,8 @@ model User {
   // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
   // paymentByAdmin            Payment?             @relation("Payment_createdBy")
   // status                    UserStatusType?      @default(pending)
-  // state                     String               @default("")
-  stateCreatedBy               State[]              @relation("state_createdBy")
+  state                     StateNames        
+  //stateCreatedBy               State[]              @relation("state_createdBy")
   locationCreatedBy            Location[]           @relation("location_createdBy")
   VehicleCategoryCreatedBy     VehicleCategory[]    @relation("vehiclecategory_createdBy")
   sellerCreatedBy              Seller[]             @relation("seller_createdBy")
@@ -123,23 +156,22 @@ model User {
 }
 
 
+//model State {
+  //id                 String        @id @default(cuid())
+  //name               StateNames    @default(Kerala)
+  //createdAt          DateTime?     @default(now())
+  //updatedAt          DateTime?     @updatedAt
+  //createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
+  //createdById        String?
+  //isDeleted          Boolean       @default(false)
+  //location           Location[]
+//}
 
-model State{
-  id                 String        @id @default(cuid())
-  name               String        @unique @default("")
-  createdAt          DateTime?     @default(now())
-  updatedAt          DateTime?     @updatedAt
-  createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
-  createdById        String?
-  isDeleted          Boolean       @default(false)
-  location           Location[]
-}
 model Location{
   id                String         @id @default(cuid())
   name              String         @unique @default("")
   country           String         @default("india")
-  state             State          @relation(fields: [stateId], references: [id])
-  stateId           String  
+  state             StateNames         
   createdBy         User?         @relation("location_createdBy", fields: [createdById], references: [id])             
   createdById       String?
   createdAt         DateTime?      @default(now())
@@ -173,13 +205,13 @@ model Seller {
   createdBy            User?       @relation("seller_createdBy",fields: [createdById], references: [id])             
   createdById          String?
   isDeleted            Boolean     @default(false)
-  events                Event[]     @relation("Event_seller")
+  events               Event[]     @relation("Event_seller")
 }
 
 model Vehicle {
   id                     String                @id @default(cuid())
   vehicleIndexNo         Int                   @default(autoincrement())
-  registrationNumber     String                @default("")
+  registrationNumber     String                
   bidTimeExpire          DateTime
   bidStartTime           DateTime
   bidAmountUpdate        Int?
@@ -191,7 +223,7 @@ model Vehicle {
   eventId                String?               
   bidStatus              VehicleBidStatusType? @default(pending)
   //userVehicleBids        Bid[]                 @relation("Bid_bidVehicle")
-  loanAgreementNo        String                @default("")
+  loanAgreementNo        String                
   registeredOwnerName    String                @default("")
   quoteIncreament        Int?                  @default(1000)
   make                   String                @default("")
@@ -201,7 +233,7 @@ model Vehicle {
   fuel                   String                @default("")
   type                   String                @default("")
   rcStatus               String                @default("")
-  yearOfManufacture      Int?
+  YOM                    Int?
   ownership              Int?
   mileage                Int?
   kmReading              Int?                  @default(0)
@@ -220,7 +252,7 @@ model Vehicle {
   taxValidityDate        String?
   fitness                String                @default("")
   permit                 String                @default("")
-  fitnessPermit          String                @default("")
+  //fitnessPermit          String                @default("")
   engineNo               String                @default("")
   chassisNo              String                @default("")
   image                  String                @default("")

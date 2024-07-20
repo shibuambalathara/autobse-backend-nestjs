@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { State } from 'src/state/models/state.model';
+import { StateNames } from '@prisma/client';
+// import { State } from 'src/state/models/state.model';
 
 @ObjectType()
 export class Location {
@@ -10,11 +11,11 @@ export class Location {
   @Field()
   name:string;
 
-  @Field()
-  stateId:string;
+  // @Field()
+  // stateId:string;
 
-  @Field(() => State, { nullable: true })
-  state?:State;
+  @Field(() => StateNames)
+  state:StateNames;
 
   @Field({nullable:true})
   createdAt?:Date;

@@ -25,20 +25,6 @@ export class CreateEventInput {
 
 
   @Field()
-  sellerId:string;
-
-
-
-
-  @Field()
-  vehicleCategoryId:string;
-
- 
-
-  @Field()
-  locationId:string;
-
-  @Field()
   noOfBids:number;
 
   @Field({nullable:true})

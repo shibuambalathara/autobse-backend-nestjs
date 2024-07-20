@@ -17,9 +17,9 @@ export class LocationResolver {
   @Mutation(returns => Location)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createLocation(@Args('stateId') stateId:string, @Args('createLocationInput') createLocationInput: CreateLocationInput ,@Context() context):Promise<Location|null> {
+  async createLocation(@Args('createLocationInput') createLocationInput: CreateLocationInput ,@Context() context):Promise<Location|null> {
     const {id}=context.req.user   
-    return this.locationService.createLocation(id,stateId,createLocationInput);
+    return this.locationService.createLocation(id,createLocationInput);
   }
 
   @Query(returns=> [Location])

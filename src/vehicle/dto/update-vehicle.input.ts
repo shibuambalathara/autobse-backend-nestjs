@@ -66,7 +66,7 @@ export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
   rcStatus?:string ;
 
   @Field({nullable:true})
-  yearOfManufacture?:number;
+  YOM?:number;
 
   @Field({nullable:true})
   ownership ?:number;
@@ -122,8 +122,8 @@ export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
   @Field({nullable:true})
   permit?:string;
   
-  @Field({nullable:true})
-  fitnessPermit?:string;
+  // @Field({nullable:true})
+  // fitnessPermit?:string;
   
   @Field({nullable:true})
   engineNo ?:string;

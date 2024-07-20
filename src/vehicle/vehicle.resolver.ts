@@ -16,9 +16,9 @@ export class VehicleResolver {
   @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createVehicle(@Args('createdBy') createdBy:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,@Context() context):Promise<Vehicle|null> {
+  async createVehicle(@Args('userId') userId:string,@Args('eventId') eventId:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,@Context() context):Promise<Vehicle|null> {
     const {id}=context.req.user   
-    return this.vehicleService.createVehicle(id,createdBy,createVehicleInput);
+    return this.vehicleService.createVehicle(id,userId,eventId,createVehicleInput);
   }
 
   @Query(returns => [Vehicle])

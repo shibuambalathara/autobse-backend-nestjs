@@ -18,9 +18,9 @@ export class EventResolver {
   @Mutation(returns => Event)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createEvent(@Args('createEventInput') createEventInput: CreateEventInput, @Context() context):Promise<Event|null> {
+  async createEvent(@Args('sellerId') sellerId:string, @Args('vehicleCategoryId') vehicleCategoryId:string, @Args('locationId') locationId:string,@Args('createEventInput') createEventInput: CreateEventInput, @Context() context):Promise<Event|null> {
     const {id}=context.req.user   
-    return this.eventService.createEvent(id,createEventInput);
+    return this.eventService.createEvent(sellerId,vehicleCategoryId,locationId,id,createEventInput);
   }
 
   @Query(returns => [Event])

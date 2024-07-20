@@ -8,9 +8,7 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
-// import { GraphQLUpload ,FileUpload} from 'graphql-upload';
-// import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-// import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
+import { ExcelWhereUniqueInput } from './dto/unique-excelupload.input';
 
 
 @Resolver(() => Excelupload)
@@ -21,32 +19,34 @@ export class ExceluploadResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin', 'staff')
   @Mutation(() => Excelupload)
-  async createExcelupload(
+  async createExcelupload(@Args('userId') userId:string,@Args('eventId') eventId:string,
     @Args('createExceluploadInput') createExceluploadInput: CreateExceluploadInput,
     @Context() context
   ): Promise<Excelupload|null|Boolean> {
     const { id } = context.req.user;
-    return this.exceluploadService.createExcelUpload( id, createExceluploadInput);
+    return this.exceluploadService.createExcelUpload( id,userId,eventId,createExceluploadInput);
   }
 
 
-  @Query(() => [Excelupload], { name: 'excelupload' })
-  findAll() {
-    return this.exceluploadService.findAll();
+  @Query(returns => [Excelupload])
+  async excelUploads() :Promise<Excelupload[]|null> {
+    return this.exceluploadService.excelUploads();
   }
 
-  @Query(() => Excelupload, { name: 'excelupload' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.exceluploadService.findOne(id);
+  @Query(returns => Excelupload)
+  async excelUpload(@Args('where') where:ExcelWhereUniqueInput):Promise<Excelupload|null>{
+    return this.exceluploadService.excelUpload(where);
   }
 
-  @Mutation(() => Excelupload)
-  updateExcelupload(@Args('updateExceluploadInput') updateExceluploadInput: UpdateExceluploadInput) {
-    return this.exceluploadService.update(updateExceluploadInput);
+
+  @Mutation(returns => Excelupload)
+  async deleteExcelupload(@Args('where') where:ExcelWhereUniqueInput ):Promise<Excelupload|null>{
+    return this.exceluploadService.deleteExcelupload(where.id);
   }
 
-  @Mutation(() => Excelupload)
-  removeExcelupload(@Args('id', { type: () => Int }) id: number) {
-    return this.exceluploadService.remove(id);
+
+  @Mutation(returns => Excelupload)
+  async restoreExcelUpload(@Args('where') where:ExcelWhereUniqueInput):Promise<Excelupload|null>{
+    return this.exceluploadService.restoreExcelUpload(where);
   }
 }

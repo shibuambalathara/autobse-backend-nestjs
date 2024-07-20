@@ -11,13 +11,23 @@ import { Event } from './models/event.model';
 export class EventService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createEvent(id:string,createEventInput: CreateEventInput) :Promise<Event|null>{
+  async createEvent(sellerId:string,vehicleCategoryId:string,locationId:string,id:string,createEventInput: CreateEventInput) :Promise<Event|null>{
+    try{
     return await this.prisma.event.create({
       data:{
+
+        sellerId:sellerId,
+        vehicleCategoryId:vehicleCategoryId,
+        locationId:locationId,
         createdById:id,
         ...createEventInput,
       }
     });
+  }
+    catch (error) {
+      console.error("Error creating event:", error);
+      throw new Error("Event creation failed.");
+    }
   }
 
   async events() : Promise<Event[]|null>{
