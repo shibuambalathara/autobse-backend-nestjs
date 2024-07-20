@@ -18,6 +18,9 @@ export class CreateEventInput {
   endDate:Date;
 
   @Field({nullable:true})
+  firstVehicleEndDate:Date;
+
+  @Field({nullable:true})
   pauseDate?:Date;
 
   @Field({nullable:true})

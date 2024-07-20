@@ -17,7 +17,7 @@ export class Excelupload {
   @Field({nullable:true})
   updatedAt?:Date;
 
-  @Field()
+  @Field({nullable:true})
   createdById?:string;
   
 }

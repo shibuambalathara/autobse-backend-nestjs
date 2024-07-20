@@ -171,6 +171,7 @@ type Event {
   eventCategory: String
   startDate: DateTime!
   endDate: DateTime!
+  firstVehicleEndDate: DateTime!
   pauseDate: DateTime
   pausedTotalTime: Float
   sellerId: String!
@@ -195,7 +196,7 @@ type Excelupload {
   file_filename: String!
   createdAt: DateTime
   updatedAt: DateTime
-  createdById: String!
+  createdById: String
 }
 
 type Query {
@@ -513,6 +514,7 @@ input CreateEventInput {
   eventCategory: String
   startDate: DateTime!
   endDate: DateTime!
+  firstVehicleEndDate: DateTime
   pauseDate: DateTime
   pausedTotalTime: Float
   noOfBids: Float!
@@ -531,6 +533,7 @@ input UpdateEventInput {
   eventCategory: String
   startDate: DateTime
   endDate: DateTime
+  firstVehicleEndDate: DateTime
   pauseDate: DateTime
   pausedTotalTime: Float
   noOfBids: Float

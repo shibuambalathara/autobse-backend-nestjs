@@ -22,6 +22,9 @@ export class Event {
   @Field()
   endDate:Date;
 
+  @Field()
+  firstVehicleEndDate:Date;
+
   @Field({nullable:true})
   pauseDate?:Date;
 

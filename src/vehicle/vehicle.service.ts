@@ -23,7 +23,9 @@ export class VehicleService {
         where: { eventId: eventId },
         orderBy: { bidTimeExpire: 'desc' }, 
       });
-  
+
+      const firstVehicle = await this.prisma.vehicle.findFirst({where: { eventId: eventId },orderBy: { bidTimeExpire: 'asc' }, });
+      const firstEndDate =firstVehicle.bidTimeExpire;
       let bidStartTime: Date;
       let bidTimeExpire: Date;
   
@@ -36,7 +38,8 @@ export class VehicleService {
         const bidexpire = new Date(lastVehicle.bidTimeExpire);
         bidTimeExpire = new Date(bidexpire.getTime() + event.gapInBetweenVehicles * 60000);
       }
-  
+      const event_data =await this.prisma.event.update({where:{id:eventId},data:{endDate:bidTimeExpire,firstVehicleEndDate:firstEndDate}});
+      
       return await this.prisma.vehicle.create({
         data: {
           ...createVehicleInput,
@@ -47,6 +50,7 @@ export class VehicleService {
           bidTimeExpire: bidTimeExpire,
         },
       });
+
     } 
     catch(error){
               throw new Error(error.message)

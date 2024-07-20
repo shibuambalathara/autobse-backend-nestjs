@@ -296,6 +296,7 @@ model Event {
   eventCategory             String?
   startDate                 DateTime
   endDate                   DateTime
+  firstVehicleEndDate       DateTime?
   pauseDate                 DateTime?
   pausedTotalTime           Int?              @default(0)
   seller                    Seller?           @relation("Event_seller", fields: [sellerId], references: [id])
