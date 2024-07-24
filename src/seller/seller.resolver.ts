@@ -59,7 +59,7 @@ export class SellerResolver {
     return this.sellerService.deletedSeller(where.id);
   }
 
-  @Query(returns=>Seller)
+  @Mutation(returns=>Seller)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin')
   async restoreSeller(@Args('where') where:SellerWhereUniqueInput):Promise<Seller|null>{

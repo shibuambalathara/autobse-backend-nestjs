@@ -14,6 +14,8 @@ import { SellerModule } from './seller/seller.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { EventModule } from './event/event.module';
 import { ExceluploadModule } from './excelupload/excelupload.module';
+import { StatusModule } from './status/status.module';
+import { PaymentModule } from './payment/payment.module';
 
 
 @Module({
@@ -34,8 +36,10 @@ import { ExceluploadModule } from './excelupload/excelupload.module';
     VehicleModule,
     EventModule,
     ExceluploadModule,
+    StatusModule,
+    PaymentModule,
 
-    
+
   ],
   providers: [
     PrismaService,

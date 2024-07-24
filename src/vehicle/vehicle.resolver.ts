@@ -62,7 +62,7 @@ export class VehicleResolver {
     return this.vehicleService.deletedVehicle(where.id);
   }
 
-  @Query(returns => Vehicle)
+  @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin')
   async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{

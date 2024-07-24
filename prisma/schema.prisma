@@ -76,6 +76,13 @@ enum StateNames {
   Delhi
 }
 
+enum PaymentStatusTypes {
+  approved
+  pending
+  rejected
+}
+
+
 model User {
   id                        String               @id @default(cuid())
   idNo                      Int                  @unique @default(autoincrement())
@@ -124,9 +131,9 @@ model User {
   role                      UserRoleType        @default(dealer)
   // watchList                 Vehicle[]            @relation("User_watchList")
   // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
-  // payments                  Payment[]            @relation("Payment_user")
+  payments                  Payment[]            @relation("Payment_user")
   // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
-  // paymentByAdmin            Payment?             @relation("Payment_createdBy")
+  paymentCreatedBy            Payment?             @relation("Payment_createdBy")
   // status                    UserStatusType?      @default(pending)
   state                     StateNames        
   //stateCreatedBy               State[]              @relation("state_createdBy")
@@ -136,6 +143,7 @@ model User {
   vehicleCreatedBy             Vehicle[]            @relation("vehicle_createdBy")
   eventCreatedBy               Event[]              @relation("event_createdBy")
   execlUploadCreatedBy         ExcelUpload[]        @relation("excelupload_createdBy")
+  statusCreatedBy              Status[]             @relation("status_createdBy")
   activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
   // quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
@@ -337,8 +345,36 @@ model ExcelUpload {
   isDeleted     Boolean   @default(false)
 }
 
+model Status{
+  id            String              @id @default(cuid())
+  status        PaymentStatusTypes  @default(pending)
+  comment       String?
+  createdAt     DateTime?           @default(now())
+  updatedAt     DateTime?           @updatedAt
+  createdBy     User?               @relation("status_createdBy",fields: [createdById], references: [id])             
+  createdById   String?
+  isDeleted     Boolean             @default(false)
+  payment       Payment?
+}
 
 
+model Payment{
+  id                 String      @id @default(cuid())
+  refNo              Int         @default(autoincrement())
+  amount             Int?        @default(10000)
+  description        String      @default("")
+  status             Status?     @relation(fields: [statusId], references: [id])
+  statusId           String?     @unique
+  user               User?       @relation("Payment_user", fields: [userId], references: [id])
+  userId             String?     
+  image              String?
+  createdAt          DateTime?   @default(now())
+  createdBy          User?       @relation("Payment_createdBy", fields: [createdById], references: [id])
+  createdById        String?     @unique @map("createdBy")
+  updatedAt          DateTime?   @updatedAt
+  registrationExpire DateTime?  
+  isDeleted          Boolean     @default(false)     
+}
 
 
 

@@ -59,7 +59,7 @@ export class VehiclecategoryResolver {
     return this.vehiclecategoryService.deletedVehicleCategory(where.id)
   }
 
-  @Query(returns=>VehicleCategory)
+  @Mutation(returns=>VehicleCategory)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin')
   async restoreVehicleCategory(@Args('where') where:VehicleCategoryWhereUniqueInput):Promise<VehicleCategory|null>{

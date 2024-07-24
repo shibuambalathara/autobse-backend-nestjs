@@ -27,24 +27,29 @@ export class ExceluploadResolver {
     return this.exceluploadService.createExcelUpload( id,userId,eventId,createExceluploadInput);
   }
 
-
+  
   @Query(returns => [Excelupload])
   async excelUploads() :Promise<Excelupload[]|null> {
     return this.exceluploadService.excelUploads();
   }
 
+  
   @Query(returns => Excelupload)
   async excelUpload(@Args('where') where:ExcelWhereUniqueInput):Promise<Excelupload|null>{
     return this.exceluploadService.excelUpload(where);
   }
 
-
+ 
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   @Mutation(returns => Excelupload)
   async deleteExcelupload(@Args('where') where:ExcelWhereUniqueInput ):Promise<Excelupload|null>{
     return this.exceluploadService.deleteExcelupload(where.id);
   }
 
 
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   @Mutation(returns => Excelupload)
   async restoreExcelUpload(@Args('where') where:ExcelWhereUniqueInput):Promise<Excelupload|null>{
     return this.exceluploadService.restoreExcelUpload(where);

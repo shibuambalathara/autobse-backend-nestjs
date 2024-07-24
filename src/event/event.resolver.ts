@@ -23,6 +23,7 @@ export class EventResolver {
     return this.eventService.createEvent(sellerId,vehicleCategoryId,locationId,id,createEventInput);
   }
 
+  
   @Query(returns => [Event])
   async events() : Promise<Event[]|null>{
     return this.eventService.events();
@@ -33,28 +34,42 @@ export class EventResolver {
     return this.eventService.event(where);
   }
 
+  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin', 'staff')
   @Mutation(returns => Event)
   async updateEvent(@Args('where') where:EventWhereUniqueInput,@Args('updateEventInput') updateEventInput: UpdateEventInput):Promise<Event|null> {
     return this.eventService.updateEvent(where.id,updateEventInput);
   }
 
+  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   @Mutation(returns => Event)
   async deleteEvent(@Args('where') where:EventWhereUniqueInput) :Promise<Event|null>{
     return this.eventService.deleteEvent(where.id);
   }
 
-
+ 
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   @Query(returns => [Event])
   async deletedEvents():Promise<Event[]|null>{
     return this.eventService.deletedEvents();
   }
 
+  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
   @Query(returns => Event)
   async deletedEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.deletedEvent(where.id);
   }
 
-  @Query(returns=>Event)
+  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  @Mutation(returns=>Event)
   async restoreEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.restoreEvent(where);
   }

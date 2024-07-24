@@ -199,6 +199,27 @@ type Excelupload {
   createdById: String
 }
 
+type Status {
+  status: String!
+  comment: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdById: String!
+}
+
+type Payment {
+  refNo: Float
+  amount: Float
+  description: String
+  statusId: String
+  userId: String
+  image: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+  registrationExpire: DateTime
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -208,29 +229,32 @@ type Query {
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
   deletedLocation(where: LocationWhereUniqueInput!): Location!
-  restoreLocation(where: LocationWhereUniqueInput!): Location!
   vehicleCategories: [VehicleCategory!]!
   vehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   deletedVehicleCategories: [VehicleCategory!]!
   deletedVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
-  restoreVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   sellers: [Seller!]!
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  restoreSeller(where: SellerWhereUniqueInput!): Seller!
   vehicles: [Vehicle!]!
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
   events: [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
-  restoreEvent(where: EventWhereUniqueInput!): Event!
   excelUploads: [Excelupload!]!
   excelUpload(where: ExcelWhereUniqueInput!): Excelupload!
+  statuses: [Status!]!
+  status(where: StatusWhereUniqueInput!): Status!
+  deletedStatuses: [Status!]!
+  deletedStatus(where: StatusWhereUniqueInput!): Status!
+  payments: [Payment!]!
+  payment(where: PaymentWhereUniqueInput!): Payment!
+  deletedPayments: [Payment!]!
+  deletedPayment(where: PaymentWhereUniqueInput!): Payment!
 }
 
 input UserWhereUniqueInput {
@@ -268,6 +292,14 @@ input ExcelWhereUniqueInput {
   id: String
 }
 
+input StatusWhereUniqueInput {
+  id: String
+}
+
+input PaymentWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
@@ -276,21 +308,34 @@ type Mutation {
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: LocationWhereUniqueInput!): Location!
+  restoreLocation(where: LocationWhereUniqueInput!): Location!
   createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
   updateVehicleCategory(where: VehicleCategoryWhereUniqueInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
   deleteVehiclecategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  restoreVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   createSeller(createSellerInput: CreateSellerInput!): Seller!
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
+  restoreSeller(where: SellerWhereUniqueInput!): Seller!
   createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
   createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
+  restoreEvent(where: EventWhereUniqueInput!): Event!
   createExcelupload(userId: String!, eventId: String!, createExceluploadInput: CreateExceluploadInput!): Excelupload!
   deleteExcelupload(where: ExcelWhereUniqueInput!): Excelupload!
   restoreExcelUpload(where: ExcelWhereUniqueInput!): Excelupload!
+  createStatus(createStatusInput: CreateStatusInput!): Status!
+  updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
+  deleteStatus(where: StatusWhereUniqueInput!): Status!
+  restoreStatus(where: StatusWhereUniqueInput!): Status!
+  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
+  deletePayment(where: PaymentWhereUniqueInput!): Payment!
+  restorePayment(where: PaymentWhereUniqueInput!): Payment!
 }
 
 input CreateUserInput {
@@ -556,4 +601,34 @@ input UpdateEventInput {
 input CreateExceluploadInput {
   name: String!
   file_filename: String!
+}
+
+input CreateStatusInput {
+  status: PaymentStatusTypes!
+  comment: String!
+}
+
+enum PaymentStatusTypes {
+  approved
+  pending
+  rejected
+}
+
+input UpdateStatusInput {
+  status: PaymentStatusTypes!
+  comment: String
+}
+
+input CreatePaymentInput {
+  amount: Float!
+  description: String!
+  image: String!
+  registrationExpire: DateTime!
+}
+
+input UpdatePaymentInput {
+  amount: Float
+  description: String
+  image: String
+  registrationExpire: DateTime
 }

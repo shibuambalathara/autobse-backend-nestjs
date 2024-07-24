@@ -60,7 +60,7 @@ export class LocationResolver {
     return this.locationService.deletedLocation(where.id);
   }
 
-  @Query(returns=>Location)
+  @Mutation(returns=>Location)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin')
   async restoreLocation(@Args('where') where:LocationWhereUniqueInput):Promise<Location|null>{
