@@ -1,11 +1,11 @@
-version: '3'
+version: '3.8'
 services:
   app:
     build: .
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - .env
     depends_on:
       - db  
 
@@ -15,15 +15,28 @@ services:
       - "5432:5432" 
     env_file:
       - .env.local
+    
 
-  # pgadmin:
-  #   image: dpage/pgadmin4
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@example.com
+      PGADMIN_DEFAULT_PASSWORD: postgre
+    ports:
+      - "5050:80"
+    env_file:
+      - .env
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  # redis:
+  #   image: redis
+  #   command: /bin/sh -c "redis-server --requirepass REDIS_PASSWORD"
   #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: postgres
-  #     PGADMIN_DEFAULT_PASSWORD: postgre
+  #     REDIS_PASSWORD: redis
+  #     REDIS_URI : redis://default:${REDIS_PASSWORD}@redis:6379
   #   ports:
-  #     - "5050:80"
-  #   env_file:
-  #     - .env
+  #     - "6379:6379"
+   
   #   volumes:
-  #     - ./pgdata:/var/lib/postgresql/data
+  #     - ./redis:/data:/data

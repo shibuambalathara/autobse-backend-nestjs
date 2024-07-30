@@ -18,6 +18,7 @@ import { StatusModule } from './status/status.module';
 import { PaymentModule } from './payment/payment.module';
 
 
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -27,6 +28,7 @@ import { PaymentModule } from './payment/payment.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
+    
     UserModule,
     AuthModule,
     StateModule,
