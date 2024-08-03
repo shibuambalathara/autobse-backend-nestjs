@@ -60,7 +60,7 @@ export class Vehicle {
   rcStatus:string ;
 
   @Field({nullable:true})
-  yearOfManufacture?:number;
+  YOM?:number;
 
   @Field({nullable:true})
   ownership ?:number;
@@ -116,8 +116,8 @@ export class Vehicle {
   @Field()
   permit:string;
   
-  @Field()
-  fitnessPermit:string;
+  // @Field()
+  // fitnessPermit:string;
   
   @Field()
   engineNo :string;

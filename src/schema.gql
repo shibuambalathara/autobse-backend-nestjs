@@ -28,26 +28,50 @@ type LoginResponse {
 type Location {
   id: String!
   name: String!
-  stateId: String!
+  state: StateNames!
   createdAt: DateTime
   updatedAt: DateTime
   country: String
   createdById: String
 }
 
+enum StateNames {
+  Maharashtra
+  Bihar
+  Chhattisgarh
+  Karnataka
+  Manipur
+  Arunachal_Pradesh
+  Assam
+  Gujarat
+  Punjab
+  Mizoram
+  Andhra_Pradesh
+  West_Bengal
+  Goa
+  Haryana
+  Himachal_Pradesh
+  Kerala
+  Rajasthan
+  Jharkhand
+  Madhya_Pradesh
+  Odisha
+  Nagaland
+  TamilNadu
+  Uttar_Pradesh
+  Telangana
+  Meghalaya
+  Sikkim
+  Tripura
+  Uttarakhand
+  Jammu_and_Kashmir
+  Delhi
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type State {
-  id: String!
-  name: String!
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdById: String!
-  location: Location!
-}
 
 type VehicleCategory {
   id: String!
@@ -90,7 +114,7 @@ type Vehicle {
   fuel: String!
   type: String!
   rcStatus: String!
-  yearOfManufacture: Float
+  YOM: Float
   ownership: Float
   mileage: Float
   kmReading: Float
@@ -109,7 +133,6 @@ type Vehicle {
   taxValidityDate: String
   fitness: String!
   permit: String!
-  fitnessPermit: String!
   engineNo: String!
   chassisNo: String!
   image: String!
@@ -142,36 +165,96 @@ type Vehicle {
   createdById: String
 }
 
+type Event {
+  id: String!
+  eventNo: Float!
+  eventCategory: String
+  startDate: DateTime!
+  endDate: DateTime!
+  firstVehicleEndDate: DateTime!
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  sellerId: String!
+  vehicleCategoryId: String!
+  locationId: String!
+  noOfBids: Float!
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+}
+
+type Excelupload {
+  id: String!
+  name: String
+  file_filename: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+}
+
+type Status {
+  status: String!
+  comment: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdById: String!
+}
+
+type Payment {
+  refNo: Float
+  amount: Float
+  description: String
+  statusId: String
+  userId: String
+  image: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+  registrationExpire: DateTime
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
-  States: [State!]!
-  State(where: StateWhereUniqueInput!): State!
-  deletedStates: [State!]!
-  deletedState(where: StateWhereUniqueInput!): State!
-  restoreState(where: StateWhereUniqueInput!): State!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
   deletedLocation(where: LocationWhereUniqueInput!): Location!
-  restoreLocation(where: LocationWhereUniqueInput!): Location!
   vehicleCategories: [VehicleCategory!]!
   vehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   deletedVehicleCategories: [VehicleCategory!]!
   deletedVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
-  restoreVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   sellers: [Seller!]!
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  restoreSeller(where: SellerWhereUniqueInput!): Seller!
   vehicles: [Vehicle!]!
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  events: [Event!]!
+  event(where: EventWhereUniqueInput!): Event!
+  deletedEvents: [Event!]!
+  deletedEvent(where: EventWhereUniqueInput!): Event!
+  excelUploads: [Excelupload!]!
+  excelUpload(where: ExcelWhereUniqueInput!): Excelupload!
+  statuses: [Status!]!
+  status(where: StatusWhereUniqueInput!): Status!
+  deletedStatuses: [Status!]!
+  deletedStatus(where: StatusWhereUniqueInput!): Status!
+  payments: [Payment!]!
+  payment(where: PaymentWhereUniqueInput!): Payment!
+  deletedPayments: [Payment!]!
+  deletedPayment(where: PaymentWhereUniqueInput!): Payment!
 }
 
 input UserWhereUniqueInput {
@@ -181,14 +264,10 @@ input UserWhereUniqueInput {
   idNo: Float
 }
 
-input StateWhereUniqueInput {
-  id: String
-  name: String
-}
-
 input LocationWhereUniqueInput {
   id: String
   name: String
+  state: String
 }
 
 input VehicleCategoryWhereUniqueInput {
@@ -205,26 +284,58 @@ input VehicleWhereUniqueInput {
   id: String
 }
 
+input EventWhereUniqueInput {
+  id: String
+}
+
+input ExcelWhereUniqueInput {
+  id: String
+}
+
+input StatusWhereUniqueInput {
+  id: String
+}
+
+input PaymentWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
   login(loginInput: LoginUserInput!): LoginResponse!
-  createState(createStateInput: CreateStateInput!): State!
-  deleteState(where: StateWhereUniqueInput!): State!
-  updateState(where: StateWhereUniqueInput!, updateStateInput: UpdateStateInput!): State!
-  createLocation(userId: String!, stateId: String!, createLocationInput: CreateLocationInput!): Location!
+  createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: LocationWhereUniqueInput!): Location!
-  createVehiclecategory(userId: String!, createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
+  restoreLocation(where: LocationWhereUniqueInput!): Location!
+  createVehiclecategory(createVehiclecategoryInput: CreateVehiclecategoryInput!): VehicleCategory!
   updateVehicleCategory(where: VehicleCategoryWhereUniqueInput!, updateVehiclecategoryInput: UpdateVehiclecategoryInput!): VehicleCategory!
   deleteVehiclecategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
-  createSeller(userId: String!, createSellerInput: CreateSellerInput!): Seller!
+  restoreVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  createSeller(createSellerInput: CreateSellerInput!): Seller!
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
-  createVehicle(userId: String!, createdBy: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  restoreSeller(where: SellerWhereUniqueInput!): Seller!
+  createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
+  updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
+  deleteEvent(where: EventWhereUniqueInput!): Event!
+  restoreEvent(where: EventWhereUniqueInput!): Event!
+  createExcelupload(userId: String!, eventId: String!, createExceluploadInput: CreateExceluploadInput!): Excelupload!
+  deleteExcelupload(where: ExcelWhereUniqueInput!): Excelupload!
+  restoreExcelUpload(where: ExcelWhereUniqueInput!): Excelupload!
+  createStatus(createStatusInput: CreateStatusInput!): Status!
+  updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
+  deleteStatus(where: StatusWhereUniqueInput!): Status!
+  restoreStatus(where: StatusWhereUniqueInput!): Status!
+  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
+  deletePayment(where: PaymentWhereUniqueInput!): Payment!
+  restorePayment(where: PaymentWhereUniqueInput!): Payment!
 }
 
 input CreateUserInput {
@@ -244,6 +355,7 @@ input CreateUserInput {
   tempToken: Float
   accessToken: String
   role: UserRoleType
+  state: StateNames!
 }
 
 enum UserRoleType {
@@ -269,6 +381,7 @@ input UpdateUserInput {
   userCategory: String
   tempToken: Float
   role: UserRoleType!
+  state: StateNames
 }
 
 input LoginUserInput {
@@ -276,22 +389,14 @@ input LoginUserInput {
   password: String!
 }
 
-input CreateStateInput {
-  name: String!
-}
-
-input UpdateStateInput {
-  name: String
-  createdById: String
-}
-
 input CreateLocationInput {
   name: String!
+  state: StateNames!
 }
 
 input UpdateLocationInput {
   name: String
-  stateId: String
+  state: StateNames
 }
 
 input CreateVehiclecategoryInput {
@@ -324,8 +429,6 @@ input UpdateSellerInput {
 
 input CreateVehicleInput {
   registrationNumber: String!
-  bidTimeExpire: String!
-  bidStartTime: String!
   bidAmountUpdate: Float
   currentBidAmount: Float
   startBidAmount: Float
@@ -339,7 +442,7 @@ input CreateVehicleInput {
   fuel: String!
   type: String!
   rcStatus: String!
-  yearOfManufacture: Float
+  YOM: Float
   ownership: Float
   mileage: Float
   kmReading: Float
@@ -358,7 +461,6 @@ input CreateVehicleInput {
   taxValidityDate: String
   fitness: String!
   permit: String!
-  fitnessPermit: String!
   engineNo: String!
   chassisNo: String!
   image: String!
@@ -390,8 +492,6 @@ input CreateVehicleInput {
 
 input UpdateVehicleInput {
   registrationNumber: String
-  bidTimeExpire: String
-  bidStartTime: String
   bidAmountUpdate: Float
   currentBidAmount: Float
   startBidAmount: Float
@@ -405,7 +505,7 @@ input UpdateVehicleInput {
   fuel: String
   type: String
   rcStatus: String
-  yearOfManufacture: Float
+  YOM: Float
   ownership: Float
   mileage: Float
   kmReading: Float
@@ -424,7 +524,6 @@ input UpdateVehicleInput {
   taxValidityDate: String
   fitness: String
   permit: String
-  fitnessPermit: String
   engineNo: String
   chassisNo: String
   image: String
@@ -452,4 +551,84 @@ input UpdateVehicleInput {
   clientContactNo: String
   additionalRemarks: String
   lotNumber: Float
+  bidTimeExpire: String
+  bidStartTime: String
+}
+
+input CreateEventInput {
+  eventCategory: String
+  startDate: DateTime!
+  endDate: DateTime!
+  firstVehicleEndDate: DateTime
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  noOfBids: Float!
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String!
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+  bidLock: String = "unlocked"
+  status: String = "active"
+}
+
+input UpdateEventInput {
+  eventCategory: String
+  startDate: DateTime
+  endDate: DateTime
+  firstVehicleEndDate: DateTime
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  noOfBids: Float
+  downloadableFile_filesize: Float
+  downloadableFile_filename: String
+  termsAndConditions: String
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+  bidLock: String = "unlocked"
+  status: String = "active"
+  sellerId: String
+  vehicleCategoryId: String
+  locationId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input CreateExceluploadInput {
+  name: String!
+  file_filename: String!
+}
+
+input CreateStatusInput {
+  status: PaymentStatusTypes!
+  comment: String!
+}
+
+enum PaymentStatusTypes {
+  approved
+  pending
+  rejected
+}
+
+input UpdateStatusInput {
+  status: PaymentStatusTypes!
+  comment: String
+}
+
+input CreatePaymentInput {
+  amount: Float!
+  description: String!
+  image: String!
+  registrationExpire: DateTime!
+}
+
+input UpdatePaymentInput {
+  amount: Float
+  description: String
+  image: String
+  registrationExpire: DateTime
 }

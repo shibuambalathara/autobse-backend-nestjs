@@ -9,20 +9,53 @@ import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 export class VehicleService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createVehicle(createdBy:string,userId:string,createVehicleInput: CreateVehicleInput) : Promise<Vehicle|null>{
-    try{
-    return await this.prisma.vehicle.create({
-      data:{
-        createdById:createdBy,
-        currentBidUserId:userId,
-        ...createVehicleInput,
+  async createVehicle(id: string,userId: string,eventId: string,createVehicleInput: CreateVehicleInput): Promise<Vehicle | null> {
+    try {
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventId },
+      });
+  
+      if (!event) {
+        throw new Error('Event not found');
       }
-    });
+
+      const lastVehicle = await this.prisma.vehicle.findFirst({
+        where: { eventId: eventId },
+        orderBy: { bidTimeExpire: 'desc' }, 
+      });
+
+      const firstVehicle = await this.prisma.vehicle.findFirst({where: { eventId: eventId },orderBy: { bidTimeExpire: 'asc' }, });
+      const firstEndDate =firstVehicle.bidTimeExpire;
+      let bidStartTime: Date;
+      let bidTimeExpire: Date;
+  
+      if (!lastVehicle) {
+        bidStartTime = new Date(event.startDate);
+        bidTimeExpire = new Date(event.endDate);
+      } 
+      else {
+        bidStartTime = new Date(event.startDate);
+        const bidexpire = new Date(lastVehicle.bidTimeExpire);
+        bidTimeExpire = new Date(bidexpire.getTime() + event.gapInBetweenVehicles * 60000);
+      }
+      const event_data =await this.prisma.event.update({where:{id:eventId},data:{endDate:bidTimeExpire,firstVehicleEndDate:firstEndDate}});
+      
+      return await this.prisma.vehicle.create({
+        data: {
+          ...createVehicleInput,
+          currentBidUserId: userId,
+          eventId: eventId,
+          createdById: id,
+          bidStartTime: bidStartTime,
+          bidTimeExpire: bidTimeExpire,
+        },
+      });
+
+    } 
+    catch(error){
+              throw new Error(error.message)
+           }
     }
-   catch(error){
-    throw new Error(error.message);
-    }
-  }
 
   async vehicles(): Promise<Vehicle[] | null>{
     const vehicle = await this.prisma.vehicle.findMany({where:{isDeleted:false}});

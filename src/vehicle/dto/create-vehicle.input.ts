@@ -7,11 +7,11 @@ export class CreateVehicleInput {
   @IsString()
   registrationNumber:string;
 
-  @Field()
-  bidTimeExpire:string;
+  // @Field()
+  // bidTimeExpire:string;
 
-  @Field()
-  bidStartTime:string;
+  // @Field()
+  // bidStartTime:string;
 
   @Field({nullable:true})
   bidAmountUpdate?:number;
@@ -64,7 +64,7 @@ export class CreateVehicleInput {
   rcStatus:string ;
 
   @Field({nullable:true})
-  yearOfManufacture?:number;
+  YOM?:number;
 
   @Field({nullable:true})
   ownership ?:number;
@@ -120,8 +120,8 @@ export class CreateVehicleInput {
   @Field()
   permit:string;
   
-  @Field()
-  fitnessPermit:string;
+  // @Field()
+  // fitnessPermit:string;
   
   @Field()
   engineNo :string;

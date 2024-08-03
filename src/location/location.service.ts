@@ -9,13 +9,12 @@ import { LocationWhereUniqueInput } from './dto/unique-location.input';
 export class LocationService {
   constructor(private readonly prisma:PrismaService){}
   
-  async createLocation(userId:string,stateId:string,createLocationInput: CreateLocationInput): Promise<Location|null> {
+  async createLocation(id:string,createLocationInput: CreateLocationInput): Promise<Location|null> {
    try{
     return await this.prisma.location.create({
       data:{
-        createdById:userId,
-        stateId:stateId,
-        name:createLocationInput.name
+        createdById:id,
+        ...createLocationInput,
       }
     });
     }

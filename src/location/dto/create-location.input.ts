@@ -1,4 +1,5 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Int, Field, registerEnumType } from '@nestjs/graphql';
+import { StateNames } from '@prisma/client';
 import { IsString } from 'class-validator';
 
 @InputType()
@@ -8,5 +9,15 @@ export class CreateLocationInput {
   @IsString()
   name:string;
 
+  @Field(()=>StateNames)
+  state:StateNames;
 
 }
+
+registerEnumType(StateNames, {
+    name: 'StateNames',
+  });
+
+
+
+

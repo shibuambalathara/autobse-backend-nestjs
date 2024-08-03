@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { StateNames } from '@prisma/client';
 import { IsEmail, IsString } from 'class-validator';
 import { UserRoleType } from 'src/role/use.role';
 @InputType()
@@ -56,6 +57,9 @@ export class CreateUserInput {
 
   @Field(() => UserRoleType, { nullable: true })
   role: UserRoleType;
+  
+  @Field(()=>StateNames)
+  state:StateNames;
 
 }
 

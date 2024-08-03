@@ -1,25 +1,27 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Location } from 'src/location/models/location.model';
+// import { ObjectType, Field, Int } from '@nestjs/graphql';
+// import {ListOfStateNames } from '@prisma/client';
+// import { Location } from 'src/location/models/location.model';
 
-@ObjectType()
-export class State {
+// @ObjectType()
+// export class State {
 
-  @Field()
-  id:string;
+//   @Field()
+//   id:string;
   
-  @Field()
-  name:string;
+//   @Field(() => ListOfStateNames)
+//   name: ListOfStateNames;
+  
+//   @Field({nullable:true})
+//   createdAt?:Date;
 
-  @Field({nullable:true})
-  createdAt?:Date;
+//   @Field({nullable:true})
+//   updatedAt?:Date;
 
-  @Field({nullable:true})
-  updatedAt?:Date;
-
-  @Field()
-  createdById?:string;
-  @Field()
-  location?:Location;
+//   @Field()
+//   createdById?:string;
+  
+//   @Field()
+//   location?:Location;
 
 
-}
+// }

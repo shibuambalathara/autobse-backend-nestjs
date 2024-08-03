@@ -12,6 +12,12 @@ import { LocationModule } from './location/location.module';
 import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module';
 import { SellerModule } from './seller/seller.module';
 import { VehicleModule } from './vehicle/vehicle.module';
+import { EventModule } from './event/event.module';
+import { ExceluploadModule } from './excelupload/excelupload.module';
+import { StatusModule } from './status/status.module';
+import { PaymentModule } from './payment/payment.module';
+
+
 
 @Module({
   imports: [
@@ -22,6 +28,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
+    
     UserModule,
     AuthModule,
     StateModule,
@@ -29,6 +36,12 @@ import { VehicleModule } from './vehicle/vehicle.module';
     VehiclecategoryModule,
     SellerModule,
     VehicleModule,
+    EventModule,
+    ExceluploadModule,
+    StatusModule,
+    PaymentModule,
+
+
   ],
   providers: [
     PrismaService,

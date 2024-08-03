@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './models/vehicle.model';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
@@ -16,8 +16,12 @@ export class VehicleResolver {
   @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createVehicle(@Args('userId') userId:string,@Args('createdBy') createdBy:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput):Promise<Vehicle|null> {
-    return this.vehicleService.createVehicle(userId,createdBy,createVehicleInput);
+  async createVehicle(@Args('userId') userId:string,@Args('eventId') eventId:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,@Context() context):Promise<Vehicle|null> {
+    if (!createVehicleInput.registrationNumber || !createVehicleInput.loanAgreementNo) {
+      throw new Error('Both registrationNumber and loanAgreementNo are required fields');
+    }
+    const {id}=context.req.user   
+    return this.vehicleService.createVehicle(id,userId,eventId,createVehicleInput);
   }
 
   @Query(returns => [Vehicle])
@@ -58,7 +62,7 @@ export class VehicleResolver {
     return this.vehicleService.deletedVehicle(where.id);
   }
 
-  @Query(returns => Vehicle)
+  @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin')
   async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
