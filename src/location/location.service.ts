@@ -38,8 +38,8 @@ export class LocationService {
 
   async updateLocation(id: string, updateLocationInput: UpdateLocationInput) : Promise<Location|null>{
     try {
-      const state = await this.prisma.location.findUnique({where:{id,isDeleted:false,}})
-      if(!state) throw new NotFoundException("Location Not Found");
+      const location = await this.prisma.location.findUnique({where:{id,isDeleted:false,}})
+      if(!location) throw new NotFoundException("Location Not Found");
       return await this.prisma.location.update({
           where:{
             id,

@@ -237,7 +237,7 @@ model Vehicle {
   make                   String                @default("")
   model                  String                @default("")
   varient                String                @default("")
-  categoty               String                @default("")
+  category               String                @default("")
   fuel                   String                @default("")
   type                   String                @default("")
   rcStatus               String                @default("")
@@ -376,5 +376,15 @@ model Payment{
   isDeleted          Boolean     @default(false)     
 }
 
+model RecentSold{
+  id                 String      @id @default(cuid())
+  image              String?
+  vehicleName        String?
+  location           String?
+  soldDate           String?
+  createdAt          DateTime?   @default(now())
+  updatedAt          DateTime?   @updatedAt
+  isDeleted          Boolean     @default(false)     
+}
 
 

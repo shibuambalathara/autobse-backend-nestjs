@@ -16,6 +16,7 @@ import { EventModule } from './event/event.module';
 import { ExceluploadModule } from './excelupload/excelupload.module';
 import { StatusModule } from './status/status.module';
 import { PaymentModule } from './payment/payment.module';
+import { RecentsoldModule } from './recentsold/recentsold.module';
 
 
 
@@ -40,6 +41,7 @@ import { PaymentModule } from './payment/payment.module';
     ExceluploadModule,
     StatusModule,
     PaymentModule,
+    RecentsoldModule,
 
 
   ],

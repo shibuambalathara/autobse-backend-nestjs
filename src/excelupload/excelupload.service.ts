@@ -14,13 +14,7 @@ import { Excelupload } from './models/excelupload.model';
 export class ExceluploadService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createExcelUpload(
-   
-    id: string,
-    userId:string,
-    eventId:string,
-    createExceluploadInput: CreateExceluploadInput
-  ): Promise<ExcelUpload|null|Boolean> {
+  async createExcelUpload(id: string,userId:string,eventId:string,createExceluploadInput: CreateExceluploadInput): Promise<ExcelUpload|null|Boolean> {
   try{
    const excel = await this.prisma.excelUpload.create({
       data: {
@@ -31,8 +25,6 @@ export class ExceluploadService {
     });
 
     const stream = createReadStream(await createExceluploadInput.file_filename);
-
-    
     const buffers = [];
   
     for await (const chunk of stream) {
@@ -59,10 +51,7 @@ export class ExceluploadService {
         where: { eventId: eventId },
         orderBy: { bidTimeExpire: 'desc' }, 
       });
-      
-      
-      const firstVehicle = await this.prisma.vehicle.findFirst({where: { eventId: eventId },orderBy: { bidTimeExpire: 'asc' }, });
-      const firstEndDate =firstVehicle.bidTimeExpire;
+
   
       let bidStartTime: Date;
       let bidTimeExpire: Date;
@@ -76,8 +65,17 @@ export class ExceluploadService {
         const bidexpire = new Date(lastVehicle.bidTimeExpire);
         bidTimeExpire = new Date(bidexpire.getTime() + event.gapInBetweenVehicles * 60000);
       }
-      const event_data =await this.prisma.event.update({where:{id:eventId},data:{endDate:bidTimeExpire,firstVehicleEndDate:firstEndDate}});
-      if (!row['registrationNumber'] || !row['loanAgreementNo']) {
+      const firstVehicle = await this.prisma.vehicle.findFirst({where: { eventId: eventId },orderBy: { bidTimeExpire: 'asc' }, });
+            
+      if (firstVehicle) {
+        const firstEndDate = firstVehicle.bidTimeExpire;
+        const event_data = await this.prisma.event.update({
+          where: { id: eventId },
+          data: { endDate: bidTimeExpire, firstVehicleEndDate: firstEndDate },
+        });
+      } 
+     
+      if (!row['Registration_Number'] || !row['Loan_Agreement_No']) {
         throw new Error('Both registrationNumber and loanAgreementNo are required fields');
       }
   
@@ -88,67 +86,63 @@ export class ExceluploadService {
           eventId:eventId,  
           bidStartTime:bidStartTime,
           bidTimeExpire:bidTimeExpire,
-          registrationNumber  :row['registrationNumber'],     
-          bidAmountUpdate :row['bidAmountUpdate'],       
-          currentBidAmount:row['currentBidAmount'],   
-          startBidAmount  :row['startBidAmount'],                              
-          bidStatus       :row['bidStatus'],      
-          loanAgreementNo :row['loanAgreementNo'],       
-          registeredOwnerName:row['registeredOwnerName'],    
-          quoteIncreament :row['quoteIncreament'],       
-          make            :row['make'],      
-          model           :row['model'],      
-          varient         :row['varient'],
-          categoty        :row['categoty'],      
-          fuel            :row['fuel'],
-          type            :row['type'],
-          rcStatus        :row['rcStatus'],       
+          registrationNumber  :row['Registration_Number'],          
+          loanAgreementNo :row['Loan_Agreement_No'],       
+          registeredOwnerName:row['Customer_Name'],    
+          quoteIncreament :row['Quote_Increament'],       
+          make            :row['Make'],      
+          model           :row['Model'],      
+          varient         :row['Variant'],
+          category        :row['category'],      
+          fuel            :row['Fuel'],
+          type            :row['Type'],
+          rcStatus        :row['RC_Status'],       
           YOM             :row['YOM'],      
-          ownership        :row['ownership'],
-          mileage          :row['mileage'],
-          kmReading        :row['kmReading'],
-          insuranceStatus  :row['insuranceStatus'],      
-          yardLocation     :row['yardLocation'],
-          startPrice       :row['startPrice'], 
-          reservePrice     :row['reservePrice'],
-          repoDt           :row['repoDt'],
-          veicleLocation   :row['veicleLocation'],     
-          vehicleRemarks   :row['vehicleRemarks'],      
-          auctionManager   :row['auctionManager'],      
-          parkingCharges   :row['parkingCharges']!== undefined ? row['parkingCharges'].toString() : null,      
-          insurance        :row['insurance'],    
-          insuranceValidTill:row['insuranceValidTill']!== undefined ? row['insuranceValidTill'].toString() : null,
-          tax               :row['tax']!== undefined ? row['tax'].toString() : null,     
-          taxValidityDate   :row['taxValidityDate'],
-          fitness           :row['fitness'],   
-          permit            :row['permit'],
-          engineNo          :row['engineNo'],     
-          chassisNo         :row['chassisNo'],
-          image             :row['image'],
-          inspectionLink    :row['inspectionLink'],    
-          autobseContact    :row['autobseContact']!== undefined ? row['autobseContact'].toString() : null,    
-          autobse_contact_person :row['autobse_contact_person'],
-          vehicleCondition   :row['vehicleCondition'],    
-          powerSteering      :row['powerSteering'],    
-          shape              :row['shape'],    
-          color              :row['color'],
-          state              :row['state'],    
-          city               :row['city'],    
-          area               :row['area'],
-          paymentTerms       :row['paymentTerms'],    
-          dateOfRegistration :row['dateOfRegistration'],   
-          hypothication      :row['hypothication'],    
-          climateControl     :row['climateControl'], 
-          doorCount          :row['doorCount'],
-          gearBox            :row['gearBox'], 
-          buyerFees          :row['buyerFees']!== undefined ? row['buyerFees'].toString() : null,
-          rtoFine            :row['rtoFine']!== undefined ? row['rtoFine'].toString() : null,
-          parkingRate        :row['parkingRate']!== undefined ? row['parkingRate'].toString() : null,
-          approxParkingCharges:row['approxParkingCharges']!== undefined ? row['approxParkingCharges'].toString() : null,   
-          clientContactPerson :row['clientContactPerson'],
-          clientContactNo     :row['clientContactNo']!== undefined ? row['clientContactNo'].toString() : null,
-          additionalRemarks   :row['additionalRemarks'],   
-          lotNumber           :row['lotNumber']
+          ownership        :row['Ownership'],
+          mileage          :row['Mileage'],
+          kmReading        :row['Km_Reading'],
+          insuranceStatus  :row['Insurance_Status'],      
+          yardLocation     :row['yard_Location'],
+          startPrice       :row['Start_Price'], 
+          reservePrice     :row['Reserve_Price'],
+          repoDt           :row['Repo_Dt'],
+          veicleLocation   :row['Veicle_Location'],     
+          vehicleRemarks   :row['Vehicle_Remarks'],      
+          auctionManager   :row['Auction_Manager'],      
+          parkingCharges   :row['Parking_Charges']!== undefined ? row['Parking_Charges'].toString() : null,      
+          insurance        :row['Insurance_Type'],    
+          insuranceValidTill:row['Insurance_Expiry_Date']!== undefined ? row['Insurance_Expiry_Date'].toString() : null,
+          tax               :row['Tax_Type']!== undefined ? row['Tax_Type'].toString() : null,     
+          taxValidityDate   :row['Tax_Validity_Date'],
+          fitness           :row['Fitness'],   
+          permit            :row['Permit'],
+          engineNo          :row['Engine_No'],     
+          chassisNo         :row['Chassis_No'],
+          image             :row['Image'],
+          inspectionLink    :row['Inspection_Link'],    
+          autobseContact    :row['Autobse_Contact']!== undefined ? row['Autobse_Contact'].toString() : null,    
+          autobse_contact_person :row['Autobse_Contact_Person'],
+          vehicleCondition   :row['Vehicle_Condition'],    
+          powerSteering      :row['Power_ Steering'],    
+          shape              :row['Shape'],    
+          color              :row['Color'],
+          state              :row['State'],    
+          city               :row['City'],    
+          area               :row['Area'],
+          paymentTerms       :row['Payment_Terms'],    
+          dateOfRegistration :row['Date_of_Registration'],   
+          hypothication      :row['Hypothication'],    
+          climateControl     :row['Climate_Control'], 
+          doorCount          :row['Door_Count'],
+          gearBox            :row['Gear_Box'], 
+          buyerFees          :row['Buyer_Fees']!== undefined ? row['Buyer_Fees'].toString() : null,
+          rtoFine            :row['RTO_Fine']!== undefined ? row['RTO_Fine'].toString() : null,
+          parkingRate        :row['Parking_Rate']!== undefined ? row['Parking_Rate'].toString() : null,
+          approxParkingCharges:row['Approx. Parking_ Charges']!== undefined ? row['Approx. Parking_ Charges'].toString() : null,   
+          clientContactPerson :row['Client_Contact_Person'],
+          clientContactNo     :row['Client_Contact_No']!== undefined ? row['Client_Contact_No'].toString() : null,
+          additionalRemarks   :row['Additional_Remarks'],   
+          lotNumber           :row['Lot_No']
         },
       });
     }
