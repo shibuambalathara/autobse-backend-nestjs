@@ -2,12 +2,13 @@ import { CreateEventInput } from './create-event.input';
 import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 import { EventBidLockType,EventStatusType } from '@prisma/client';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { eventCategory } from './event.category';
 
 @InputType()
 export class UpdateEventInput extends PartialType(CreateEventInput) {
   @Field({nullable:true})
   @IsString()
-  eventCategory?:string;
+  eventCategory:eventCategory;
 
   @Field({nullable:true})
   startDate?:Date;

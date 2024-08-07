@@ -1,15 +1,17 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { EventBidLockType,EventStatusType } from '@prisma/client';
 import { Seller } from 'src/seller/models/seller.model';
 import { VehicleCategory } from 'src/vehiclecategory/models/vehiclecategory.model';
 import { User } from 'src/user/models/user.model';
+import { eventCategory } from './event.category';
 
 @InputType()
 export class CreateEventInput {
-  @Field({nullable:true})
-  @IsString()
-  eventCategory?:string;
+  @Field(() =>eventCategory , { nullable: false })
+  eventCategory:eventCategory;
+
+  
 
   @Field()
   startDate:Date;
@@ -30,8 +32,8 @@ export class CreateEventInput {
   @Field()
   noOfBids:number;
 
-  @Field({nullable:true})
-  downloadableFile_filesize?:number;
+  // @Field({nullable:true})
+  // downloadableFile_filesize?:number;
 
   @Field({nullable:true})
   downloadableFile_filename?:string;
