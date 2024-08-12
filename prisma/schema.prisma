@@ -237,7 +237,7 @@ model Vehicle {
   make                   String                @default("")
   model                  String                @default("")
   varient                String                @default("")
-  categoty               String                @default("")
+  category               String                @default("")
   fuel                   String                @default("")
   type                   String                @default("")
   rcStatus               String                @default("")
@@ -297,11 +297,14 @@ model Vehicle {
   createdById            String?
   isDeleted              Boolean               @default(false)
 }
-
+enum EventCategory {
+  open
+  online
+}
 model Event {
   id                        String            @id @default(cuid())
   eventNo                   Int               @default(autoincrement())
-  eventCategory             String?
+  eventCategory             EventCategory
   startDate                 DateTime
   endDate                   DateTime
   firstVehicleEndDate       DateTime?
@@ -319,7 +322,7 @@ model Event {
   status                    EventStatusType?  @default(active)
   //ExcelFile                 ExcelUpload?      @relation("Event_ExcelFile", fields: [ExcelFileId], references: [id])
   //ExcelFileId               String?           @unique @map("ExcelFile")
-  downloadableFile_filesize Int?
+  // downloadableFile_filesize Int?
   downloadableFile_filename String?
   termsAndConditions        String            @default("")
   createdAt                 DateTime?         @default(now())
@@ -376,5 +379,15 @@ model Payment{
   isDeleted          Boolean     @default(false)     
 }
 
+model RecentSold{
+  id                 String      @id @default(cuid())
+  image              String?
+  vehicleName        String?
+  location           String?
+  soldDate           String?
+  createdAt          DateTime?   @default(now())
+  updatedAt          DateTime?   @updatedAt
+  isDeleted          Boolean     @default(false)     
+}
 
 

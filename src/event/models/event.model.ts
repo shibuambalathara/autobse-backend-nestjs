@@ -43,8 +43,8 @@ export class Event {
   @Field()
   noOfBids:number;
 
-  @Field({nullable:true})
-  downloadableFile_filesize?:number;
+  // @Field({nullable:true})
+  // downloadableFile_filesize?:number;
 
   @Field({nullable:true})
   downloadableFile_filename?:string;

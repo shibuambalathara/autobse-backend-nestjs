@@ -110,7 +110,7 @@ type Vehicle {
   make: String!
   model: String!
   varient: String!
-  categoty: String!
+  category: String!
   fuel: String!
   type: String!
   rcStatus: String!
@@ -178,7 +178,6 @@ type Event {
   vehicleCategoryId: String!
   locationId: String!
   noOfBids: Float!
-  downloadableFile_filesize: Float
   downloadableFile_filename: String
   termsAndConditions: String!
   createdAt: DateTime
@@ -220,6 +219,13 @@ type Payment {
   registrationExpire: DateTime
 }
 
+type Recentsold {
+  image: String!
+  vehicleName: String!
+  location: String!
+  soldDate: DateTime!
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -255,6 +261,7 @@ type Query {
   payment(where: PaymentWhereUniqueInput!): Payment!
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
+  recentSolds: [Recentsold!]!
 }
 
 input UserWhereUniqueInput {
@@ -318,6 +325,7 @@ type Mutation {
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
   createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  listVehicle(eventId: String!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
@@ -336,6 +344,9 @@ type Mutation {
   updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
   deletePayment(where: PaymentWhereUniqueInput!): Payment!
   restorePayment(where: PaymentWhereUniqueInput!): Payment!
+  createRecentsold(createRecentsoldInput: CreateRecentsoldInput!): Recentsold!
+  updateRecentsold(where: RecentsoldWhereUniqueInput!, updateRecentsoldInput: UpdateRecentsoldInput!): Recentsold!
+  deleteRecentsold(where: RecentsoldWhereUniqueInput!): Recentsold!
 }
 
 input CreateUserInput {
@@ -409,12 +420,12 @@ input UpdateVehiclecategoryInput {
 
 input CreateSellerInput {
   name: String!
-  contactPerson: String!
-  GSTNumber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
+  contactPerson: String
+  GSTNumber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
 }
 
 input UpdateSellerInput {
@@ -438,7 +449,7 @@ input CreateVehicleInput {
   make: String!
   model: String!
   varient: String!
-  categoty: String!
+  category: String!
   fuel: String!
   type: String!
   rcStatus: String!
@@ -501,7 +512,7 @@ input UpdateVehicleInput {
   make: String
   model: String
   varient: String
-  categoty: String
+  category: String
   fuel: String
   type: String
   rcStatus: String
@@ -556,14 +567,13 @@ input UpdateVehicleInput {
 }
 
 input CreateEventInput {
-  eventCategory: String
+  eventCategory: eventCategory!
   startDate: DateTime!
   endDate: DateTime!
   firstVehicleEndDate: DateTime
   pauseDate: DateTime
   pausedTotalTime: Float
   noOfBids: Float!
-  downloadableFile_filesize: Float
   downloadableFile_filename: String
   termsAndConditions: String!
   extraTimeTrigerIn: Float
@@ -574,6 +584,11 @@ input CreateEventInput {
   status: String = "active"
 }
 
+enum eventCategory {
+  Open
+  Online
+}
+
 input UpdateEventInput {
   eventCategory: String
   startDate: DateTime
@@ -582,7 +597,6 @@ input UpdateEventInput {
   pauseDate: DateTime
   pausedTotalTime: Float
   noOfBids: Float
-  downloadableFile_filesize: Float
   downloadableFile_filename: String
   termsAndConditions: String
   extraTimeTrigerIn: Float
@@ -594,6 +608,7 @@ input UpdateEventInput {
   sellerId: String
   vehicleCategoryId: String
   locationId: String
+  downloadableFile_filesize: Float
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -631,4 +646,22 @@ input UpdatePaymentInput {
   description: String
   image: String
   registrationExpire: DateTime
+}
+
+input CreateRecentsoldInput {
+  image: String!
+  vehicleName: String!
+  location: String!
+  soldDate: DateTime!
+}
+
+input RecentsoldWhereUniqueInput {
+  id: String
+}
+
+input UpdateRecentsoldInput {
+  image: String!
+  vehicleName: String!
+  location: String!
+  soldDate: DateTime!
 }

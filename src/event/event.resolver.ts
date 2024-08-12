@@ -8,6 +8,7 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 import { EventWhereUniqueInput } from './dto/unique-event.input'
+import { Vehicle } from 'src/vehicle/models/vehicle.model';
 
 
 
@@ -73,4 +74,5 @@ export class EventResolver {
   async restoreEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.restoreEvent(where);
   }
+
 }

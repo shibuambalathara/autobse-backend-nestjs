@@ -48,7 +48,7 @@ export class Vehicle {
   varient:string;
 
   @Field()
-  categoty:string;
+  category:string;
 
   @Field()
   fuel:string;

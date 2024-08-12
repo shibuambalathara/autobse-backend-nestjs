@@ -6,7 +6,7 @@ import { EventWhereUniqueInput } from './dto/unique-event.input';
 import { Prisma } from '@prisma/client';
 import { Args } from '@nestjs/graphql';
 import { Event } from './models/event.model';
-import moment from 'moment-timezone';
+
 
 @Injectable()
 export class EventService {
@@ -96,5 +96,6 @@ export class EventService {
         }
       });
     }
+
   }
 

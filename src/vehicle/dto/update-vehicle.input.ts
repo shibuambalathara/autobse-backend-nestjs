@@ -54,7 +54,7 @@ export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
   varient?:string;
 
   @Field({nullable:true})
-  categoty?:string;
+  category?:string;
 
   @Field({nullable:true})
   fuel?:string;

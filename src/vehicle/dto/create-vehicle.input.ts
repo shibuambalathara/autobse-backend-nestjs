@@ -52,7 +52,7 @@ export class CreateVehicleInput {
   varient:string;
 
   @Field()
-  categoty:string;
+  category:string;
 
   @Field()
   fuel:string;
