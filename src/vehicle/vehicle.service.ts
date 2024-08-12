@@ -4,10 +4,15 @@ import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class VehicleService {
-  constructor(private readonly prisma:PrismaService){}
+  constructor(private readonly prisma:PrismaService,
+    @InjectQueue('vehicle-bid') private readonly vehicleBidQueue: Queue
+  ){}
+  
 
   async createVehicle(id: string,userId: string,eventId: string,createVehicleInput: CreateVehicleInput): Promise<Vehicle | null> {
     try {
@@ -30,21 +35,17 @@ export class VehicleService {
       if (!lastVehicle) {
         bidStartTime = new Date(event.startDate);
         bidTimeExpire = new Date(event.endDate);
+        await this.prisma.event.update({
+              where: { id: eventId },
+              data: { endDate: bidTimeExpire, firstVehicleEndDate: bidTimeExpire},
+            });
       } 
       else {
         bidStartTime = new Date(event.startDate);
         const bidexpire = new Date(lastVehicle.bidTimeExpire);
         bidTimeExpire = new Date(bidexpire.getTime() + event.gapInBetweenVehicles * 60000);
       }
-      const firstVehicle = await this.prisma.vehicle.findFirst({where: { eventId: eventId },orderBy: { bidTimeExpire: 'asc' }, });
-
-      if (firstVehicle) {
-        const firstEndDate = firstVehicle.bidTimeExpire;
-        const event_data = await this.prisma.event.update({
-          where: { id: eventId },
-          data: { endDate: bidTimeExpire, firstVehicleEndDate: firstEndDate },
-        });
-      }       
+      
       return await this.prisma.vehicle.create({
         data: {
           ...createVehicleInput,
@@ -126,6 +127,22 @@ export class VehicleService {
         isDeleted:false,
       }
     });
+  }
+
+
+  async listVehicle(eventId: string) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: eventId },
+    });
+
+    if (vehicle) {
+      // Add job to queue
+      await this.vehicleBidQueue.add('bid',{ eventId, incrementTime: 1 });
+
+      return vehicle;
+    }
+
+    throw new Error('Vehicle not found');
   }
   }
 
