@@ -326,6 +326,7 @@ type Mutation {
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
   createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  listVehicle(eventId: String!): Vehicle!
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!

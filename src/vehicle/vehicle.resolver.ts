@@ -24,6 +24,12 @@ export class VehicleResolver {
     return this.vehicleService.createVehicle(id,userId,eventId,createVehicleInput);
   }
 
+  @Mutation(returns=>Vehicle)
+  async listVehicle(@Args('eventId') eventId: string) {
+    return this.vehicleService.listVehicle(eventId);
+  }
+    
+
   @Query(returns => [Vehicle])
   async vehicles() :Promise<Vehicle[]|null>{
     return this.vehicleService.vehicles();
