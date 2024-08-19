@@ -1,44 +1,68 @@
-// // vehicle.processor.ts
-// import { InjectQueue, Processor } from '@nestjs/bull';
-// import { Job, Queue } from 'bull';
-// import { PrismaService } from '../prisma/prisma.service';
-// import { Process } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { Job, Queue, Worker} from 'bullmq';
+import { PrismaService } from 'src/prisma/prisma.service'; 
+import { Vehicle } from './models/vehicle.model';
 
-// @Processor('vehicle-bid')
-// export class VehicleProcessor {
-//   constructor(private readonly prisma: PrismaService,
-//     @InjectQueue('vehicle-bid') private readonly vehicleBidQueue: Queue,
-//   ) {}
+@Injectable()
+export class VehicleQueueProcessor {
+  private vehicleBidQueue: Queue;
+  private worker: Worker;
 
-//   @Process('bid')
-//   async handleBid(job: Job) {
-//     const { vehicleId, incrementTime } = job.data;
+  constructor(private prisma: PrismaService) {
+    // Initialize your queue with Redis configuration
+    this.vehicleBidQueue = new Queue('vehicleBidQueue', {
+      connection: {
+        host: 'localhost',
+        port: 6379,
+        password:"redis"
+      },
+    });
 
-//     // Fetch the vehicle
-//     const vehicle = await this.prisma.vehicle.findUnique({
-//       where: { id: vehicleId },
-//     });
+    // Initialize the worker with Redis configuration
+    this.initializeProcessor();
+  }
 
-//     if (vehicle) {
-//       // Update the vehicle's bid end time
-//       await this.prisma.vehicle.update({
-//         where: { id: vehicleId },
-//         data: {
-//           bidTimeExpire: new Date(vehicle.bidTimeExpire.getTime() + incrementTime * 60000),
-//         },
-//       });
+  private initializeProcessor() {
+    this.worker = new Worker('vehicleBidQueue', async (job) => {
+      const { vehicle } = job.data;
 
-//     //   // Check if there's another vehicle to bid
-//     //   const nextVehicle = await this.prisma.vehicle.findFirst({
-//     //     where: { /* your conditions here */ },
-//     //   });
+      // Display the vehicle (e.g., show it in the UI, or perform other actions)
+      console.log(`Displaying vehicle: ${vehicle.id}`);
 
-//     //   if (nextVehicle) {
-//     //     // Add the next vehicle to the bid queue
-//     //     await this.vehicleBidQueue.add('bid', { vehicleId: nextVehicle.id, incrementTime: 1 }, {
-//     //       delay: nextVehicle.bidStartTime.getTime() - Date.now(),
-//     //     });
-//     //   }
-//      }
-//   }
-// }
+      // After displaying the vehicle, update its status or perform additional actions
+    }, {
+      connection: {
+        host: 'localhost',
+        port: 6379,
+        password:"redis"
+      },
+    });
+
+    // Handle worker events for error logging or other purposes
+    this.worker.on('completed', (job) => {
+      console.log(`Job completed: ${job.id}`);
+    });
+
+    this.worker.on('failed', (job, err) => {
+      console.error(`Job failed: ${job.id}, error: ${err.message}`);
+    });
+  }
+  async handleVehicle(job:Job) {
+    const vehicle = job.data.vehicle;
+    const startTime = new Date(vehicle.bidStartTime).getTime();
+    const endTime = new Date(vehicle.bidTimeExpire).getTime();
+    const currentTime = Date.now();
+
+    const remainingTime = endTime - currentTime;
+
+    if (remainingTime > 0) {
+      setTimeout(() => this.processNextVehicle(vehicle), remainingTime);
+    } else {
+      this.processNextVehicle(vehicle);
+    }
+  }
+  processNextVehicle(job:Job) {
+    const vehicle = job.data.vehicle;
+    return vehicle;
+  }
+}

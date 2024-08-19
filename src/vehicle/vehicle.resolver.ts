@@ -24,10 +24,6 @@ export class VehicleResolver {
     return this.vehicleService.createVehicle(id,userId,eventId,createVehicleInput);
   }
 
-  @Mutation(returns=>Vehicle)
-  async listVehicle(@Args('eventId') eventId: string) {
-    return this.vehicleService.listVehicle(eventId);
-  }
     
 
   @Query(returns => [Vehicle])
@@ -74,4 +70,11 @@ export class VehicleResolver {
   async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
     return this.vehicleService.restoreVehicle(where);
   }
+
+  @Query(returns => [Vehicle])
+  async listVehiclesFromQueue() :Promise<Vehicle[]|null>{
+    return this.vehicleService.listVehicleFromQueue();
+  }
+
+  
 }

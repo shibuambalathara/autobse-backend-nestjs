@@ -17,6 +17,10 @@ import { ExceluploadModule } from './excelupload/excelupload.module';
 import { StatusModule } from './status/status.module';
 import { PaymentModule } from './payment/payment.module';
 import { RecentsoldModule } from './recentsold/recentsold.module';
+import { BullModule } from '@nestjs/bullmq';
+import { BullBoardModule } from './bull/bull.module';
+// import { BullModule } from './bull/bull.module';
+import { BidModule } from './bid/bid.module';
 
 
 
@@ -29,7 +33,16 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
-    
+    BullModule.forRoot({
+      connection: {
+        host: '172.18.0.2',
+        port: 6379,
+      },
+    }),
+    // BullModule.registerQueue({
+    //   name: 'vehicle-bid',
+    // }),
+    BullBoardModule,
     UserModule,
     AuthModule,
     StateModule,
@@ -42,7 +55,8 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
     StatusModule,
     PaymentModule,
     RecentsoldModule,
-
+    BullModule,
+    BidModule
 
   ],
   providers: [

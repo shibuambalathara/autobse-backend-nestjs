@@ -227,7 +227,20 @@ type Recentsold {
   soldDate: DateTime!
 }
 
+type Bid {
+  id: String!
+  name: String!
+  amount: Float!
+  useId: String!
+  bidVehicleId: String!
+}
+
 type Query {
+  vehicles: [Vehicle!]!
+  vehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  deletedVehicles: [Vehicle!]!
+  deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  listVehiclesFromQueue: [Vehicle!]!
   users: [User]!
   user(where: UserWhereUniqueInput!): User
   deletedUser(where: UserWhereUniqueInput!): User
@@ -244,10 +257,6 @@ type Query {
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  vehicles: [Vehicle!]!
-  vehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  deletedVehicles: [Vehicle!]!
-  deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   events: [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
@@ -263,6 +272,11 @@ type Query {
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
   recentSolds: [Recentsold!]!
+  bid(id: Int!): Bid!
+}
+
+input VehicleWhereUniqueInput {
+  id: String
 }
 
 input UserWhereUniqueInput {
@@ -288,10 +302,6 @@ input SellerWhereUniqueInput {
   name: String
 }
 
-input VehicleWhereUniqueInput {
-  id: String
-}
-
 input EventWhereUniqueInput {
   id: String
 }
@@ -309,6 +319,10 @@ input PaymentWhereUniqueInput {
 }
 
 type Mutation {
+  createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
+  updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
+  deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
@@ -325,11 +339,6 @@ type Mutation {
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
-  createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
-  listVehicle(eventId: String!): Vehicle!
-  updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
-  deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
   createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
@@ -348,95 +357,9 @@ type Mutation {
   createRecentsold(createRecentsoldInput: CreateRecentsoldInput!): Recentsold!
   updateRecentsold(where: RecentsoldWhereUniqueInput!, updateRecentsoldInput: UpdateRecentsoldInput!): Recentsold!
   deleteRecentsold(where: RecentsoldWhereUniqueInput!): Recentsold!
-}
-
-input CreateUserInput {
-  email: String
-  username: String
-  firstName: String
-  lastName: String
-  businessName: String
-  mobile: String!
-  password: String
-  BalanceEMDAmount: Float
-  pancardNo: String
-  idProofNo: String
-  country: String
-  city: String
-  userCategory: String
-  tempToken: Float
-  accessToken: String
-  role: UserRoleType
-  state: StateNames!
-}
-
-enum UserRoleType {
-  admin
-  staff
-  seller
-  dealer
-}
-
-input UpdateUserInput {
-  email: String
-  username: String
-  firstName: String
-  lastName: String
-  businessName: String
-  mobile: String
-  password: String
-  BalanceEMDAmount: Float
-  pancardNo: String
-  idProofNo: String
-  country: String
-  city: String
-  userCategory: String
-  tempToken: Float
-  role: UserRoleType!
-  state: StateNames
-}
-
-input LoginUserInput {
-  mobile: String!
-  password: String!
-}
-
-input CreateLocationInput {
-  name: String!
-  state: StateNames!
-}
-
-input UpdateLocationInput {
-  name: String
-  state: StateNames
-}
-
-input CreateVehiclecategoryInput {
-  name: String!
-}
-
-input UpdateVehiclecategoryInput {
-  name: String
-}
-
-input CreateSellerInput {
-  name: String!
-  contactPerson: String!
-  GSTNumber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
-}
-
-input UpdateSellerInput {
-  name: String
-  contactPerson: String
-  GSTNumber: String
-  billingContactPerson: String
-  mobile: String
-  nationalHead: String
-  logo: String
+  createBid(createBidInput: CreateBidInput!): Bid!
+  updateBid(updateBidInput: UpdateBidInput!): Bid!
+  removeBid(id: Int!): Bid!
 }
 
 input CreateVehicleInput {
@@ -567,6 +490,95 @@ input UpdateVehicleInput {
   bidStartTime: String
 }
 
+input CreateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String!
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  accessToken: String
+  role: UserRoleType
+  state: StateNames!
+}
+
+enum UserRoleType {
+  admin
+  staff
+  seller
+  dealer
+}
+
+input UpdateUserInput {
+  email: String
+  username: String
+  firstName: String
+  lastName: String
+  businessName: String
+  mobile: String
+  password: String
+  BalanceEMDAmount: Float
+  pancardNo: String
+  idProofNo: String
+  country: String
+  city: String
+  userCategory: String
+  tempToken: Float
+  role: UserRoleType!
+  state: StateNames
+}
+
+input LoginUserInput {
+  mobile: String!
+  password: String!
+}
+
+input CreateLocationInput {
+  name: String!
+  state: StateNames!
+}
+
+input UpdateLocationInput {
+  name: String
+  state: StateNames
+}
+
+input CreateVehiclecategoryInput {
+  name: String!
+}
+
+input UpdateVehiclecategoryInput {
+  name: String
+}
+
+input CreateSellerInput {
+  name: String!
+  contactPerson: String!
+  GSTNumber: String!
+  billingContactPerson: String!
+  mobile: String!
+  nationalHead: String!
+  logo: String!
+}
+
+input UpdateSellerInput {
+  name: String
+  contactPerson: String
+  GSTNumber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
+}
+
 input CreateEventInput {
   eventCategory: String
   startDate: DateTime!
@@ -661,4 +673,15 @@ input UpdateRecentsoldInput {
   vehicleName: String!
   location: String!
   soldDate: DateTime!
+}
+
+input CreateBidInput {
+  name: String!
+  amount: String!
+}
+
+input UpdateBidInput {
+  name: String
+  amount: String
+  id: Int!
 }
