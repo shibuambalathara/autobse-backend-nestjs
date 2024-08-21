@@ -47,22 +47,22 @@ export class VehicleQueueProcessor {
       console.error(`Job failed: ${job.id}, error: ${err.message}`);
     });
   }
-  async handleVehicle(job:Job) {
-    const vehicle = job.data.vehicle;
-    const startTime = new Date(vehicle.bidStartTime).getTime();
-    const endTime = new Date(vehicle.bidTimeExpire).getTime();
-    const currentTime = Date.now();
+  // async handleVehicle(job:Job) {
+  //   const vehicle = job.data.vehicle;
+  //   const startTime = new Date(vehicle.bidStartTime).getTime();
+  //   const endTime = new Date(vehicle.bidTimeExpire).getTime();
+  //   const currentTime = Date.now();
 
-    const remainingTime = endTime - currentTime;
+  //   const remainingTime = endTime - currentTime;
 
-    if (remainingTime > 0) {
-      setTimeout(() => this.processNextVehicle(vehicle), remainingTime);
-    } else {
-      this.processNextVehicle(vehicle);
-    }
-  }
-  processNextVehicle(job:Job) {
-    const vehicle = job.data.vehicle;
-    return vehicle;
-  }
+  //   if (remainingTime > 0) {
+  //     setTimeout(() => this.processNextVehicle(vehicle), remainingTime);
+  //   } else {
+  //     this.processNextVehicle(vehicle);
+  //   }
+  // }
+  // processNextVehicle(job:Job) {
+  //   const vehicle = job.data.vehicle;
+  //   return vehicle;
+  // }
 }
