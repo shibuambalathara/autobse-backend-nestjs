@@ -165,6 +165,14 @@ type Vehicle {
   createdById: String
 }
 
+type Bid {
+  id: String!
+  name: String!
+  amount: Float!
+  userId: String!
+  bidVehicleId: String!
+}
+
 type Event {
   id: String!
   eventNo: Float!
@@ -227,20 +235,14 @@ type Recentsold {
   soldDate: DateTime!
 }
 
-type Bid {
-  id: String!
-  name: String!
-  amount: Float!
-  useId: String!
-  bidVehicleId: String!
-}
-
 type Query {
   vehicles: [Vehicle!]!
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   listVehiclesFromQueue: [Vehicle!]!
+  Bids: [Bid!]!
+  Bid(id: String!): Bid!
   users: [User]!
   user(where: UserWhereUniqueInput!): User
   deletedUser(where: UserWhereUniqueInput!): User
@@ -272,7 +274,6 @@ type Query {
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
   recentSolds: [Recentsold!]!
-  bid(id: Int!): Bid!
 }
 
 input VehicleWhereUniqueInput {
@@ -323,6 +324,10 @@ type Mutation {
   updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  placeBid(userId: String!, bidVehicleId: String!, createBidInput: CreateBidInput!): Bid!
+  createBid(userId: String!, bidVehicleId: String!, createBidInput: CreateBidInput!): Bid!
+  updateBid(id: String!, updateBidInput: UpdateBidInput!): Bid!
+  deleteBid(id: String!): Bid!
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
@@ -357,9 +362,6 @@ type Mutation {
   createRecentsold(createRecentsoldInput: CreateRecentsoldInput!): Recentsold!
   updateRecentsold(where: RecentsoldWhereUniqueInput!, updateRecentsoldInput: UpdateRecentsoldInput!): Recentsold!
   deleteRecentsold(where: RecentsoldWhereUniqueInput!): Recentsold!
-  createBid(createBidInput: CreateBidInput!): Bid!
-  updateBid(updateBidInput: UpdateBidInput!): Bid!
-  removeBid(id: Int!): Bid!
 }
 
 input CreateVehicleInput {
@@ -488,6 +490,16 @@ input UpdateVehicleInput {
   lotNumber: Float
   bidTimeExpire: String
   bidStartTime: String
+}
+
+input CreateBidInput {
+  name: String!
+  amount: Float!
+}
+
+input UpdateBidInput {
+  name: String!
+  amount: Float!
 }
 
 input CreateUserInput {
@@ -673,15 +685,4 @@ input UpdateRecentsoldInput {
   vehicleName: String!
   location: String!
   soldDate: DateTime!
-}
-
-input CreateBidInput {
-  name: String!
-  amount: String!
-}
-
-input UpdateBidInput {
-  name: String
-  amount: String
-  id: Int!
 }

@@ -8,10 +8,14 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/role/role.decorator';
 import { RolesGuard } from 'src/role/role.guard';
+import { Bid } from 'src/bid/models/bid.model';
+import { BidService } from 'src/bid/bid.service';
+import { CreateBidInput } from 'src/bid/dto/create-bid.input';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
-  constructor(private readonly vehicleService: VehicleService) {}
+  constructor(private readonly vehicleService: VehicleService,
+  ) {}
 
   @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
@@ -75,6 +79,9 @@ export class VehicleResolver {
   async listVehiclesFromQueue() :Promise<Vehicle[]|null>{
     return this.vehicleService.listVehicleFromQueue();
   }
-
+  @Mutation(() => Bid)
+  async placeBid(@Args('userId') userId:string,@Args('bidVehicleId') bidVehicleId:string,@Args('createBidInput') createBidInput: CreateBidInput) :Promise<Bid|null>{
+    return this.vehicleService.placeBid(userId,bidVehicleId,createBidInput);
+  }
   
 }

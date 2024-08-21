@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, Vehicle } from '@prisma/client';
+import { Bid, Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Queue,Worker } from 'bullmq';
+import { Job, Queue,Worker } from 'bullmq';
 import { RedisOptions } from 'ioredis';
+import { CreateBidInput } from 'src/bid/dto/create-bid.input';
 
 
 @Injectable()
@@ -145,50 +146,99 @@ export class VehicleService {
 
   async listVehicleFromQueue(): Promise<Vehicle[] | null> {
     try {
-      const jobs = await this.vehicleBidQueue.getJobs(['waiting'],1);
+      const jobs = await this.vehicleBidQueue.getJobs(['waiting'], 1);
       if (!jobs || jobs.length === 0) {
         console.log('No jobs found in the waiting state.');
-        return null;
+        return [];
       }
-      
-      const vehicles = jobs.map(job => {
-        const data = job.data.vehicle;
-        console.log('Job data:', data); 
-        return {
-          ...data,
-          bidStartTime: new Date(data.bidStartTime), 
-          bidTimeExpire:new Date(data.bidTimeExpire),
-          createdAt:new Date(data.createdAt),
-          updatedAt:new Date(data.updatedAt),
-          dateOfRegistartion:new Date(data.dateOfRegistartion),
-
-        };
-      });
+  
+      const vehicles = await Promise.all(
+        jobs.map(async job => {
+          const latestJob = await this.vehicleBidQueue.getJob(job.id); // Fetch the latest job data
+          if (!latestJob) {
+            return null; // Handle case where job might have been removed or is unavailable
+          }
+          const data = latestJob.data.vehicle;
+          console.log('Job data:', data);
+          return {
+            ...data,
+            bidStartTime: new Date(data.bidStartTime),
+            bidTimeExpire: new Date(data.bidTimeExpire),
+            createdAt: new Date(data.createdAt),
+            updatedAt: new Date(data.updatedAt),
+            dateOfRegistration: new Date(data.dateOfRegistration),
+          };
+        })
+      );
+  
       return vehicles;
   }
     catch (error) {
       console.error('Error retrieving jobs from the queue:', error);
-      return null;
+      return [];
+    }
+  }
+
+  async placeBid( userId: string,bidVehicleId: string,createBidInput:CreateBidInput): Promise<Bid|null> {
+    try {
+      const result = await this.prisma.bid.create({
+        data: {
+          ...createBidInput,
+          userId:userId,
+          bidVehicleId:bidVehicleId
+        }
+      });
+      const additionalTime = 2 * 60 * 1000; // 2 minutes
+      await this.updateVehicleExpireTime(bidVehicleId, additionalTime);
+      console.log('Creating bid with:', { userId, bidVehicleId, createBidInput });
+
+      return result;
+      
+    }
+    catch (error) {
+      throw new Error(error.message)  
+    }
+  }
+
+  async updateVehicleExpireTime(bidVehicleId: string, additionalTime: number): Promise<void> {
+    const job: Job = await this.vehicleBidQueue.getJob(bidVehicleId);
+  
+    if (job) {
+      const currentExpireTime = new Date(job.data.bidTimeExpire).getTime();
+      const newExpireTime = new Date(currentExpireTime + additionalTime).toISOString();
+  
+      const updatedData = {
+        ...job.data,
+        bidTimeExpire: newExpireTime,
+      };
+  
+      await job.updateData(updatedData);
+      const updatedJob = await this.vehicleBidQueue.getJob(bidVehicleId);
+      console.log('Updated job data:', updatedJob?.data);
+      console.log(`Updated bidTimeExpire for vehicle ${bidVehicleId} to ${newExpireTime}`);
+    } else {
+      console.error(`Job with vehicleId ${bidVehicleId} not found.`);
     }
   }
   
-  async handleBid(vehicleId: string) {
-  const vehicleJob = await this.vehicleBidQueue.getJob(vehicleId);
-  if (vehicleJob) {
-    const currentTime = Date.now();
-    const expireTime = new Date(vehicleJob.data.expireTime).getTime();
+//   async handleBid(vehicleId: string) {
+//   const vehicleJob = await this.vehicleBidQueue.getJob(vehicleId);
+//   if (vehicleJob) {
+//     const currentTime = Date.now();
+//     const expireTime = new Date(vehicleJob.data.expireTime).getTime();
 
-    if (currentTime < expireTime) {
-      // Extend expire time by 2 minutes
-      const newExpireTime = expireTime + 2 * 60 * 1000;
-      vehicleJob.data.expireTime = new Date(newExpireTime).toISOString();
+//     if (currentTime < expireTime) {
+//       // Extend expire time by 2 minutes
+//       const newExpireTime = expireTime + 2 * 60 * 1000;
+//       vehicleJob.data.expireTime = new Date(newExpireTime).toISOString();
 
-      // Update delay for the vehicle in the queue
-      const remainingTime = newExpireTime - currentTime;
-      vehicleJob.moveToDelayed(remainingTime);
-    }
-  }
-}
+//       // Update delay for the vehicle in the queue
+//       const remainingTime = newExpireTime - currentTime;
+//       vehicleJob.moveToDelayed(remainingTime);
+//     }
+//   }
+// }
+
 
 //  const showNextVehicle = async () => {
 //   const jobs = await this.vehicleBidQueue.getJobs('waiting');
