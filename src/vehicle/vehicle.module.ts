@@ -3,7 +3,7 @@ import { VehicleService } from './vehicle.service';
 import { VehicleResolver } from './vehicle.resolver';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BullModule } from '@nestjs/bullmq';
-import { VehicleQueueProcessor } from './vehicle.processor';
+// import { VehicleQueueProcessor } from './vehicle.processor';
 import { BidModule } from 'src/bid/bid.module';
 
 
@@ -14,7 +14,7 @@ import { BidModule } from 'src/bid/bid.module';
     }),
     BidModule
   ],
-  providers: [VehicleResolver, VehicleService,VehicleQueueProcessor,PrismaService],
+  providers: [VehicleResolver, VehicleService,PrismaService],
   exports: [BullModule],
 })
 export class VehicleModule {}

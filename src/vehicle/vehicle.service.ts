@@ -5,16 +5,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Bid, Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Job, Queue,Worker } from 'bullmq';
+import { delay, Job, Queue,Worker } from 'bullmq';
 import { RedisOptions } from 'ioredis';
 import { CreateBidInput } from 'src/bid/dto/create-bid.input';
+import Redis from 'ioredis';
 
 
 @Injectable()
 export class VehicleService {
+  private readonly redis: Redis;
   constructor(private readonly prisma:PrismaService,
     @InjectQueue('vehicle-bid') private readonly vehicleBidQueue: Queue
-  ){}
+  ){this.redis = new Redis({ host: 'localhost',
+    port: 6379,
+  password:"redis"});}
   
 
   async createVehicle(id: string,userId: string,eventId: string,createVehicleInput: CreateVehicleInput): Promise<Vehicle | null> {
@@ -60,13 +64,14 @@ export class VehicleService {
         },
       });
       
-      if (event.eventCategory === 'offline') 
-        {
-        await this.vehicleBidQueue.add('process-vehicle', {
-          vehicle,
-        }, {
-          delay: Math.max(new Date(vehicle.bidTimeExpire).getTime() - Date.now(), 0),
-        });
+      if (event.eventCategory === 'offline') {
+        const eventStartTime = new Date(event.startDate).getTime(); // Event start time in milliseconds
+        const currentVehicleCount = await this.vehicleBidQueue.count(); // Count the number of vehicles in the queue
+    
+        // Calculate the delay based on the event start time and the number of vehicles already in the queue
+        const delay = Math.max(eventStartTime - Date.now(), 0) + currentVehicleCount * 5 * 60 * 1000; // 5 minutes per vehicle
+    
+        await this.vehicleBidQueue.add(vehicle.id, { vehicle }, { delay });
       }
       return vehicle;
 
@@ -142,120 +147,142 @@ export class VehicleService {
     });
   }
 
-
-
-  async listVehicleFromQueue(): Promise<Vehicle[] | null> {
+ async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidInput): Promise<Bid | null> {
+    const lockKey = `vehicle-lock:${bidVehicleId}`;
     try {
-      const jobs = await this.vehicleBidQueue.getJobs(['waiting'], 1);
-      if (!jobs || jobs.length === 0) {
-        console.log('No jobs found in the waiting state.');
-        return [];
-      }
-  
-      const vehicles = await Promise.all(
-        jobs.map(async job => {
-          const latestJob = await this.vehicleBidQueue.getJob(job.id); // Fetch the latest job data
-          if (!latestJob) {
-            return null; // Handle case where job might have been removed or is unavailable
-          }
-          const data = latestJob.data.vehicle;
-          console.log('Job data:', data);
-          return {
-            ...data,
-            bidStartTime: new Date(data.bidStartTime),
-            bidTimeExpire: new Date(data.bidTimeExpire),
-            createdAt: new Date(data.createdAt),
-            updatedAt: new Date(data.updatedAt),
-            dateOfRegistration: new Date(data.dateOfRegistration),
-          };
-        })
-      );
-  
-      return vehicles;
-  }
-    catch (error) {
-      console.error('Error retrieving jobs from the queue:', error);
-      return [];
-    }
-  }
-
-  async placeBid( userId: string,bidVehicleId: string,createBidInput:CreateBidInput): Promise<Bid|null> {
-    try {
+      // Create a new bid
       const result = await this.prisma.bid.create({
         data: {
           ...createBidInput,
-          userId:userId,
-          bidVehicleId:bidVehicleId
+          userId: userId,
+          bidVehicleId: bidVehicleId
         }
       });
-      const additionalTime = 2 * 60 * 1000; // 2 minutes
-      await this.updateVehicleExpireTime(bidVehicleId, additionalTime);
-      console.log('Creating bid with:', { userId, bidVehicleId, createBidInput });
-
-      return result;
+  
+      // Check if the job is locked
+      const isLocked = await this.redis.set(lockKey, 'locked', 'EX', 60); // Lock for 60 seconds
       
-    }
-    catch (error) {
-      throw new Error(error.message)  
+      if (!isLocked) {
+        console.log(`Job ${bidVehicleId} is already locked.`);
+        return result;
+      }
+  
+      // Fetch the vehicle job from the queue using the bidVehicleId
+      const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
+      const vehicleJob = jobs.find(job => job.data?.vehicle?.id === bidVehicleId);
+  
+      if (!vehicleJob) {
+        console.log(`Vehicle Job with ID ${bidVehicleId} not found or job data is missing.`);
+        return result;
+      }
+  
+      // Log job data for debugging
+      console.log('Job data:', vehicleJob.data);
+  
+      // Get the current delay and calculate the new delay
+      const currentDelay = vehicleJob.opts.delay || 0;
+      const additionalDelay = 2 * 60 * 1000; // 2 minutes in milliseconds
+      const newDelay = currentDelay + additionalDelay;
+  
+      // Update the job's delay
+      await vehicleJob.changeDelay(newDelay);
+  
+      // Calculate the new run time
+      const currentTime = Date.now();
+      const newRunTime = new Date(currentTime + newDelay);
+  
+      console.log(`Vehicle ID ${bidVehicleId} delay extended by 2 minutes. New run time: ${newRunTime.toLocaleTimeString()}`);
+  
+      return result;
+    } catch (error) {
+      console.error('Error placing bid:', error.message);
+      throw new Error('Failed to place bid');
+    } finally {
+      // Release the lock
+      await this.redis.del(lockKey);
     }
   }
+  
+  
+  
+  async listVehicleFromQueue(): Promise<Vehicle[] | null> {
+  try {
+    const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
 
-  async updateVehicleExpireTime(bidVehicleId: string, additionalTime: number): Promise<void> {
-    const job: Job = await this.vehicleBidQueue.getJob(bidVehicleId);
-  
-    if (job) {
-      const currentExpireTime = new Date(job.data.bidTimeExpire).getTime();
-      const newExpireTime = new Date(currentExpireTime + additionalTime).toISOString();
-  
-      const updatedData = {
-        ...job.data,
-        bidTimeExpire: newExpireTime,
-      };
-  
-      await job.updateData(updatedData);
-      const updatedJob = await this.vehicleBidQueue.getJob(bidVehicleId);
-      console.log('Updated job data:', updatedJob?.data);
-      console.log(`Updated bidTimeExpire for vehicle ${bidVehicleId} to ${newExpireTime}`);
-    } else {
-      console.error(`Job with vehicleId ${bidVehicleId} not found.`);
+    if (!jobs || jobs.length === 0) {
+      console.log('No jobs found in the waiting or delayed state.');
+      return [];
     }
+
+    console.log(`Found ${jobs.length} jobs in the waiting or delayed state.`);
+    const now = new Date();
+    console.log('Current time:', now.toISOString());
+
+    const vehiclesWithInsertionTime = [];
+    jobs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+    for (const job of jobs) {
+      const jobState = await job.getState();
+      if (!jobState) {
+        console.log(`Job with ID ${job.id} does not have a state.`);
+        continue;
+      }
+
+      console.log('Job data:', job.data); // Log full job data
+
+      if (!job.data || !job.data.vehicle) {
+        console.log(`Job with ID ${job.id} does not have vehicle data.`);
+        continue;
+      }
+
+      const data = job.data.vehicle;
+      const insertionTime = new Date(job.timestamp);
+
+      if (jobState === 'delayed') {
+        console.log(`Vehicle ID ${data.id} inserted at: ${insertionTime.toISOString()}`);
+        vehiclesWithInsertionTime.push({
+          vehicle: data,
+          insertionTime,
+        });
+      }
+    }
+
+    if (vehiclesWithInsertionTime.length === 0) {
+      console.log('No vehicles to activate.');
+      return [];
+    }
+
+    vehiclesWithInsertionTime.sort((a, b) => a.insertionTime.getTime() - b.insertionTime.getTime());
+
+    const displayDuration = 5 * 60 * 1000;
+    const startTime = vehiclesWithInsertionTime[0].insertionTime || now;
+    const elapsed = now.getTime() - startTime.getTime();
+    const vehicleIndex = Math.floor(elapsed / displayDuration);
+
+    if (vehicleIndex >= vehiclesWithInsertionTime.length) {
+      console.log('No vehicle is ready to be activated at this time.');
+      return [];
+    }
+
+    const vehicleToActivate = vehiclesWithInsertionTime[vehicleIndex];
+    console.log('Activating Vehicle:', vehicleToActivate.vehicle);
+
+    return [{
+      ...vehicleToActivate.vehicle,
+      bidStartTime: new Date(vehicleToActivate.vehicle.bidStartTime),
+      bidTimeExpire: new Date(vehicleToActivate.vehicle.bidTimeExpire),
+      createdAt: new Date(vehicleToActivate.vehicle.createdAt),
+      updatedAt: new Date(vehicleToActivate.vehicle.updatedAt),
+      dateOfRegistration: new Date(vehicleToActivate.vehicle.dateOfRegistration),
+    }];
+  } catch (error) {
+    console.error('Error retrieving jobs from the queue:', error);
+    return [];
   }
-  
-//   async handleBid(vehicleId: string) {
-//   const vehicleJob = await this.vehicleBidQueue.getJob(vehicleId);
-//   if (vehicleJob) {
-//     const currentTime = Date.now();
-//     const expireTime = new Date(vehicleJob.data.expireTime).getTime();
-
-//     if (currentTime < expireTime) {
-//       // Extend expire time by 2 minutes
-//       const newExpireTime = expireTime + 2 * 60 * 1000;
-//       vehicleJob.data.expireTime = new Date(newExpireTime).toISOString();
-
-//       // Update delay for the vehicle in the queue
-//       const remainingTime = newExpireTime - currentTime;
-//       vehicleJob.moveToDelayed(remainingTime);
-//     }
-//   }
-// }
+}
 
 
-//  const showNextVehicle = async () => {
-//   const jobs = await this.vehicleBidQueue.getJobs('waiting');
-//   if (jobs.length > 0) {
-//     const nextVehicle = jobs[0]; // The next vehicle in the queue
-//     // Process or display this next vehicle
-//   }
-// };
-// const scheduleNextVehicle = async () => {
-//   const currentVehicle = await this.getCurrentVehicle();
-//   if (currentVehicle) {
-//     const remainingTime = new Date(currentVehicle.endTime).getTime() - Date.now();
-//     setTimeout(async () => {
-//       await showNextVehicle();
-//     }, remainingTime);
-//   }
-// };
+    
 }
 
   

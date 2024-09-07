@@ -1,68 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { Job, Queue, Worker} from 'bullmq';
-import { PrismaService } from 'src/prisma/prisma.service'; 
-import { Vehicle } from './models/vehicle.model';
+// import { Injectable } from '@nestjs/common';
+// import { Job, Queue, Worker} from 'bullmq';
+// import { PrismaService } from 'src/prisma/prisma.service'; 
+// import { Vehicle } from './models/vehicle.model';
 
-@Injectable()
-export class VehicleQueueProcessor {
-  private vehicleBidQueue: Queue;
-  private worker: Worker;
+// @Injectable()
+// export class VehicleQueueProcessor {
+//   private vehicleBidQueue: Queue;
+//   private worker: Worker;
 
-  constructor(private prisma: PrismaService) {
-    // Initialize your queue with Redis configuration
-    this.vehicleBidQueue = new Queue('vehicleBidQueue', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-        password:"redis"
-      },
-    });
-
-    // Initialize the worker with Redis configuration
-    this.initializeProcessor();
-  }
-
-  private initializeProcessor() {
-    this.worker = new Worker('vehicleBidQueue', async (job) => {
-      const { vehicle } = job.data;
-
-      // Display the vehicle (e.g., show it in the UI, or perform other actions)
-      console.log(`Displaying vehicle: ${vehicle.id}`);
-
-      // After displaying the vehicle, update its status or perform additional actions
-    }, {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-        password:"redis"
-      },
-    });
-
-    // Handle worker events for error logging or other purposes
-    this.worker.on('completed', (job) => {
-      console.log(`Job completed: ${job.id}`);
-    });
-
-    this.worker.on('failed', (job, err) => {
-      console.error(`Job failed: ${job.id}, error: ${err.message}`);
-    });
-  }
-  // async handleVehicle(job:Job) {
-  //   const vehicle = job.data.vehicle;
-  //   const startTime = new Date(vehicle.bidStartTime).getTime();
-  //   const endTime = new Date(vehicle.bidTimeExpire).getTime();
-  //   const currentTime = Date.now();
-
-  //   const remainingTime = endTime - currentTime;
-
-  //   if (remainingTime > 0) {
-  //     setTimeout(() => this.processNextVehicle(vehicle), remainingTime);
-  //   } else {
-  //     this.processNextVehicle(vehicle);
-  //   }
-  // }
-  // processNextVehicle(job:Job) {
-  //   const vehicle = job.data.vehicle;
-  //   return vehicle;
-  // }
-}
+//   constructor(private prisma: PrismaService) {
+//     // Initialize your queue with Redis configuration
+//     const vehicleBidQueue = new Queue('vehicleBidQueue', {
+//       connection: {
+//         host: 'localhost',
+//         port: 6379,
+//         password:"redis"
+//       },
+//     });
+//     // Initialize the queue
+    
+//     let isProcessing = false;
+    
+//     const vehicleBidWorker = new Worker('vehicleBidQueue', async job => {
+//       if (isProcessing) {
+//         console.log(`Skipping job ${job.id} as another vehicle is active.`);
+//         return;
+//       }
+    
+//       isProcessing = true;
+    
+//       const vehicle = job.data.vehicle;
+//       console.log(`Activating vehicle ${vehicle.vehicleId} for bidding.`);
+    
+//       // Set a timeout to release the lock after the vehicle's time expires
+//       const currentTime = Date.now();
+//       const expireTime = new Date(vehicle.bidTimeExpire).getTime();
+//       const timeToWait = Math.max(expireTime - currentTime, 0);
+    
+//       setTimeout(async () => {
+//         console.log(`Vehicle ${vehicle.vehicleId} bidding time expired.`);
+//         isProcessing = false;
+    
+//         // Move on to the next vehicle in the queue
+//         await processNextVehicle();
+//       }, timeToWait);
+//     }, { connection: {  host: 'localhost',
+//       port: 6379,
+//       password:"redis" } });
+    
+//     async function processNextVehicle() {
+//       const waitingJobs = await vehicleBidQueue.getJobs(['waiting'], 0, 1, false);
+    
+//       if (waitingJobs.length > 0) {
+//         const nextJob = waitingJobs[0];
+//         console.log(`Next vehicle ${nextJob.id} is being activated.`);
+//         await nextJob.promote(); // Promote the job to be processed
+//       } else {
+//         console.log('No more vehicles to activate.');
+//       }
+//     }
+    
+//     vehicleBidWorker.on('failed', (job, err) => {
+//       console.error(`Job ${job.id} failed:`, err);
+//     });
+    
+//   }
+// }

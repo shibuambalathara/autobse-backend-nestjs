@@ -76,7 +76,7 @@ export class VehicleResolver {
   }
 
   @Query(returns => [Vehicle])
-  async listVehiclesFromQueue() :Promise<Vehicle[]|null>{
+  async listVehiclesFromQueue() {
     return this.vehicleService.listVehicleFromQueue();
   }
   @Mutation(() => Bid)
