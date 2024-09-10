@@ -37,11 +37,12 @@ import { BidModule } from './bid/bid.module';
       connection: {
         host: '172.18.0.2',
         port: 6379,
+        password:"redis"
       },
     }),
-    // BullModule.registerQueue({
-    //   name: 'vehicle-bid',
-    // }),
+    BullModule.registerQueue({
+      name: 'vehicle-bid',
+    }),
     BullBoardModule,
     UserModule,
     AuthModule,
