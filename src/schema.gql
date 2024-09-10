@@ -95,76 +95,6 @@ type Seller {
   createdById: String!
 }
 
-type Vehicle {
-  id: String!
-  vehicleIndexNo: Float!
-  registrationNumber: String!
-  bidTimeExpire: DateTime!
-  bidStartTime: DateTime!
-  bidAmountUpdate: Float
-  currentBidAmount: Float
-  startBidAmount: Float
-  loanAgreementNo: String!
-  registeredOwnerName: String!
-  quoteIncreament: Float
-  make: String!
-  model: String!
-  varient: String!
-  category: String!
-  fuel: String!
-  type: String!
-  rcStatus: String!
-  YOM: Float
-  ownership: Float
-  mileage: Float
-  kmReading: Float
-  insuranceStatus: String!
-  yardLocation: String!
-  startPrice: Float
-  reservePrice: Float
-  repoDt: String
-  veicleLocation: String!
-  vehicleRemarks: String!
-  auctionManager: String!
-  parkingCharges: String!
-  insurance: String!
-  insuranceValidTill: String
-  tax: String!
-  taxValidityDate: String
-  fitness: String!
-  permit: String!
-  engineNo: String!
-  chassisNo: String!
-  image: String!
-  inspectionLink: String!
-  autobseContact: String!
-  autobse_contact_person: String!
-  vehicleCondition: String!
-  powerSteering: String!
-  shape: String!
-  color: String!
-  state: String!
-  city: String!
-  area: String!
-  paymentTerms: String!
-  dateOfRegistration: String
-  hypothication: String!
-  climateControl: String!
-  doorCount: Float
-  gearBox: String!
-  buyerFees: String!
-  rtoFine: String!
-  parkingRate: String!
-  approxParkingCharges: String!
-  clientContactPerson: String!
-  clientContactNo: String!
-  additionalRemarks: String!
-  lotNumber: Float
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdById: String
-}
-
 type Event {
   id: String!
   eventNo: Float!
@@ -243,10 +173,6 @@ type Query {
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  vehicles: [Vehicle!]!
-  vehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  deletedVehicles: [Vehicle!]!
-  deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   events: [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
@@ -287,10 +213,6 @@ input SellerWhereUniqueInput {
   name: String
 }
 
-input VehicleWhereUniqueInput {
-  id: String
-}
-
 input EventWhereUniqueInput {
   id: String
 }
@@ -324,11 +246,6 @@ type Mutation {
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
-  createVehicle(userId: String!, eventId: String!, createVehicleInput: CreateVehicleInput!): Vehicle!
-  listVehicle(eventId: String!): Vehicle!
-  updateVehicle(where: VehicleWhereUniqueInput!, updateVehicleInput: UpdateVehicleInput!): Vehicle!
-  deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  restorevehicle(where: VehicleWhereUniqueInput!): Vehicle!
   createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
@@ -436,134 +353,6 @@ input UpdateSellerInput {
   mobile: String
   nationalHead: String
   logo: String
-}
-
-input CreateVehicleInput {
-  registrationNumber: String!
-  bidAmountUpdate: Float
-  currentBidAmount: Float
-  startBidAmount: Float
-  loanAgreementNo: String!
-  registeredOwnerName: String!
-  quoteIncreament: Float
-  make: String!
-  model: String!
-  varient: String!
-  category: String!
-  fuel: String!
-  type: String!
-  rcStatus: String!
-  YOM: Float
-  ownership: Float
-  mileage: Float
-  kmReading: Float
-  insuranceStatus: String!
-  yardLocation: String!
-  startPrice: Float
-  reservePrice: Float
-  repoDt: String
-  veicleLocation: String!
-  vehicleRemarks: String!
-  auctionManager: String!
-  parkingCharges: String!
-  insurance: String!
-  insuranceValidTill: String
-  tax: String!
-  taxValidityDate: String
-  fitness: String!
-  permit: String!
-  engineNo: String!
-  chassisNo: String!
-  image: String!
-  inspectionLink: String!
-  autobseContact: String!
-  autobse_contact_person: String!
-  vehicleCondition: String!
-  powerSteering: String!
-  shape: String!
-  color: String!
-  state: String!
-  city: String!
-  area: String!
-  paymentTerms: String!
-  dateOfRegistration: String
-  hypothication: String!
-  climateControl: String!
-  doorCount: Float
-  gearBox: String!
-  buyerFees: String!
-  rtoFine: String!
-  parkingRate: String!
-  approxParkingCharges: String!
-  clientContactPerson: String!
-  clientContactNo: String!
-  additionalRemarks: String!
-  lotNumber: Float
-}
-
-input UpdateVehicleInput {
-  registrationNumber: String
-  bidAmountUpdate: Float
-  currentBidAmount: Float
-  startBidAmount: Float
-  loanAgreementNo: String
-  registeredOwnerName: String
-  quoteIncreament: Float
-  make: String
-  model: String
-  varient: String
-  category: String
-  fuel: String
-  type: String
-  rcStatus: String
-  YOM: Float
-  ownership: Float
-  mileage: Float
-  kmReading: Float
-  insuranceStatus: String
-  yardLocation: String
-  startPrice: Float
-  reservePrice: Float
-  repoDt: String
-  veicleLocation: String
-  vehicleRemarks: String
-  auctionManager: String
-  parkingCharges: String
-  insurance: String
-  insuranceValidTill: String
-  tax: String
-  taxValidityDate: String
-  fitness: String
-  permit: String
-  engineNo: String
-  chassisNo: String
-  image: String
-  inspectionLink: String
-  autobseContact: String
-  autobse_contact_person: String
-  vehicleCondition: String
-  powerSteering: String
-  shape: String
-  color: String
-  state: String
-  city: String
-  area: String
-  paymentTerms: String
-  dateOfRegistration: String
-  hypothication: String
-  climateControl: String
-  doorCount: Float
-  gearBox: String
-  buyerFees: String
-  rtoFine: String
-  parkingRate: String
-  approxParkingCharges: String
-  clientContactPerson: String
-  clientContactNo: String
-  additionalRemarks: String
-  lotNumber: Float
-  bidTimeExpire: String
-  bidStartTime: String
 }
 
 input CreateEventInput {
