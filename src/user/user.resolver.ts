@@ -4,7 +4,8 @@ import { User } from './models/user.model';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
-
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 @Resolver((of) => User)
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -36,7 +37,8 @@ export class UserResolver {
     return this.userService.allDeletedUsers();
   }
   @Mutation((returns) => User)
-  async createUser(@Args('data') data: CreateUserInput) {
+  @UseGuards(GqlAuthGuard)
+    async createUser(@Args('data') data: CreateUserInput) {
     return this.userService.createUser(data);
   }
   @Mutation((returns) => User)
