@@ -25,7 +25,7 @@ export class AuthService {
    const access_token= this.jwtService.sign(payload)
 //  await this.prisma.user.update({where:{mobile:user?.mobile},data:{accessToken:access_token}})
     return {
-access_token
+access_token,user
     };
   }
 }
