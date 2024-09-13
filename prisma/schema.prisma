@@ -98,34 +98,34 @@ model User {
   password                  String?
   BalanceEMDAmount        Int?                 @default(0)
   // specialVehicleBuyingLimit Int?                 @default(0)
-  image_filesize            Int?
-  image_extension           String?
-  image_width               Int?
-  image_height              Int?
-  image_id                  String?
-  pancard_filesize          Int?
-  pancard_extension         String?
-  pancard_width             Int?
-  pancard_height            Int?
-  pancard_id                String?
+  // image_filesize            Int?
+  // image_extension           String?
+  // image_width               Int?
+  // image_height              Int?
+  // image_id                  String?
+  // pancard_filesize          Int?
+  // pancard_extension         String?
+  // pancard_width             Int?
+  // pancard_height            Int?
+  // pancard_id                String?
   pancardNo                 String               @default("")
-  idProof_filesize          Int?
-  idProof_extension         String?
-  idProof_width             Int?
-  idProof_height            Int?
-  idProof_id                String?
-  idProofBack_filesize      Int?
-  idProofBack_extension     String?
-  idProofBack_width         Int?
-  idProofBack_height        Int?
-  idProofBack_id            String?
+  // idProof_filesize          Int?
+  // idProof_extension         String?
+  // idProof_width             Int?
+  // idProof_height            Int?
+  // idProof_id                String?
+  // idProofBack_filesize      Int?
+  // idProofBack_extension     String?
+  // idProofBack_width         Int?
+  // idProofBack_height        Int?
+  // idProofBack_id            String?
   // idProofType               UserIdProofTypeType?
   idProofNo                 String               @default("")
-  dealership_filesize       Int?
-  dealership_extension      String?
-  dealership_width          Int?
-  dealership_height         Int?
-  dealership_id             String?
+  // dealership_filesize       Int?
+  // dealership_extension      String?
+  // dealership_width          Int?
+  // dealership_height         Int?
+  // dealership_id             String?
   country                   String               @default("")
   city                      String               @default("")
   role                      UserRoleType        @default(dealer)
