@@ -52,6 +52,7 @@ export class User {
 
   // @Field({ nullable: true })
   // accessToken?: string;
-
+  @Field()
+  status: string;
 
 }

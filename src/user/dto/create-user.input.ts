@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { UserRoleType } from 'src/role/user.role';
+import { UserRoleType, UserStatusType } from 'src/role/user.role';
 
 @InputType()
 export class CreateUserInput {
@@ -61,6 +61,9 @@ export class CreateUserInput {
   @Field(()=>StateNames,{nullable:true})
   @IsNotEmpty({message:"state name required"})
   state:StateNames;
+
+  @Field(()=>UserStatusType) 
+  status:UserStatusType;
 
 }
 
