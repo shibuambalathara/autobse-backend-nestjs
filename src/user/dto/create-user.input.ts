@@ -14,7 +14,6 @@ export class CreateUserInput {
   username: string;
 
   @Field({nullable:true})
-  @IsString({message:"first name must be string"})
   firstName: string;
 
   @Field({nullable:true})
@@ -62,8 +61,8 @@ export class CreateUserInput {
   @IsNotEmpty({message:"state name required"})
   state:StateNames;
 
-  @Field(()=>UserStatusType) 
-  status:UserStatusType;
+  @Field(()=>UserStatusType,{nullable:true}) 
+  status?:UserStatusType;
 
 }
 

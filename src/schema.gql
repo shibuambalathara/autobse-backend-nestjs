@@ -286,7 +286,7 @@ input CreateUserInput {
   accessToken: String
   role: UserRoleType
   state: StateNames
-  status: UserStatusType!
+  status: UserStatusType
 }
 
 enum UserRoleType {
