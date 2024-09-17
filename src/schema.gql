@@ -273,7 +273,7 @@ input CreateUserInput {
   firstName: String
   lastName: String
   businessName: String
-  mobile: String!
+  mobile: String
   password: String
   BalanceEMDAmount: Float
   pancardNo: String
@@ -284,7 +284,7 @@ input CreateUserInput {
   tempToken: Float
   accessToken: String
   role: UserRoleType
-  state: StateNames!
+  state: StateNames
 }
 
 enum UserRoleType {

@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserInput } from './dto/create-user.input';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -38,23 +39,29 @@ export class UserService {
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
-    try {
-      console.log("dattta",data)
-      let hashedPassword=''
-      if(data?.password){
-         hashedPassword = await bcrypt.hash(data?.password, 10);
+  
+      try {
+        const hashedPassword = data.password ? await bcrypt.hash(data.password, 10) : undefined;
+  
+        const createdUser = await this.prisma.user.create({
+          data: {
+            ...data,
+            password: hashedPassword,
+          },
+       
+        });
+  
+         return createdUser;
+      } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+          const field = error.meta?.target ? error.meta.target : 'field';
+          throw new Error(`The ${field} is not unique. Please use a different ${field}.`);
+        }
+        console.error("Unexpected error:", error);
+        throw new Error(error);
       }
-      return this.prisma.user.create({
-        data: {
-          ...data,
-          password: hashedPassword,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      throw err
     }
-  }
+  
   async updateUserField(
     updatingData: UpdateUserInput,
     where: UserWhereUniqueInput,

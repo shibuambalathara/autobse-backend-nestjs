@@ -1,5 +1,5 @@
 
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
@@ -17,7 +17,8 @@ import { ExceluploadModule } from './excelupload/excelupload.module';
 import { StatusModule } from './status/status.module';
 import { PaymentModule } from './payment/payment.module';
 import { RecentsoldModule } from './recentsold/recentsold.module';
-
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+// import { HttpExceptionFilter } from './common/http-exception.filter';
 
 
 @Module({
@@ -47,6 +48,14 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
   ],
   providers: [
     PrismaService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe, 
+    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: HttpExceptionFilter,
+    // },
   ],
 })
 export class AppModule {}
