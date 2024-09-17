@@ -1,11 +1,12 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { UserRoleType } from 'src/role/user.role';
 
 @InputType()
 export class CreateUserInput {
   @Field({nullable:true})
+  @IsOptional() 
   @IsEmail()
   email: string;
 
@@ -13,7 +14,7 @@ export class CreateUserInput {
   username: string;
 
   @Field({nullable:true})
-  @IsString()
+  @IsString({message:"first name must be string"})
   firstName: string;
 
   @Field({nullable:true})
@@ -22,7 +23,7 @@ export class CreateUserInput {
   @Field({nullable:true})
   businessName: string;
 
-  @Field()
+  @Field({nullable:true})
   @IsNotEmpty({ message: 'Mobile number is required' })
   mobile: string;
 
@@ -33,6 +34,7 @@ export class CreateUserInput {
   BalanceEMDAmount?: number;
 
   @Field({nullable:true})
+  @IsNotEmpty({message:"pancard number is required"})
   pancardNo: string;
 
   @Field({nullable:true})
@@ -56,7 +58,8 @@ export class CreateUserInput {
   @Field(() => UserRoleType, { nullable: true })
   role: UserRoleType;
   
-  @Field(()=>StateNames)
+  @Field(()=>StateNames,{nullable:true})
+  @IsNotEmpty({message:"state name required"})
   state:StateNames;
 
 }

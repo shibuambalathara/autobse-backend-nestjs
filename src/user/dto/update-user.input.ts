@@ -40,8 +40,7 @@ export class UpdateUserInput {
   BalanceEMDAmount?: number;
 
   @Field({ nullable: true })
-  @IsOptional()
-  pancardNo?: string;
+    pancardNo: string;
 
   @Field({ nullable: true })
   @IsOptional()

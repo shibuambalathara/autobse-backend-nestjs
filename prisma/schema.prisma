@@ -108,7 +108,7 @@ model User {
   // pancard_width             Int?
   // pancard_height            Int?
   // pancard_id                String?
-  pancardNo                 String               @default("")
+  pancardNo                 String               @unique @default("")
   // idProof_filesize          Int?
   // idProof_extension         String?
   // idProof_width             Int?
