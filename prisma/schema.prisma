@@ -42,6 +42,12 @@ enum UserRoleType {
   seller
   dealer
 }
+enum  UserStatusType {
+  pending
+  blocked
+  active
+  inactive
+}
 
 enum StateNames {
   Maharashtra
@@ -134,7 +140,7 @@ model User {
   payments                  Payment[]            @relation("Payment_user")
   // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
   paymentCreatedBy            Payment?             @relation("Payment_createdBy")
-  // status                    UserStatusType?      @default(pending)
+   status                    UserStatusType?      @default(pending)
   state                     StateNames        
   //stateCreatedBy               State[]              @relation("state_createdBy")
   locationCreatedBy            Location[]           @relation("location_createdBy")

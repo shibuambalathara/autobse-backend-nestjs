@@ -19,6 +19,7 @@ type User {
   city: String!
   userCategory: String!
   tempToken: Float
+  status: String!
 }
 
 type LoginResponse {
@@ -285,6 +286,7 @@ input CreateUserInput {
   accessToken: String
   role: UserRoleType
   state: StateNames
+  status: UserStatusType!
 }
 
 enum UserRoleType {
@@ -292,6 +294,13 @@ enum UserRoleType {
   staff
   seller
   dealer
+}
+
+enum UserStatusType {
+  pending
+  blocked
+  active
+  inactive
 }
 
 input UpdateUserInput {
@@ -310,6 +319,7 @@ input UpdateUserInput {
   userCategory: String
   tempToken: Float
   role: UserRoleType!
+  status: UserStatusType!
   state: StateNames
 }
 

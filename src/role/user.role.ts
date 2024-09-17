@@ -10,3 +10,13 @@ export enum UserRoleType {
 registerEnumType(UserRoleType, {
   name: 'UserRoleType',
 });
+
+export enum UserStatusType {
+  pending="pending",
+  blocked="blocked",
+  active="active",
+  inactive="inactive"
+}
+registerEnumType(UserStatusType, {
+  name: 'UserStatusType',
+});
