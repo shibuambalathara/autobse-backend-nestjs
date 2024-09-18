@@ -14,4 +14,8 @@ export class UpdatePaymentInput extends PartialType(CreatePaymentInput) {
 
   @Field({nullable:true})
   registrationExpire?:Date;
+
+  @Field({nullable:true})
+  statusId?:string;
+
 }
