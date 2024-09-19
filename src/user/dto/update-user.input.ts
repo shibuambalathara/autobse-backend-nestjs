@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
 import { IsEmail, IsString, IsOptional } from 'class-validator';
-import { UserRoleType, UserStatusType } from 'src/role/user.role';
+import { UserRoleType, UserStatusType } from 'src/role/user.roleStatus'
 
 @InputType()
 export class UpdateUserInput {

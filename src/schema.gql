@@ -259,7 +259,7 @@ type Mutation {
   updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
   deleteStatus(where: StatusWhereUniqueInput!): Status!
   restoreStatus(where: StatusWhereUniqueInput!): Status!
-  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  createPayment(createPaymentInput: CreatePaymentInput!, userId: String!, statusId: String!): Payment!
   updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
   deletePayment(where: PaymentWhereUniqueInput!): Payment!
   restorePayment(where: PaymentWhereUniqueInput!): Payment!
@@ -446,6 +446,7 @@ input UpdatePaymentInput {
   description: String
   image: String
   registrationExpire: DateTime
+  statusId: String
 }
 
 input CreateRecentsoldInput {
