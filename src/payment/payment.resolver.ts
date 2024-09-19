@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { PaymentService } from './payment.service';
 import { Payment } from './models/payment.model';
 import { CreatePaymentInput } from './dto/create-payment.input';
@@ -16,8 +16,9 @@ export class PaymentResolver {
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('dealer')
-  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput):Promise<Payment|null> {
-    return this.paymentService.createPayment(createPaymentInput);
+  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Args('userId') userId:string,@Context() context,@Args('statusId') statusId:string):Promise<Payment|null> {
+    const {id}=context.req.user
+    return this.paymentService.createPayment(createPaymentInput,userId,id,statusId);
   }
 
   @Query(returns => [Payment])

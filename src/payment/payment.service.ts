@@ -9,10 +9,14 @@ import { PaymentWhereUniqueInput } from './dto/unique-payment.input';
 export class PaymentService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createPayment(createPaymentInput: CreatePaymentInput):Promise<Payment|null> {
+  async createPayment(createPaymentInput: CreatePaymentInput,userId:string,id:string,statusId:string):Promise<Payment|null> {
     try{
       return await this.prisma.payment.create({
-        data:{...createPaymentInput,}
+        data:{...createPaymentInput,
+          createdById:id,
+          userId:userId,
+          statusId:statusId,
+        }
       })
     }
     catch(error){

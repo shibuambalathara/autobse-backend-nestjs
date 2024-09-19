@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { UserRoleType, UserStatusType } from 'src/role/user.role';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserRoleType, UserStatusType } from 'src/role/user.roleStatus';
 
 @InputType()
 export class CreateUserInput {
@@ -24,6 +24,9 @@ export class CreateUserInput {
 
   @Field({nullable:true})
   @IsNotEmpty({ message: 'Mobile number is required' })
+  @MinLength(10,{message:"The mobile number must contain a minimum of ten digits"})
+  @MaxLength(10,{message:"Please check if the mobile number exceeds the allowed number of digits(10)"})
+
   mobile: string;
 
   @Field({ nullable: true })
