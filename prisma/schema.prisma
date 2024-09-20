@@ -88,6 +88,12 @@ enum PaymentStatusTypes {
   rejected
 }
 
+enum PaymentType {
+  registrations
+  emd
+  openBids
+}
+
 
 model User {
   id                        String               @id @default(cuid())
@@ -371,6 +377,7 @@ model Payment{
   id                 String      @id @default(cuid())
   refNo              Int         @default(autoincrement())
   amount             Int?        @default(10000)
+  paymentFor         PaymentType
   description        String      @default("")
  // status             Status?     @relation(fields: [statusId], references: [id])
   //statusId           String?     @unique

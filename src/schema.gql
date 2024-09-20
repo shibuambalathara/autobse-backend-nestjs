@@ -143,13 +143,14 @@ type Payment {
   refNo: Float
   amount: Float
   description: String
-  statusId: String
+  status: String
   userId: String
   image: String
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String
   registrationExpire: DateTime
+  paymentFor: String
 }
 
 type Recentsold {
@@ -440,6 +441,13 @@ input CreatePaymentInput {
   description: String
   image: String
   status: String = "pending"
+  paymentFor: PaymentType!
+}
+
+enum PaymentType {
+  Registrations
+  Emd
+  OpenBids
 }
 
 input UpdatePaymentInput {
@@ -447,6 +455,7 @@ input UpdatePaymentInput {
   description: String
   image: String
   status: String = "pending"
+  paymentFor: PaymentType!
   registrationExpire: DateTime
 }
 
