@@ -11,6 +11,7 @@ export class PaymentService {
 
   async createPayment(createPaymentInput: CreatePaymentInput,id:string):Promise<Payment|null> {
     try{
+      
       return await this.prisma.payment.create({
         data:{...createPaymentInput,
           createdById:id,

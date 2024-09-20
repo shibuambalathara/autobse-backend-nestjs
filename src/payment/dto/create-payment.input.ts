@@ -7,16 +7,16 @@ export class CreatePaymentInput {
   @Field()
   amount?:number;
 
-  @Field()
+  @Field({nullable:true})
   description?:string;
 
-  @Field()
+  @Field({nullable:true})
   image?:string;
 
-  @Field()
-  registrationExpire?:Date;
+  // @Field({})
+  // registrationExpire?:Date;
 
-  @Field()
+  @Field({nullable:true})
   @IsOptional()
   @IsEnum(PaymentStatusTypes)
   status?:PaymentStatusTypes =  PaymentStatusTypes.pending;
