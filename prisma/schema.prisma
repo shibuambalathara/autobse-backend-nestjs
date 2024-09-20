@@ -139,7 +139,7 @@ model User {
   // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
   payments                  Payment[]            @relation("Payment_user")
   // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
-  paymentCreatedBy            Payment?             @relation("Payment_createdBy")
+  paymentCreatedBy            Payment[]             @relation("Payment_createdBy")
    status                    UserStatusType?      @default(pending)
   state                     StateNames        
   //stateCreatedBy               State[]              @relation("state_createdBy")
@@ -380,7 +380,7 @@ model Payment{
   image              String?
   createdAt          DateTime?   @default(now())
   createdBy          User?       @relation("Payment_createdBy", fields: [createdById], references: [id])
-  createdById        String?     @unique @map("createdBy")
+  createdById        String?     
   updatedAt          DateTime?   @updatedAt
   registrationExpire DateTime?  
   isDeleted          Boolean     @default(false)     

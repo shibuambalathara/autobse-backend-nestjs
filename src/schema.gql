@@ -437,18 +437,17 @@ input UpdateStatusInput {
 
 input CreatePaymentInput {
   amount: Float!
-  description: String!
-  image: String!
-  registrationExpire: DateTime!
-  status: String! = "pending"
+  description: String
+  image: String
+  status: String = "pending"
 }
 
 input UpdatePaymentInput {
   amount: Float
   description: String
   image: String
-  registrationExpire: DateTime
   status: String = "pending"
+  registrationExpire: DateTime
 }
 
 input CreateRecentsoldInput {
