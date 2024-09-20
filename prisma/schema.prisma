@@ -363,7 +363,7 @@ model Status{
   createdBy     User?               @relation("status_createdBy",fields: [createdById], references: [id])             
   createdById   String?
   isDeleted     Boolean             @default(false)
-  payment       Payment?
+  //payment       Payment?
 }
 
 
@@ -372,8 +372,9 @@ model Payment{
   refNo              Int         @default(autoincrement())
   amount             Int?        @default(10000)
   description        String      @default("")
-  status             Status?     @relation(fields: [statusId], references: [id])
-  statusId           String?     @unique
+ // status             Status?     @relation(fields: [statusId], references: [id])
+  //statusId           String?     @unique
+  status            PaymentStatusTypes?  @default(pending)
   user               User?       @relation("Payment_user", fields: [userId], references: [id])
   userId             String?     
   image              String?

@@ -16,9 +16,9 @@ export class PaymentResolver {
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('dealer')
-  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Args('userId') userId:string,@Context() context,@Args('statusId') statusId:string):Promise<Payment|null> {
+  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Context() context):Promise<Payment|null> {
     const {id}=context.req.user
-    return this.paymentService.createPayment(createPaymentInput,userId,id,statusId);
+    return this.paymentService.createPayment(createPaymentInput,id);
   }
 
   @Query(returns => [Payment])

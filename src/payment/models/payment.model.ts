@@ -3,6 +3,9 @@ import { Status } from '@prisma/client';
 
 @ObjectType()
 export class Payment {
+   @Field()
+   id:string;
+   
    @Field({nullable:true})
    refNo?:number;
 
