@@ -139,6 +139,7 @@ type Status {
 }
 
 type Payment {
+  id: String!
   refNo: Float
   amount: Float
   description: String
@@ -259,7 +260,7 @@ type Mutation {
   updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
   deleteStatus(where: StatusWhereUniqueInput!): Status!
   restoreStatus(where: StatusWhereUniqueInput!): Status!
-  createPayment(createPaymentInput: CreatePaymentInput!, userId: String!, statusId: String!): Payment!
+  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
   updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
   deletePayment(where: PaymentWhereUniqueInput!): Payment!
   restorePayment(where: PaymentWhereUniqueInput!): Payment!
@@ -439,6 +440,7 @@ input CreatePaymentInput {
   description: String!
   image: String!
   registrationExpire: DateTime!
+  status: String! = "pending"
 }
 
 input UpdatePaymentInput {
@@ -446,7 +448,7 @@ input UpdatePaymentInput {
   description: String
   image: String
   registrationExpire: DateTime
-  statusId: String
+  status: String = "pending"
 }
 
 input CreateRecentsoldInput {
