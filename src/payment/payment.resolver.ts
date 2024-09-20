@@ -15,7 +15,7 @@ export class PaymentResolver {
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('dealer')
+  @Roles('dealer','admin')
   async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Context() context):Promise<Payment|null> {
     const {id}=context.req.user
     return this.paymentService.createPayment(createPaymentInput,id);
@@ -23,21 +23,21 @@ export class PaymentResolver {
 
   @Query(returns => [Payment])
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','dealer')
   async payments() :Promise<Payment[]|null> {
     return this.paymentService.payments();
   }
 
   @Query(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','dealer')
   async payment(@Args('where') where:PaymentWhereUniqueInput):Promise<Payment|null> {
     return this.paymentService.payment(where);
   }
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','dealer')
   async updatePayment(@Args('where') where:PaymentWhereUniqueInput,@Args('updatePaymentInput') updatePaymentInput: UpdatePaymentInput):Promise<Payment|null> {
     return this.paymentService.updatePayment(where.id, updatePaymentInput);
   }
