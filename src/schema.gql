@@ -440,8 +440,14 @@ input CreatePaymentInput {
   amount: Float!
   description: String
   image: String
-  status: String = "pending"
+  status: PaymentStatusType!
   paymentFor: PaymentType!
+}
+
+enum PaymentStatusType {
+  Pending
+  Approved
+  Rejected
 }
 
 enum PaymentType {
@@ -454,7 +460,7 @@ input UpdatePaymentInput {
   amount: Float
   description: String
   image: String
-  status: String = "pending"
+  status: PaymentStatusType!
   paymentFor: PaymentType!
   registrationExpire: DateTime
 }
