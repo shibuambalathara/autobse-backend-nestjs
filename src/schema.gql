@@ -100,7 +100,7 @@ type Seller {
 type Event {
   id: String!
   eventNo: Float!
-  eventCategory: String
+  eventCategory: String!
   startDate: DateTime!
   endDate: DateTime!
   firstVehicleEndDate: DateTime!
@@ -119,6 +119,8 @@ type Event {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
+  status: String
+  bidLock: String
 }
 
 type Excelupload {
@@ -382,8 +384,8 @@ input CreateEventInput {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
-  bidLock: String = "unlocked"
-  status: String = "active"
+  bidLock: eventBidLockType
+  status: eventStatusType
 }
 
 enum eventCategory {
@@ -391,8 +393,22 @@ enum eventCategory {
   Online
 }
 
+enum eventBidLockType {
+  Locked
+  Unlocked
+}
+
+enum eventStatusType {
+  Pending
+  Blocked
+  Active
+  Inactive
+  Stop
+  Pause
+}
+
 input UpdateEventInput {
-  eventCategory: String
+  eventCategory: eventCategory!
   startDate: DateTime
   endDate: DateTime
   firstVehicleEndDate: DateTime
@@ -405,8 +421,8 @@ input UpdateEventInput {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
-  bidLock: String = "unlocked"
-  status: String = "active"
+  bidLock: eventBidLockType!
+  status: eventStatusType!
   sellerId: String
   vehicleCategoryId: String
   locationId: String
@@ -440,7 +456,7 @@ input CreatePaymentInput {
   amount: Float!
   description: String
   image: String
-  status: PaymentStatusType!
+  status: PaymentStatusType
   paymentFor: PaymentType!
 }
 
@@ -460,7 +476,7 @@ input UpdatePaymentInput {
   amount: Float
   description: String
   image: String
-  status: PaymentStatusType!
+  status: PaymentStatusType
   paymentFor: PaymentType!
   registrationExpire: DateTime
 }

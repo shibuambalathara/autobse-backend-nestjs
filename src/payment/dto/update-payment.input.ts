@@ -18,7 +18,7 @@ export class UpdatePaymentInput extends PartialType(CreatePaymentInput) {
   @Field({nullable:true})
   registrationExpire?:Date;
 
-  @Field(()=>PaymentStatusTypes)
+  @Field(()=>PaymentStatusTypes,{nullable:true})
   @IsOptional()
   @IsEnum(PaymentStatusTypes)
   status?:PaymentStatusTypes;
