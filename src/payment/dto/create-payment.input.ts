@@ -1,6 +1,7 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { PaymentStatusTypes } from '@prisma/client';
 import { IsEnum, IsOptional } from 'class-validator';
+import { PaymentType } from '../paymentStatus';
+import { PaymentStatusTypes } from '@prisma/client';
 
 @InputType()
 export class CreatePaymentInput {
@@ -20,4 +21,8 @@ export class CreatePaymentInput {
   @IsOptional()
   @IsEnum(PaymentStatusTypes)
   status?:PaymentStatusTypes =  PaymentStatusTypes.pending;
+
+  @Field(()=>PaymentType) 
+  @IsEnum(PaymentType)
+  paymentFor:PaymentType;
 }

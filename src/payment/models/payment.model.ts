@@ -16,10 +16,10 @@ export class Payment {
    description?:string;
 
    @Field({ nullable: true })
-   statusId?:string;
+   status?:string;
 
    @Field({nullable:true})
-   userId?:string;
+   userId:string;
 
    @Field({nullable:true})
    image?:string;
@@ -35,6 +35,9 @@ export class Payment {
 
    @Field({nullable:true})
    registrationExpire?:Date;
+
+   @Field({nullable:true})
+   paymentFor?:string;
 
 
 }
