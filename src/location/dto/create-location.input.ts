@@ -14,6 +14,7 @@ export class CreateLocationInput {
 
 }
 
+
 registerEnumType(StateNames, {
     name: 'StateNames',
   });

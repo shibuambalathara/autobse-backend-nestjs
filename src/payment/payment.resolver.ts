@@ -15,29 +15,42 @@ export class PaymentResolver {
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('dealer','admin')
-  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Context() context):Promise<Payment|null> {
-    const {id}=context.req.user
-    return this.paymentService.createPayment(createPaymentInput,id);
+  @Roles('dealer','admin','staff')
+  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Context() context,@Args('userId', { nullable: true }) userId?: string ):Promise<Payment|null> {
+    const { id, roles } = context.req.user; 
+    console.log("role",context.req.user.roles);
+  
+    if (roles === 'dealer' && userId && userId !== id) {
+      throw new Error('Dealers can only create payments for themselves.');
+    }
+
+    
+    if ((roles !== 'admin' && roles !== 'staff')  && userId && userId !== id) {
+      throw new Error('You do not have permission to create payments for other users.');
+    }
+
+    const paymentUserId = userId || id;
+
+    return this.paymentService.createPayment(createPaymentInput,paymentUserId);
   }
 
   @Query(returns => [Payment])
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin','dealer')
+  @Roles('admin','staff')
   async payments() :Promise<Payment[]|null> {
     return this.paymentService.payments();
   }
 
   @Query(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin','dealer')
+  @Roles('admin','dealer','staff')
   async payment(@Args('where') where:PaymentWhereUniqueInput):Promise<Payment|null> {
     return this.paymentService.payment(where);
   }
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin','dealer')
+  @Roles('admin','dealer','staff')
   async updatePayment(@Args('where') where:PaymentWhereUniqueInput,@Args('updatePaymentInput') updatePaymentInput: UpdatePaymentInput):Promise<Payment|null> {
     return this.paymentService.updatePayment(where.id, updatePaymentInput);
   }

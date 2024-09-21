@@ -13,7 +13,7 @@ export class Event {
   @Field()
   eventNo:number;
 
-  @Field({nullable:true})
+  @Field()
   eventCategory?:string;
 
   @Field()
@@ -72,5 +72,11 @@ export class Event {
 
   @Field({nullable:true})
   gapInBetweenVehicles?:number;
+
+  @Field({nullable:true})
+  status:string;
+
+  @Field({nullable:true})
+  bidLock:string;
 
 }

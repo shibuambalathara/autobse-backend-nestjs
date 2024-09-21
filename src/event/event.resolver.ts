@@ -24,12 +24,15 @@ export class EventResolver {
     return this.eventService.createEvent(sellerId,vehicleCategoryId,locationId,id,createEventInput);
   }
 
-  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff','dealer')
   @Query(returns => [Event])
   async events() : Promise<Event[]|null>{
     return this.eventService.events();
   }
-
+  
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff','dealer')
   @Query(returns => Event)
   async event(@Args('where') where: EventWhereUniqueInput) :Promise<Event|null>{
     return this.eventService.event(where);

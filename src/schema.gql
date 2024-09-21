@@ -30,44 +30,11 @@ type LoginResponse {
 type Location {
   id: String!
   name: String!
-  state: StateNames!
+  state: String!
   createdAt: DateTime
   updatedAt: DateTime
   country: String
   createdById: String
-}
-
-enum StateNames {
-  Maharashtra
-  Bihar
-  Chhattisgarh
-  Karnataka
-  Manipur
-  Arunachal_Pradesh
-  Assam
-  Gujarat
-  Punjab
-  Mizoram
-  Andhra_Pradesh
-  West_Bengal
-  Goa
-  Haryana
-  Himachal_Pradesh
-  Kerala
-  Rajasthan
-  Jharkhand
-  Madhya_Pradesh
-  Odisha
-  Nagaland
-  TamilNadu
-  Uttar_Pradesh
-  Telangana
-  Meghalaya
-  Sikkim
-  Tripura
-  Uttarakhand
-  Jammu_and_Kashmir
-  Delhi
 }
 
 """
@@ -100,7 +67,7 @@ type Seller {
 type Event {
   id: String!
   eventNo: Float!
-  eventCategory: String
+  eventCategory: String!
   startDate: DateTime!
   endDate: DateTime!
   firstVehicleEndDate: DateTime!
@@ -119,6 +86,8 @@ type Event {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
+  status: String
+  bidLock: String
 }
 
 type Excelupload {
@@ -261,7 +230,7 @@ type Mutation {
   updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
   deleteStatus(where: StatusWhereUniqueInput!): Status!
   restoreStatus(where: StatusWhereUniqueInput!): Status!
-  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  createPayment(createPaymentInput: CreatePaymentInput!, userId: String): Payment!
   updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
   deletePayment(where: PaymentWhereUniqueInput!): Payment!
   restorePayment(where: PaymentWhereUniqueInput!): Payment!
@@ -296,6 +265,39 @@ enum UserRoleType {
   staff
   seller
   dealer
+}
+
+enum StateNames {
+  Maharashtra
+  Bihar
+  Chhattisgarh
+  Karnataka
+  Manipur
+  Arunachal_Pradesh
+  Assam
+  Gujarat
+  Punjab
+  Mizoram
+  Andhra_Pradesh
+  West_Bengal
+  Goa
+  Haryana
+  Himachal_Pradesh
+  Kerala
+  Rajasthan
+  Jharkhand
+  Madhya_Pradesh
+  Odisha
+  Nagaland
+  TamilNadu
+  Uttar_Pradesh
+  Telangana
+  Meghalaya
+  Sikkim
+  Tripura
+  Uttarakhand
+  Jammu_and_Kashmir
+  Delhi
 }
 
 enum UserStatusType {
@@ -382,8 +384,8 @@ input CreateEventInput {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
-  bidLock: String = "unlocked"
-  status: String = "active"
+  bidLock: eventBidLockType
+  status: eventStatusType
 }
 
 enum eventCategory {
@@ -391,8 +393,22 @@ enum eventCategory {
   Online
 }
 
+enum eventBidLockType {
+  Locked
+  Unlocked
+}
+
+enum eventStatusType {
+  Pending
+  Blocked
+  Active
+  Inactive
+  Stop
+  Pause
+}
+
 input UpdateEventInput {
-  eventCategory: String
+  eventCategory: eventCategory!
   startDate: DateTime
   endDate: DateTime
   firstVehicleEndDate: DateTime
@@ -405,8 +421,8 @@ input UpdateEventInput {
   extraTime: Float
   vehicleLiveTimeIn: Float
   gapInBetweenVehicles: Float
-  bidLock: String = "unlocked"
-  status: String = "active"
+  bidLock: eventBidLockType!
+  status: eventStatusType!
   sellerId: String
   vehicleCategoryId: String
   locationId: String
@@ -440,7 +456,7 @@ input CreatePaymentInput {
   amount: Float!
   description: String
   image: String
-  status: PaymentStatusType!
+  status: PaymentStatusType
   paymentFor: PaymentType!
 }
 
@@ -460,7 +476,7 @@ input UpdatePaymentInput {
   amount: Float
   description: String
   image: String
-  status: PaymentStatusType!
+  status: PaymentStatusType
   paymentFor: PaymentType!
   registrationExpire: DateTime
 }

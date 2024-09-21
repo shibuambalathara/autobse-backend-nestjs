@@ -17,10 +17,10 @@ export class CreatePaymentInput {
   // @Field({})
   // registrationExpire?:Date;
 
-  @Field(()=>PaymentStatusTypes)
+  @Field(()=>PaymentStatusTypes,{nullable:true})
   @IsOptional()
   @IsEnum(PaymentStatusTypes)
-  status:PaymentStatusTypes;
+  status?:PaymentStatusTypes;
 
   @Field(()=>PaymentType) 
   @IsEnum(PaymentType)

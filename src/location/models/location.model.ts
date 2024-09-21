@@ -1,5 +1,4 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { StateNames } from '@prisma/client';
 // import { State } from 'src/state/models/state.model';
 
 @ObjectType()
@@ -14,8 +13,8 @@ export class Location {
   // @Field()
   // stateId:string;
 
-  @Field(() => StateNames)
-  state:StateNames;
+  @Field()
+  state:string;
 
   @Field({nullable:true})
   createdAt?:Date;
