@@ -30,44 +30,11 @@ type LoginResponse {
 type Location {
   id: String!
   name: String!
-  state: StateNames!
+  state: String!
   createdAt: DateTime
   updatedAt: DateTime
   country: String
   createdById: String
-}
-
-enum StateNames {
-  Maharashtra
-  Bihar
-  Chhattisgarh
-  Karnataka
-  Manipur
-  Arunachal_Pradesh
-  Assam
-  Gujarat
-  Punjab
-  Mizoram
-  Andhra_Pradesh
-  West_Bengal
-  Goa
-  Haryana
-  Himachal_Pradesh
-  Kerala
-  Rajasthan
-  Jharkhand
-  Madhya_Pradesh
-  Odisha
-  Nagaland
-  TamilNadu
-  Uttar_Pradesh
-  Telangana
-  Meghalaya
-  Sikkim
-  Tripura
-  Uttarakhand
-  Jammu_and_Kashmir
-  Delhi
 }
 
 """
@@ -263,7 +230,7 @@ type Mutation {
   updateStatus(where: StatusWhereUniqueInput!, updateStatusInput: UpdateStatusInput!): Status!
   deleteStatus(where: StatusWhereUniqueInput!): Status!
   restoreStatus(where: StatusWhereUniqueInput!): Status!
-  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  createPayment(createPaymentInput: CreatePaymentInput!, userId: String): Payment!
   updatePayment(where: PaymentWhereUniqueInput!, updatePaymentInput: UpdatePaymentInput!): Payment!
   deletePayment(where: PaymentWhereUniqueInput!): Payment!
   restorePayment(where: PaymentWhereUniqueInput!): Payment!
@@ -298,6 +265,39 @@ enum UserRoleType {
   staff
   seller
   dealer
+}
+
+enum StateNames {
+  Maharashtra
+  Bihar
+  Chhattisgarh
+  Karnataka
+  Manipur
+  Arunachal_Pradesh
+  Assam
+  Gujarat
+  Punjab
+  Mizoram
+  Andhra_Pradesh
+  West_Bengal
+  Goa
+  Haryana
+  Himachal_Pradesh
+  Kerala
+  Rajasthan
+  Jharkhand
+  Madhya_Pradesh
+  Odisha
+  Nagaland
+  TamilNadu
+  Uttar_Pradesh
+  Telangana
+  Meghalaya
+  Sikkim
+  Tripura
+  Uttarakhand
+  Jammu_and_Kashmir
+  Delhi
 }
 
 enum UserStatusType {
