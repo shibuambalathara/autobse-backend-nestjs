@@ -94,6 +94,10 @@ enum PaymentType {
   openBids
 }
 
+enum ContactUsStatusType {
+  created
+  solved
+}
 
 model User {
   id                        String               @id @default(cuid())
@@ -404,4 +408,16 @@ model RecentSold{
   isDeleted          Boolean     @default(false)     
 }
 
+model Enquiry{
+  id                String                @id @default(cuid())
+  firstName         String?
+  lastName          String?
+  state             StateNames
+  mobile            String     
+  message           String?               @default("")
+  status            ContactUsStatusType?  @default(created)
+  createdAt         DateTime?             @default(now())
+  updatedAt         DateTime?             @updatedAt    
+  isDeleted         Boolean               @default(false)         
+}
 
