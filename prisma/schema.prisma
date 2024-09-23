@@ -177,6 +177,8 @@ model User {
   isDeleted               Boolean               @default(false)
   // magicAuthIssuedAt         DateTime?
   // magicAuthRedeemedAt       DateTime?
+  otp         String?
+  otp_gen     DateTime?
 }
 
 
@@ -231,6 +233,7 @@ model Seller {
   isDeleted            Boolean     @default(false)
   events               Event[]     @relation("Event_seller")
 }
+
 
 model Vehicle {
   id                     String                @id @default(cuid())
