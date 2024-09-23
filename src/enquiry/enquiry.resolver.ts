@@ -3,6 +3,11 @@ import { EnquiryService } from './enquiry.service';
 import { Enquiry } from './models/enquiry.model';
 import { CreateEnquiryInput } from './dto/create-enquiry.input';
 import { UpdateEnquiryInput } from './dto/update-enquiry.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/role/role.guard';
+import { Roles } from 'src/role/role.decorator';
+import { EnquiryWhereUniqueInput } from './dto/unique-enquiry-input';
 
 @Resolver(() => Enquiry)
 export class EnquiryResolver {
@@ -14,22 +19,45 @@ export class EnquiryResolver {
   }
 
   @Query(() => [Enquiry])
-  findAll() {
-    return this.enquiryService.findAll();
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  async Enquiries() {
+    return this.enquiryService.Enquiries();
   }
 
-  @Query(() => Enquiry, { name: 'enquiry' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.enquiryService.findOne(id);
+  @Query(() => Enquiry)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  async Enquiry(@Args('where') where:EnquiryWhereUniqueInput) {
+    return this.enquiryService.Enquiry(where);
   }
 
   @Mutation(() => Enquiry)
-  updateEnquiry(@Args('updateEnquiryInput') updateEnquiryInput: UpdateEnquiryInput) {
-    return this.enquiryService.update(updateEnquiryInput.id, updateEnquiryInput);
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  updateEnquiry(@Args('where') where:EnquiryWhereUniqueInput,@Args('updateEnquiryInput') updateEnquiryInput: UpdateEnquiryInput) {
+    return this.enquiryService.updateEnquiry(where.id, updateEnquiryInput);
   }
 
-  @Mutation(() => Enquiry)
-  removeEnquiry(@Args('id', { type: () => Int }) id: number) {
-    return this.enquiryService.remove(id);
+  @Mutation(returns => Enquiry)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  async deleteEnquiry(@Args('where') where: EnquiryWhereUniqueInput):Promise<Enquiry|null> {
+    return this.enquiryService.deleteEnquiry(where.id);
+  }
+  
+  @Query(returns => [Enquiry])
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  async deletedEnquiries():Promise<Enquiry[]|null>{
+    return this.enquiryService.deletedEnquiries();
+  }
+
+  
+  @Mutation(returns=>Enquiry)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin')
+  async restoreEnquiry(@Args('where') where:EnquiryWhereUniqueInput):Promise<Enquiry|null>{
+    return this.enquiryService.restoreEnquiry(where);
   }
 }

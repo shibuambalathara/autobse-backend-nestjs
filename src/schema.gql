@@ -20,6 +20,7 @@ type User {
   userCategory: String!
   tempToken: Float
   status: String!
+  state: String!
 }
 
 type LoginResponse {
@@ -170,7 +171,9 @@ type Query {
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
   recentSolds: [Recentsold!]!
-  enquiry(id: Int!): Enquiry!
+  Enquiries: [Enquiry!]!
+  Enquiry(where: EnquiryWhereUniqueInput!): Enquiry!
+  deletedEnquiries: [Enquiry!]!
 }
 
 input UserWhereUniqueInput {
@@ -212,6 +215,10 @@ input PaymentWhereUniqueInput {
   id: String
 }
 
+input EnquiryWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
@@ -248,8 +255,9 @@ type Mutation {
   updateRecentsold(where: RecentsoldWhereUniqueInput!, updateRecentsoldInput: UpdateRecentsoldInput!): Recentsold!
   deleteRecentsold(where: RecentsoldWhereUniqueInput!): Recentsold!
   createEnquiry(createEnquiryInput: CreateEnquiryInput!): Enquiry!
-  updateEnquiry(updateEnquiryInput: UpdateEnquiryInput!): Enquiry!
-  removeEnquiry(id: Int!): Enquiry!
+  updateEnquiry(where: EnquiryWhereUniqueInput!, updateEnquiryInput: UpdateEnquiryInput!): Enquiry!
+  deleteEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
+  restoreEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
 }
 
 input CreateUserInput {
@@ -533,5 +541,4 @@ input UpdateEnquiryInput {
   mobile: String
   message: String
   status: ContactUsStatusType
-  id: Int!
 }
