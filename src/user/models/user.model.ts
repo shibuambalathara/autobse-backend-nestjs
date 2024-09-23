@@ -55,4 +55,7 @@ export class User {
   @Field()
   status: string;
 
+  @Field()
+  state:string;
+
 }
