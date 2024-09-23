@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { OtpService } from './otp.service';
 import { SendOtpDto } from './dto/send-otp.dto';
-import { UpdateOtpDto } from './dto/update-otp.dto';
 import { VerfiyOtpDto } from './dto/verify-otp.dto';
 
 @Controller('api/v1/otp')

@@ -20,6 +20,7 @@ type User {
   userCategory: String!
   tempToken: Float
   status: String!
+  state: String!
 }
 
 type LoginResponse {
@@ -129,6 +130,15 @@ type Recentsold {
   soldDate: DateTime!
 }
 
+type Enquiry {
+  firstName: String!
+  lastName: String!
+  message: String!
+  mobile: String!
+  state: String!
+  status: String!
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -161,6 +171,9 @@ type Query {
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
   recentSolds: [Recentsold!]!
+  Enquiries: [Enquiry!]!
+  Enquiry(where: EnquiryWhereUniqueInput!): Enquiry!
+  deletedEnquiries: [Enquiry!]!
 }
 
 input UserWhereUniqueInput {
@@ -202,6 +215,10 @@ input PaymentWhereUniqueInput {
   id: String
 }
 
+input EnquiryWhereUniqueInput {
+  id: String
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
@@ -237,6 +254,10 @@ type Mutation {
   createRecentsold(createRecentsoldInput: CreateRecentsoldInput!): Recentsold!
   updateRecentsold(where: RecentsoldWhereUniqueInput!, updateRecentsoldInput: UpdateRecentsoldInput!): Recentsold!
   deleteRecentsold(where: RecentsoldWhereUniqueInput!): Recentsold!
+  createEnquiry(createEnquiryInput: CreateEnquiryInput!): Enquiry!
+  updateEnquiry(where: EnquiryWhereUniqueInput!, updateEnquiryInput: UpdateEnquiryInput!): Enquiry!
+  deleteEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
+  restoreEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
 }
 
 input CreateUserInput {
@@ -497,4 +518,27 @@ input UpdateRecentsoldInput {
   vehicleName: String!
   location: String!
   soldDate: DateTime!
+}
+
+input CreateEnquiryInput {
+  firstName: String
+  lastName: String
+  state: StateNames!
+  mobile: String!
+  message: String
+  status: ContactUsStatusType
+}
+
+enum ContactUsStatusType {
+  created
+  solved
+}
+
+input UpdateEnquiryInput {
+  firstName: String
+  lastName: String
+  state: StateNames
+  mobile: String
+  message: String
+  status: ContactUsStatusType
 }

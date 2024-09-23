@@ -19,6 +19,7 @@ import { PaymentModule } from './payment/payment.module';
 import { RecentsoldModule } from './recentsold/recentsold.module';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 // import { HttpExceptionFilter } from './common/http-exception.filter';
+import { EnquiryModule } from './enquiry/enquiry.module';
 import { OtpModule } from './otp/otp.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -47,6 +48,7 @@ import { AppService } from './app.service';
     StatusModule,
     PaymentModule,
     RecentsoldModule,
+    EnquiryModule,
     OtpModule,
 
 
