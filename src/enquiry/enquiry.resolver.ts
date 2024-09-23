@@ -9,11 +9,11 @@ export class EnquiryResolver {
   constructor(private readonly enquiryService: EnquiryService) {}
 
   @Mutation(() => Enquiry)
-  createEnquiry(@Args('createEnquiryInput') createEnquiryInput: CreateEnquiryInput) {
+  async createEnquiry(@Args('createEnquiryInput') createEnquiryInput: CreateEnquiryInput) {
     return this.enquiryService.createEnquiry(createEnquiryInput);
   }
 
-  @Query(() => [Enquiry], { name: 'enquiry' })
+  @Query(() => [Enquiry])
   findAll() {
     return this.enquiryService.findAll();
   }
