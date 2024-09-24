@@ -140,6 +140,24 @@ type Enquiry {
   status: String!
 }
 
+type VerifyOtpResponse {
+  access_token: String!
+  user: User!
+}
+
+type OtpMessageDataDto {
+  messageid: String!
+  totnumber: String!
+  totalcredit: String!
+}
+
+type SendOtpResponse {
+  status: String!
+  code: String!
+  description: String!
+  data: OtpMessageDataDto
+}
+
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!): User
@@ -259,6 +277,8 @@ type Mutation {
   updateEnquiry(where: EnquiryWhereUniqueInput!, updateEnquiryInput: UpdateEnquiryInput!): Enquiry!
   deleteEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
   restoreEnquiry(where: EnquiryWhereUniqueInput!): Enquiry!
+  sendOtp(sendOtpDto: SendOtpDto!): SendOtpResponse!
+  verifyOtp(verfiyOtpDto: VerfiyOtpDto!): VerifyOtpResponse!
 }
 
 input CreateUserInput {
@@ -550,4 +570,13 @@ input UpdateEnquiryInput {
   mobile: String
   message: String
   status: ContactUsStatusType
+}
+
+input SendOtpDto {
+  mobile: String!
+}
+
+input VerfiyOtpDto {
+  mobile: String!
+  otp: String!
 }

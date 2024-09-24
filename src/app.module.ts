@@ -20,6 +20,10 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 // import { HttpExceptionFilter } from './common/http-exception.filter';
 import { EnquiryModule } from './enquiry/enquiry.module';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { OtpModule } from './otp/otp.module';
 
 
 @Module({
@@ -31,7 +35,7 @@ import { EnquiryModule } from './enquiry/enquiry.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
-    
+    ConfigModule.forRoot(),
     UserModule,
     AuthModule,
     StateModule,
@@ -45,6 +49,7 @@ import { EnquiryModule } from './enquiry/enquiry.module';
     PaymentModule,
     RecentsoldModule,
     EnquiryModule,
+    OtpModule,
 
 
   ],
@@ -54,10 +59,14 @@ import { EnquiryModule } from './enquiry/enquiry.module';
       provide: APP_PIPE,
       useClass: ValidationPipe, 
     },
+    AppService
     // {
     //   provide: APP_FILTER,
     //   useClass: HttpExceptionFilter,
     // },
   ],
+  controllers: [
+    AppController,
+  ]
 })
 export class AppModule {}
