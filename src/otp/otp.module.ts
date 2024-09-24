@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OtpService } from './otp.service';
-import { OtpController } from './otp.controller';
+import { OtpResolver } from './otp.resolver';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
@@ -15,7 +15,6 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  controllers: [OtpController],
-  providers: [OtpService, PrismaService],
+  providers: [OtpResolver, OtpService, PrismaService],
 })
-export class OtpModule {}
+export class OtpModule { }

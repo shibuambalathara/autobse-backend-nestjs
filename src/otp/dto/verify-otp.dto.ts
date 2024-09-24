@@ -1,4 +1,9 @@
+import { InputType, Int, Field } from '@nestjs/graphql';
+
+@InputType()
 export class VerfiyOtpDto {
-    mobile: string
-    otp: string
+    @Field()
+    mobile: string;
+    @Field()
+    otp: string;
 }

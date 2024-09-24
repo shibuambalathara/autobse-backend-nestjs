@@ -1,3 +1,7 @@
+import { InputType, Int, Field } from '@nestjs/graphql';
+
+@InputType()
 export class SendOtpDto {
-    mobile: string
+    @Field()
+    mobile: string;
 }

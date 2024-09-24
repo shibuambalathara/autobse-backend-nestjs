@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { SendOtpDto } from './dto/send-otp.dto';
-import { randomBytes } from 'crypto'
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -11,7 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class OtpService {
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly httpService: HttpService,
@@ -81,7 +79,7 @@ export class OtpService {
     })
     if (!user) throw new NotFoundException('User doesnot exist.')
     if (verfiyOtpDto.otp !== user.otp) throw new ConflictException('Invalid otp.')
-    const isOtpNotExpired = this.otpExpireLimit(1, user.otp_gen)
+    const isOtpNotExpired = this.otpExpireLimit(3, user.otp_gen)
     if (!isOtpNotExpired) throw new ConflictException('Your otp expired.')
     const payload = { mobile: user?.mobile, sub: user?.id, roles: user?.role }
     const access_token = this.jwtService.sign(payload)
