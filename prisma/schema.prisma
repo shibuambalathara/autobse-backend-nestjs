@@ -98,6 +98,11 @@ enum ContactUsStatusType {
   created
   solved
 }
+enum UserIdProofTypeType {
+  aadhar
+  drivingLicense
+  passport
+}
 
 model User {
   id                        String               @id @default(cuid())
@@ -135,7 +140,7 @@ model User {
   // idProofBack_width         Int?
   // idProofBack_height        Int?
   // idProofBack_id            String?
-  // idProofType               UserIdProofTypeType?
+   idProofType               UserIdProofTypeType?
   idProofNo                 String               @default("")
   // dealership_filesize       Int?
   // dealership_extension      String?
@@ -423,4 +428,3 @@ model Enquiry{
   updatedAt         DateTime?             @updatedAt    
   isDeleted         Boolean               @default(false)         
 }
-

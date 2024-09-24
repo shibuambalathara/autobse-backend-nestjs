@@ -58,4 +58,7 @@ export class User {
   @Field()
   state:string;
 
+  @Field()
+  idProofType:string;
+
 }

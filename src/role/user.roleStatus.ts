@@ -20,3 +20,12 @@ export enum UserStatusType {
 registerEnumType(UserStatusType, {
   name: 'UserStatusType',
 });
+
+export enum UserIdProofTypeType {
+  Aadhar="aadhar",
+  DrivingLicense="drivingLicense",
+  Passport="passport"
+}
+registerEnumType(UserIdProofTypeType, {
+  name: 'UserIdProofTypeType',
+});

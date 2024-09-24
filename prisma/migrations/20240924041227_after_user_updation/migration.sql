@@ -11,10 +11,22 @@ CREATE TYPE "VehicleBidStatusType" AS ENUM ('pending', 'approved', 'fulfilled', 
 CREATE TYPE "UserRoleType" AS ENUM ('admin', 'staff', 'seller', 'dealer');
 
 -- CreateEnum
+CREATE TYPE "UserStatusType" AS ENUM ('pending', 'blocked', 'active', 'inactive');
+
+-- CreateEnum
 CREATE TYPE "StateNames" AS ENUM ('Maharashtra', 'Bihar', 'Chhattisgarh', 'Karnataka', 'Manipur', 'Arunachal_Pradesh', 'Assam', 'Gujarat', 'Punjab', 'Mizoram', 'Andhra_Pradesh', 'West_Bengal', 'Goa', 'Haryana', 'Himachal_Pradesh', 'Kerala', 'Rajasthan', 'Jharkhand', 'Madhya_Pradesh', 'Odisha', 'Nagaland', 'TamilNadu', 'Uttar_Pradesh', 'Telangana', 'Meghalaya', 'Sikkim', 'Tripura', 'Uttarakhand', 'Jammu_and_Kashmir', 'Delhi');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatusTypes" AS ENUM ('approved', 'pending', 'rejected');
+
+-- CreateEnum
+CREATE TYPE "PaymentType" AS ENUM ('registrations', 'emd', 'openBids');
+
+-- CreateEnum
+CREATE TYPE "ContactUsStatusType" AS ENUM ('created', 'solved');
+
+-- CreateEnum
+CREATE TYPE "EventCategory" AS ENUM ('open', 'online');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -29,33 +41,8 @@ CREATE TABLE "User" (
     "mobile" TEXT NOT NULL DEFAULT '',
     "password" TEXT,
     "BalanceEMDAmount" INTEGER DEFAULT 0,
-    "image_filesize" INTEGER,
-    "image_extension" TEXT,
-    "image_width" INTEGER,
-    "image_height" INTEGER,
-    "image_id" TEXT,
-    "pancard_filesize" INTEGER,
-    "pancard_extension" TEXT,
-    "pancard_width" INTEGER,
-    "pancard_height" INTEGER,
-    "pancard_id" TEXT,
     "pancardNo" TEXT NOT NULL DEFAULT '',
-    "idProof_filesize" INTEGER,
-    "idProof_extension" TEXT,
-    "idProof_width" INTEGER,
-    "idProof_height" INTEGER,
-    "idProof_id" TEXT,
-    "idProofBack_filesize" INTEGER,
-    "idProofBack_extension" TEXT,
-    "idProofBack_width" INTEGER,
-    "idProofBack_height" INTEGER,
-    "idProofBack_id" TEXT,
     "idProofNo" TEXT NOT NULL DEFAULT '',
-    "dealership_filesize" INTEGER,
-    "dealership_extension" TEXT,
-    "dealership_width" INTEGER,
-    "dealership_height" INTEGER,
-    "dealership_id" TEXT,
     "country" TEXT NOT NULL DEFAULT '',
     "city" TEXT NOT NULL DEFAULT '',
     "role" "UserRoleType" NOT NULL DEFAULT 'dealer',
@@ -66,6 +53,9 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3),
     "accessToken" TEXT,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "status" "UserStatusType" DEFAULT 'pending',
+    "otp" TEXT,
+    "otp_gen" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -195,7 +185,6 @@ CREATE TABLE "Vehicle" (
 CREATE TABLE "Event" (
     "id" TEXT NOT NULL,
     "eventNo" SERIAL NOT NULL,
-    "eventCategory" TEXT,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "firstVehicleEndDate" TIMESTAMP(3),
@@ -206,7 +195,6 @@ CREATE TABLE "Event" (
     "locationId" TEXT,
     "noOfBids" INTEGER NOT NULL,
     "status" "EventStatusType" DEFAULT 'active',
-    "downloadableFile_filesize" INTEGER,
     "downloadableFile_filename" TEXT,
     "termsAndConditions" TEXT NOT NULL DEFAULT '',
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -218,6 +206,7 @@ CREATE TABLE "Event" (
     "vehicleLiveTimeIn" INTEGER DEFAULT 0,
     "gapInBetweenVehicles" INTEGER DEFAULT 0,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "eventCategory" "EventCategory" NOT NULL,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
@@ -254,14 +243,15 @@ CREATE TABLE "Payment" (
     "refNo" SERIAL NOT NULL,
     "amount" INTEGER DEFAULT 10000,
     "description" TEXT NOT NULL DEFAULT '',
-    "statusId" TEXT,
     "userId" TEXT,
     "image" TEXT,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "createdBy" TEXT,
     "updatedAt" TIMESTAMP(3),
     "registrationExpire" TIMESTAMP(3),
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "status" "PaymentStatusTypes" DEFAULT 'pending',
+    "createdById" TEXT,
+    "paymentFor" "PaymentType" NOT NULL,
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
@@ -281,6 +271,22 @@ CREATE TABLE "RecentSold" (
 );
 
 -- CreateTable
+CREATE TABLE "Enquiry" (
+    "id" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "state" "StateNames" NOT NULL,
+    "mobile" TEXT NOT NULL,
+    "message" TEXT DEFAULT '',
+    "status" "ContactUsStatusType" DEFAULT 'created',
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Enquiry_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_Event_participants" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -293,6 +299,9 @@ CREATE UNIQUE INDEX "User_idNo_key" ON "User"("idNo");
 CREATE UNIQUE INDEX "User_mobile_key" ON "User"("mobile");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_pancardNo_key" ON "User"("pancardNo");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_tempToken_key" ON "User"("tempToken");
 
 -- CreateIndex
@@ -303,12 +312,6 @@ CREATE UNIQUE INDEX "VehicleCategory_name_key" ON "VehicleCategory"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Seller_name_key" ON "Seller"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Payment_statusId_key" ON "Payment"("statusId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Payment_createdBy_key" ON "Payment"("createdBy");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_Event_participants_AB_unique" ON "_Event_participants"("A", "B");
@@ -326,13 +329,19 @@ ALTER TABLE "VehicleCategory" ADD CONSTRAINT "VehicleCategory_createdById_fkey" 
 ALTER TABLE "Seller" ADD CONSTRAINT "Seller_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_currentBidUserId_fkey" FOREIGN KEY ("currentBidUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Event" ADD CONSTRAINT "Event_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Event" ADD CONSTRAINT "Event_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "Seller"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -341,25 +350,16 @@ ALTER TABLE "Event" ADD CONSTRAINT "Event_sellerId_fkey" FOREIGN KEY ("sellerId"
 ALTER TABLE "Event" ADD CONSTRAINT "Event_vehicleCategoryId_fkey" FOREIGN KEY ("vehicleCategoryId") REFERENCES "VehicleCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "ExcelUpload" ADD CONSTRAINT "ExcelUpload_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Status" ADD CONSTRAINT "Status_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Payment" ADD CONSTRAINT "Payment_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Payment" ADD CONSTRAINT "Payment_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_Event_participants" ADD CONSTRAINT "_Event_participants_A_fkey" FOREIGN KEY ("A") REFERENCES "Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;
