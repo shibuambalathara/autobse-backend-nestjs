@@ -21,6 +21,7 @@ type User {
   tempToken: Float
   status: String!
   state: String!
+  idProofType: String!
 }
 
 type LoginResponse {
@@ -279,6 +280,7 @@ input CreateUserInput {
   role: UserRoleType
   state: StateNames
   status: UserStatusType
+  idProofType: UserIdProofTypeType
 }
 
 enum UserRoleType {
@@ -328,6 +330,12 @@ enum UserStatusType {
   inactive
 }
 
+enum UserIdProofTypeType {
+  Aadhar
+  DrivingLicense
+  Passport
+}
+
 input UpdateUserInput {
   email: String
   username: String
@@ -346,6 +354,7 @@ input UpdateUserInput {
   role: UserRoleType!
   status: UserStatusType!
   state: StateNames
+  idProofType: UserIdProofTypeType
 }
 
 input LoginUserInput {

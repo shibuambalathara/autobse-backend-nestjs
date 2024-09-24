@@ -48,6 +48,11 @@ enum  UserStatusType {
   active
   inactive
 }
+enum UserIdProofTypeType {
+  aadhar
+  drivingLicense
+  passport
+}
 
 enum StateNames {
   Maharashtra
@@ -135,7 +140,7 @@ model User {
   // idProofBack_width         Int?
   // idProofBack_height        Int?
   // idProofBack_id            String?
-  // idProofType               UserIdProofTypeType?
+ idProofType               UserIdProofTypeType?
   idProofNo                 String               @default("")
   // dealership_filesize       Int?
   // dealership_extension      String?
