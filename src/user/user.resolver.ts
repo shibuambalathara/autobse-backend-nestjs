@@ -6,6 +6,8 @@ import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/role/role.guard';
+import { Roles } from 'src/role/role.decorator';
 @Resolver((of) => User)
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -27,17 +29,22 @@ export class UserResolver {
     return this.userService.getUserByConditions(where);
   }
   @Query((returns) => User, { nullable: true })
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async deletedUser(
     @Args('where') where: UserWhereUniqueInput,
   ): Promise<User | null> {
     return this.userService.deletedUser(where);
   }
+
   @Query((returns) => [User], { nullable: 'items' })
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async deletedUsers(): Promise<User[] | null> {
     return this.userService.allDeletedUsers();
   }
+
   @Mutation((returns) => User)
-  // @UseGuards(GqlAuthGuard)
   @UsePipes(new ValidationPipe())
   async createUser(@Args('data') data: CreateUserInput) {
     console.log('data', data);
@@ -50,13 +57,19 @@ export class UserResolver {
   ): Promise<User | null> {
     return this.userService.updateUserField(data, where);
   }
+
   @Mutation((returns) => User)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async deleteUser(
     @Args('where') where: UserWhereUniqueInput,
   ): Promise<User | null> {
     return this.userService.deleteUser(where);
   }
+
   @Mutation((returns) => User)
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles('admin','staff')
   async restoreUser(
     @Args('where') where: UserWhereUniqueInput,
   ): Promise<User | null> {

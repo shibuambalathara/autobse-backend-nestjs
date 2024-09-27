@@ -32,7 +32,6 @@ export class UpdateUserInput {
   mobile?: string;
 
   @Field({ nullable: true })
-  @IsOptional()
   password?: string;
 
   @Field({ nullable: true })
@@ -67,7 +66,7 @@ export class UpdateUserInput {
   // @Field({ nullable: true })
   // @IsOptional()
   // accessToken?: string;
-  @Field(()=>UserStatusType) 
+  @Field(()=>UserStatusType,{nullable:true}) 
   status:UserStatusType;
 
   @Field(()=>StateNames,{nullable:true})

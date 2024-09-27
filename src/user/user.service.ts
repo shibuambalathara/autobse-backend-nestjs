@@ -73,9 +73,12 @@ export class UserService {
     updatingData: UpdateUserInput,
     where: UserWhereUniqueInput,
   ): Promise<User | null> {
+    const hashedPassword = updatingData.password
+    ? await bcrypt.hash(updatingData.password, 10)
+    : undefined;
     const updatedUsers = await this.prisma.user.updateMany({
       where: { ...where, isDeleted: false },
-      data: updatingData,
+      data: {...updatingData,password: hashedPassword},
     });
 
     if (updatedUsers.count > 0) {
