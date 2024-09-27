@@ -242,6 +242,8 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
+  restoreUser(where: UserWhereUniqueInput!): User!
+  DeleteUserHardDelete(where: UserWhereUniqueInput!): User!
   login(loginInput: LoginUserInput!): LoginResponse!
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
@@ -574,6 +576,10 @@ input UpdateEnquiryInput {
 
 input SendOtpDto {
   mobile: String!
+  firstName: String
+  lastName: String
+  pancardNo: String
+  state: StateNames
 }
 
 input VerfiyOtpDto {

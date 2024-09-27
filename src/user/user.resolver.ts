@@ -38,9 +38,9 @@ export class UserResolver {
   }
   @Mutation((returns) => User)
   // @UseGuards(GqlAuthGuard)
-   @UsePipes(new ValidationPipe())
-    async createUser(@Args('data') data: CreateUserInput) {
-      console.log("data",data)
+  @UsePipes(new ValidationPipe())
+  async createUser(@Args('data') data: CreateUserInput) {
+    console.log('data', data);
     return this.userService.createUser(data);
   }
   @Mutation((returns) => User)
@@ -56,4 +56,20 @@ export class UserResolver {
   ): Promise<User | null> {
     return this.userService.deleteUser(where);
   }
+  @Mutation((returns) => User)
+  async restoreUser(
+    @Args('where') where: UserWhereUniqueInput,
+  ): Promise<User | null> {
+    return this.userService.restoreUser(where);
+  }
+
+
+// temp api for hard delete user for test purpose only
+@Mutation((returns)=>User)
+async DeleteUserHardDelete(
+  @Args('where') where: UserWhereUniqueInput):Promise<User | null>{
+return this.userService.DeleteUserPermenently(where);
+  }
+
+
 }
