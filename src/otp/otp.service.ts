@@ -19,19 +19,27 @@ export class OtpService {
 
   async sendOtp(sendOtpDto: SendOtpDto) {
     const otp = this.generateOtp(4)
-    const userExist = await this.prismaService.user.findUnique({
+    let userExist = await this.prismaService.user.findUnique({
       where: {
-        mobile: sendOtpDto.mobile,
+        mobile: sendOtpDto.mobile,isDeleted:false
       },
-      select: {
-        id: true,
-      }
+  
     })
-    if (!userExist) throw new NotFoundException('User doesnot exist.')
+    if (!userExist) 
+    {
+      if(!sendOtpDto?.pancardNo ||!sendOtpDto?.state  ) {
+        throw new NotFoundException('User does not exist.')
+      }else {
+
+        userExist=await this.prismaService.user.create({
+          data:sendOtpDto
+        })
+      }
+    }
 
     const setUserOtp = await this.prismaService.user.update({
       where: {
-        id: userExist.id,
+        id: userExist.id
       },
       data: {
         otp: otp,
@@ -69,14 +77,8 @@ export class OtpService {
       where: {
         mobile: verfiyOtpDto.mobile,
       },
-      select: {
-        id: true,
-        mobile: true,
-        role: true,
-        otp: true,
-        otp_gen: true,
-      }
     })
+    
     if (!user) throw new NotFoundException('User doesnot exist.')
     if (verfiyOtpDto.otp !== user.otp) throw new ConflictException('Invalid otp.')
     const isOtpNotExpired = this.otpExpireLimit(3, user.otp_gen)
@@ -85,11 +87,7 @@ export class OtpService {
     const access_token = this.jwtService.sign(payload)
     return {
       access_token,
-      user: {
-        id: user.id,
-        mobile: user.mobile,
-        role: user.role,
-      }
+      user
     }
   }
 

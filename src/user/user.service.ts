@@ -29,39 +29,46 @@ export class UserService {
     });
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {
+    const user = await this.prisma.user.findUnique({ where: { mobile } });
 
-    const user=await this.prisma.user.findUnique({ where: {mobile} });
-   
-    return user
+    return user;
   }
   async saveAccessToken(id: string, token: string): Promise<void> {
-    await this.prisma.user.update({data:{accessToken:token},where:{id}});
+    await this.prisma.user.update({
+      data: { accessToken: token },
+      where: { id },
+    });
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
-  
-      try {
-        const hashedPassword = data.password ? await bcrypt.hash(data.password, 10) : undefined;
-  
-        const createdUser = await this.prisma.user.create({
-          data: {
-            ...data,
-            password: hashedPassword,
-          },
-       
-        });
-  
-         return createdUser;
-      } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
-          const field = error.meta?.target ? error.meta.target : 'field';
-          throw new Error(`The ${field} is not unique. Please use a different ${field}.`);
-        }
-        console.error("Unexpected error:", error);
-        throw new Error(error);
+    try {
+      const hashedPassword = data.password
+        ? await bcrypt.hash(data.password, 10)
+        : undefined;
+
+      const createdUser = await this.prisma.user.create({
+        data: {
+          ...data,
+          password: hashedPassword,
+        },
+      });
+
+      return createdUser;
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const field = error.meta?.target ? error.meta.target : 'field';
+        throw new Error(
+          `The ${field} is not unique. Please use a different ${field}.`,
+        );
       }
+      console.error('Unexpected error:', error);
+      throw new Error(error);
     }
-  
+  }
+
   async updateUserField(
     updatingData: UpdateUserInput,
     where: UserWhereUniqueInput,
@@ -90,5 +97,22 @@ export class UserService {
   }
   async allDeletedUsers(): Promise<User[]> {
     return this.prisma.user.findMany({ where: { isDeleted: true } });
+  }
+
+  async restoreUser(where: UserWhereUniqueInput): Promise<User | null> {
+    return this.prisma.user.update({
+      data: { isDeleted: false },
+      where: where as Prisma.UserWhereUniqueInput,
+    });
+  }
+
+  // only for dev purpose delete user permenently
+
+  async DeleteUserPermenently(
+    where: UserWhereUniqueInput,
+  ): Promise<User | null> {
+    return this.prisma.user.delete({
+      where: where as Prisma.UserWhereUniqueInput,
+    });
   }
 }
