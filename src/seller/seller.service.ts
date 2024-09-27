@@ -90,4 +90,16 @@ export class SellerService {
       }
     });
   }
+
+// hard delete for 
+
+  async deleteSellerHardDelete(id: string):Promise<Seller|null> {
+    try{
+      return await this.prisma.seller.delete({where:{id},
+    });
+    }
+    catch(error){
+      throw new Error(error.message);
+    }
+  }
 }

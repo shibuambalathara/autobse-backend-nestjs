@@ -55,7 +55,7 @@ type VehicleCategory {
 type Seller {
   id: String!
   name: String!
-  contactPerson: String!
+  contactPerson: String
   GSTNumber: String!
   billingContactPerson: String!
   mobile: String!
@@ -257,6 +257,7 @@ type Mutation {
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
+  deleteSellerHardDelete(where: SellerWhereUniqueInput!): Seller!
   createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
@@ -374,7 +375,7 @@ input UpdateUserInput {
   userCategory: String
   tempToken: Float
   role: UserRoleType!
-  status: UserStatusType!
+  status: UserStatusType
   state: StateNames
   idProofType: UserIdProofTypeType
 }
