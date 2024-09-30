@@ -42,7 +42,7 @@ type User {
   status: String!
   state: String!
   idProofType: String!
-  payment: Payment
+  payments: [Payment!]
 }
 
 type LoginResponse {
@@ -287,7 +287,6 @@ type Mutation {
 
 input CreateUserInput {
   email: String
-  username: String
   firstName: String
   lastName: String
   businessName: String
