@@ -62,7 +62,7 @@ export class User {
   @Field()
   idProofType:string;
 
-   @Field(()=>Payment,{nullable:true})
-  payment?:Payment;
+   @Field(()=>[Payment],{nullable:true})
+  payments?:Payment[];
  
 }

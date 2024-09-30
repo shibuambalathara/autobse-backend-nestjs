@@ -26,6 +26,9 @@ export class UserService {
         ...conditions,
         isDeleted: false,
       },
+      include: {
+        payments: true,  
+      },
     });
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {
@@ -37,6 +40,7 @@ export class UserService {
     await this.prisma.user.update({
       data: { accessToken: token },
       where: { id },
+    
     });
   }
 
@@ -50,6 +54,7 @@ export class UserService {
         data: {
           ...data,
           password: hashedPassword,
+          username:`auto${data?.mobile}`
         },
       });
 
@@ -61,7 +66,7 @@ export class UserService {
       ) {
         const field = error.meta?.target ? error.meta.target : 'field';
         throw new Error(
-          `The ${field} is not unique. Please use a different ${field}.`,
+          `The ${field} is already exist. Please check ${field}.`,
         );
       }
       console.error('Unexpected error:', error);

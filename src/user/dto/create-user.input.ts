@@ -10,8 +10,8 @@ export class CreateUserInput {
   @IsEmail()
   email: string;
 
-  @Field({nullable:true})
-  username: string;
+  // @Field({nullable:true})
+  // username: string;
 
   @Field({nullable:true})
   firstName: string;
