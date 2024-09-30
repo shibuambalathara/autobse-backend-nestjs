@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
+import { User } from 'src/user/models/user.model';
 
 @ObjectType()
 export class Payment {
@@ -38,6 +39,8 @@ export class Payment {
 
    @Field({nullable:true})
    paymentFor?:string;
+
+  
 
 
 }
