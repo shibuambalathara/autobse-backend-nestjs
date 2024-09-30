@@ -8,6 +8,7 @@ import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
+import { OrderInput } from './dto/order.input';
 @Resolver((of) => User)
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -19,15 +20,16 @@ export class UserResolver {
 
   @Query((returns) => User, { nullable: true })
   async user(
-    @Args('where', { type: () => UserWhereUniqueInput })
-    where: UserWhereUniqueInput,
+    @Args('where', { type: () => UserWhereUniqueInput }) where: UserWhereUniqueInput,
+    @Args('sortOrder', { type: () => String, nullable: true, defaultValue: 'desc' }) order: OrderInput,
   ): Promise<User | null> {
-    if (!where.id && !where.mobile && !where.tempToken && !where.idNo) {
+    if (!where || (!where.id && !where.mobile && !where.tempToken && !where.idNo)) {
       throw new Error('At least one unique identifier must be provided');
     }
-
-    return this.userService.getUserByConditions(where);
+    const sortOrder = order?.sortOrder || 'desc';
+    return this.userService.getUserByConditions(where, sortOrder);
   }
+
   @Query((returns) => User, { nullable: true })
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')

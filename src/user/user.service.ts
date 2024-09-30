@@ -20,6 +20,7 @@ export class UserService {
 
   async getUserByConditions(
     conditions: UserWhereUniqueInput,
+    sortOrder: 'asc' | 'desc',
   ): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: {
@@ -27,7 +28,11 @@ export class UserService {
         isDeleted: false,
       },
       include: {
-        payments: true,  
+        payments: {
+          orderBy: {
+            createdAt: sortOrder, 
+          },
+        },
       },
     });
   }
