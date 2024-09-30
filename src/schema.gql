@@ -161,7 +161,7 @@ type SendOtpResponse {
 
 type Query {
   users: [User]!
-  user(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
   locations: [Location!]!
