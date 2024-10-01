@@ -40,6 +40,9 @@ export class Payment {
    @Field({nullable:true})
    paymentFor?:string;
 
+   @Field(()=>User,{nullable:true})
+   user?:User
+
   
 
 

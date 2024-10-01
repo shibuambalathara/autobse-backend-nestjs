@@ -17,7 +17,10 @@ export class PaymentService {
           createdById:paymentUserId,
           userId:paymentUserId,
   
-        }
+        },
+        include: {
+          user: true, 
+        },
       })
     }
     catch(error){
@@ -26,13 +29,19 @@ export class PaymentService {
   }
 
   async payments() : Promise<Payment[]|null> {
-    const payment = await this.prisma.payment.findMany({where:{isDeleted:false}});
+    const payment = await this.prisma.payment.findMany({where:{isDeleted:false},   include: {
+      user: true,  
+    },});
     if(!payment) throw new NotFoundException("Not Found")
     return payment;
   }
 
   async payment(where:PaymentWhereUniqueInput) :Promise<Payment|null>{
-    const payment = await this.prisma.payment.findUnique({where:{...where as Prisma.PaymentWhereUniqueInput, isDeleted:false}});
+    const payment = await this.prisma.payment.findUnique({where:{...where as Prisma.PaymentWhereUniqueInput, isDeleted:false},
+      include: {
+        user: true,
+      }
+    });
     if(!payment) throw new NotFoundException("Not Found")
     return payment;
   }
@@ -70,13 +79,19 @@ export class PaymentService {
     }
 
   async deletedPayments():Promise<Payment[]|null> {
-      const payment = await this.prisma.payment.findMany({where:{isDeleted:true,}});
+      const payment = await this.prisma.payment.findMany({where:{isDeleted:true,},
+        include: {
+          user: true,}});
       if(!payment) throw new NotFoundException("Payment Not Found");
       return payment;
     }
  
   async deletedPayment(id:string):Promise<Payment|null> {
-      const payment = await this.prisma.payment.findUnique({where:{id,isDeleted:true,}});
+      const payment = await this.prisma.payment.findUnique({where:{id,isDeleted:true,},
+        include: {
+          user: true,
+        }
+      });
       if(!payment) throw new NotFoundException("Payment Not Found");
       return payment;
     }

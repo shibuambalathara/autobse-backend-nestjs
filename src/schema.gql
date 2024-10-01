@@ -15,6 +15,7 @@ type Payment {
   createdById: String
   registrationExpire: DateTime
   paymentFor: String
+  user: User
 }
 
 """
