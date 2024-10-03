@@ -118,6 +118,11 @@ model User {
   mobile                    String               @unique @default("")
   password                  String?
   BalanceEMDAmount        Int?                 @default(0)
+  pancard_image String?
+  aadharcard_front_image String?
+  aadharcard_back_image String?
+  driving_license_front_image String?
+  driving_license_back_image String?
   // specialVehicleBuyingLimit Int?                 @default(0)
   // image_filesize            Int?
   // image_extension           String?

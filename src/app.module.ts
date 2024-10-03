@@ -1,5 +1,5 @@
 
-import { Module, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
@@ -24,6 +24,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OtpModule } from './otp/otp.module';
+import { s3Module } from './services/s3/s3.module';
+import { FileuploadModule } from './fileupload/fileupload.module';
+
 
 
 @Module({
@@ -35,7 +38,9 @@ import { OtpModule } from './otp/otp.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot(
+      {isGlobal: true}
+    ),
     UserModule,
     AuthModule,
     StateModule,
@@ -50,7 +55,8 @@ import { OtpModule } from './otp/otp.module';
     RecentsoldModule,
     EnquiryModule,
     OtpModule,
-
+    s3Module,
+    FileuploadModule,
 
   ],
   providers: [

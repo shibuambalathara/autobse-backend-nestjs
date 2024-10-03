@@ -5,7 +5,7 @@ import { Payment } from 'src/payment/models/payment.model';
 export class User {
   @Field()
   id: string;
-  
+
   @Field()
   idNo: number;
 
@@ -33,6 +33,21 @@ export class User {
   @Field({ nullable: true })
   BalanceEMDAmount?: number;
 
+  @Field({ nullable: true })
+  pancard_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_front_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_back_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_front_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_back_image?: string;
+
   @Field()
   pancardNo: string;
 
@@ -57,10 +72,10 @@ export class User {
   status: string;
 
   @Field()
-  state:string;
+  state: string;
 
   @Field()
-  idProofType:string;
+  idProofType: string;
 
    @Field(()=>[Payment],{nullable:true})
   payments?:Payment[];

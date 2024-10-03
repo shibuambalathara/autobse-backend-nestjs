@@ -6,6 +6,7 @@ import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}

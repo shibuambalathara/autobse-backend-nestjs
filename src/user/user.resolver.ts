@@ -11,7 +11,10 @@ import { Roles } from 'src/role/role.decorator';
 import { OrderInput } from './dto/order.input';
 @Resolver((of) => User)
 export class UserResolver {
-  constructor(private userService: UserService) {}
+  private GraphQLUpload: any;
+  constructor(
+    private userService: UserService,
+  ) {}
 
   @Query((returns) => [User], { nullable: 'items' })
   async users(): Promise<User[] | null> {
