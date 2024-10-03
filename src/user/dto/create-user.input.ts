@@ -35,6 +35,21 @@ export class CreateUserInput {
   @Field({ nullable: true })
   BalanceEMDAmount?: number;
 
+  @Field({ nullable: true })
+  pancard_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_front_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_back_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_front_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_back_image?: string;
+
   @Field({nullable:true})
   @IsNotEmpty({message:"pancard number is required"})
   pancardNo: string;

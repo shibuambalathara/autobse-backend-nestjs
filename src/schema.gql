@@ -13,6 +13,11 @@ type User {
   businessName: String!
   mobile: String!
   BalanceEMDAmount: Float
+  pancard_image: String
+  aadharcard_front_image: String
+  aadharcard_back_image: String
+  driving_license_front_image: String
+  driving_license_back_image: String
   pancardNo: String!
   idProofNo: String!
   country: String!
@@ -290,6 +295,11 @@ input CreateUserInput {
   mobile: String
   password: String
   BalanceEMDAmount: Float
+  pancard_image: String
+  aadharcard_front_image: String
+  aadharcard_back_image: String
+  driving_license_front_image: String
+  driving_license_back_image: String
   pancardNo: String
   idProofNo: String
   country: String

@@ -6,9 +6,14 @@ import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+
+
 @Resolver((of) => User)
 export class UserResolver {
-  constructor(private userService: UserService) {}
+  private GraphQLUpload: any;
+  constructor(
+    private userService: UserService,
+  ) {}
 
   @Query((returns) => [User], { nullable: 'items' })
   async users(): Promise<User[] | null> {
@@ -37,10 +42,9 @@ export class UserResolver {
     return this.userService.allDeletedUsers();
   }
   @Mutation((returns) => User)
-  // @UseGuards(GqlAuthGuard)
-   @UsePipes(new ValidationPipe())
-    async createUser(@Args('data') data: CreateUserInput) {
-      console.log("data",data)
+  @UsePipes(new ValidationPipe())
+  async createUser(@Args('data') data: CreateUserInput) {
+    console.log('data', data);
     return this.userService.createUser(data);
   }
   @Mutation((returns) => User)

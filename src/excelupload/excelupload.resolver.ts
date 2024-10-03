@@ -7,7 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
-import { FileUpload } from 'graphql-upload/processRequest.mjs';
+// import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { ExcelWhereUniqueInput } from './dto/unique-excelupload.input';
 
 

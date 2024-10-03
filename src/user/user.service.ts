@@ -6,6 +6,7 @@ import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -61,6 +62,39 @@ export class UserService {
         throw new Error(error);
       }
     }
+
+    // async filesOfStreamToBuffer(files: Map<FileUpload, string>): Promise<Map<Buffer[], {fieldName: string, filename: string, encoding: string, mimetype: string}>> {
+
+    //   const fileBuffer = new Map<Buffer[], {fieldName: string, filename: string, encoding: string, mimetype: string}>()
+    //   const filePromises = []
+    //   for(let [fileUpload, fieldName] of files) {
+    //     const {createReadStream, filename, encoding, mimetype} = fileUpload
+
+    //     const filePromise = new Promise((resolve, reject) => {
+    //       const chunks: Buffer[] = []
+    //       const stream: Readable = createReadStream()
+    //       stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+    //       stream.on('error', (err) => reject(err))
+    //       stream.on('end', () => {
+    //         resolve(Buffer.concat(chunks))
+    //         fileBuffer.set(chunks, {fieldName, filename, encoding, mimetype})
+    //       })
+    //       filePromises.push(filePromise)
+    //     })
+
+    //   }
+    //      await Promise.all(filePromises);
+    //   return fileBuffer
+    // }
+
+    // async streamToBuffer(stream: Readable): Promise<Buffer> {
+    //   const chunks: Buffer[] = []
+    //   return new Promise((resolve, reject) => {
+    //       stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+    //       stream.on('error', (err) => reject(err))
+    //       stream.on('end', () => resolve(Buffer.concat(chunks)))
+    //   })
+    // }
   
   async updateUserField(
     updatingData: UpdateUserInput,

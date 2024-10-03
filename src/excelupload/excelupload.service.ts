@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ExcelUpload, Prisma } from '@prisma/client';
 import * as XLSX from 'xlsx'; 
 import { createReadStream } from 'fs';
-import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
+// import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import { ExcelWhereUniqueInput } from './dto/unique-excelupload.input';
 import { Excelupload } from './models/excelupload.model';
 
