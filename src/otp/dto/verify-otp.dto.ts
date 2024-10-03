@@ -6,4 +6,7 @@ export class VerfiyOtpDto {
     mobile: string;
     @Field()
     otp: string;
+
+  
+
 }

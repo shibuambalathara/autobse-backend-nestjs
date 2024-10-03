@@ -2,6 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Payment {
+  id: String!
+  refNo: Float
+  amount: Float
+  description: String
+  status: String
+  userId: String
+  image: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+  registrationExpire: DateTime
+  paymentFor: String
+  user: User
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: String!
   idNo: Float!
@@ -27,6 +48,7 @@ type User {
   status: String!
   state: String!
   idProofType: String!
+  payments: [Payment!]
 }
 
 type LoginResponse {
@@ -44,11 +66,6 @@ type Location {
   createdById: String
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type VehicleCategory {
   id: String!
   name: String!
@@ -60,7 +77,7 @@ type VehicleCategory {
 type Seller {
   id: String!
   name: String!
-  contactPerson: String!
+  contactPerson: String
   GSTNumber: String!
   billingContactPerson: String!
   mobile: String!
@@ -114,21 +131,6 @@ type Status {
   createdById: String!
 }
 
-type Payment {
-  id: String!
-  refNo: Float
-  amount: Float
-  description: String
-  status: String
-  userId: String
-  image: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdById: String
-  registrationExpire: DateTime
-  paymentFor: String
-}
-
 type Recentsold {
   image: String!
   vehicleName: String!
@@ -165,7 +167,7 @@ type SendOtpResponse {
 
 type Query {
   users: [User]!
-  user(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
   locations: [Location!]!
@@ -247,6 +249,8 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(data: UpdateUserInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
+  restoreUser(where: UserWhereUniqueInput!): User!
+  DeleteUserHardDelete(where: UserWhereUniqueInput!): User!
   login(loginInput: LoginUserInput!): LoginResponse!
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
@@ -260,6 +264,7 @@ type Mutation {
   updateSeller(where: SellerWhereUniqueInput!, updateSellerInput: UpdateSellerInput!): Seller!
   deleteSeller(where: SellerWhereUniqueInput!): Seller!
   restoreSeller(where: SellerWhereUniqueInput!): Seller!
+  deleteSellerHardDelete(where: SellerWhereUniqueInput!): Seller!
   createEvent(sellerId: String!, vehicleCategoryId: String!, locationId: String!, createEventInput: CreateEventInput!): Event!
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
@@ -288,7 +293,6 @@ type Mutation {
 
 input CreateUserInput {
   email: String
-  username: String
   firstName: String
   lastName: String
   businessName: String
@@ -382,7 +386,7 @@ input UpdateUserInput {
   userCategory: String
   tempToken: Float
   role: UserRoleType!
-  status: UserStatusType!
+  status: UserStatusType
   state: StateNames
   idProofType: UserIdProofTypeType
 }
@@ -584,6 +588,10 @@ input UpdateEnquiryInput {
 
 input SendOtpDto {
   mobile: String!
+  firstName: String
+  lastName: String
+  pancardNo: String
+  state: StateNames
 }
 
 input VerfiyOtpDto {

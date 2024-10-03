@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Payment } from 'src/payment/models/payment.model';
 
 @ObjectType()
 export class User {
@@ -76,4 +77,7 @@ export class User {
   @Field()
   idProofType: string;
 
+   @Field(()=>[Payment],{nullable:true})
+  payments?:Payment[];
+ 
 }
