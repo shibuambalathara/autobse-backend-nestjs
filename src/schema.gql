@@ -467,7 +467,7 @@ input UpdateUserInput {
   city: String
   userCategory: String
   tempToken: Float
-  role: UserRoleType!
+  role: UserRoleType
   status: UserStatusType
   state: StateNames
   idProofType: UserIdProofTypeType
