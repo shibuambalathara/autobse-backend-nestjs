@@ -7,7 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
-import { FileUpload } from 'graphql-upload/processRequest.mjs';
+// import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { ExcelWhereUniqueInput } from './dto/unique-excelupload.input';
 
 
@@ -19,12 +19,14 @@ export class ExceluploadResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin', 'staff')
   @Mutation(() => Excelupload)
-  async createExcelupload(@Args('userId') userId:string,@Args('eventId') eventId:string,
+  async createExcelupload(
+    // @Args('userId') userId:string,
+    @Args('eventId') eventId:string,
     @Args('createExceluploadInput') createExceluploadInput: CreateExceluploadInput,
     @Context() context
   ): Promise<Excelupload|null|Boolean> {
     const { id } = context.req.user;
-    return this.exceluploadService.createExcelUpload( id,userId,eventId,createExceluploadInput);
+    return this.exceluploadService.createExcelUpload( id,eventId,createExceluploadInput);
   }
 
   

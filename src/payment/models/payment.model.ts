@@ -1,8 +1,12 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
+import { User } from 'src/user/models/user.model';
 
 @ObjectType()
 export class Payment {
+   @Field()
+   id:string;
+   
    @Field({nullable:true})
    refNo?:number;
 
@@ -13,10 +17,10 @@ export class Payment {
    description?:string;
 
    @Field({ nullable: true })
-   statusId?:string;
+   status?:string;
 
    @Field({nullable:true})
-   userId?:string;
+   userId:string;
 
    @Field({nullable:true})
    image?:string;
@@ -32,6 +36,14 @@ export class Payment {
 
    @Field({nullable:true})
    registrationExpire?:Date;
+
+   @Field({nullable:true})
+   paymentFor?:string;
+
+   @Field(()=>User,{nullable:true})
+   user?:User
+
+  
 
 
 }

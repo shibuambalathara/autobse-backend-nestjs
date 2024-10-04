@@ -1,10 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Payment } from 'src/payment/models/payment.model';
 
 @ObjectType()
 export class User {
   @Field()
   id: string;
-  
+
   @Field()
   idNo: number;
 
@@ -32,6 +33,21 @@ export class User {
   @Field({ nullable: true })
   BalanceEMDAmount?: number;
 
+  @Field({ nullable: true })
+  pancard_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_front_image?: string;
+
+  @Field({ nullable: true })
+  aadharcard_back_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_front_image?: string;
+
+  @Field({ nullable: true })
+  driving_license_back_image?: string;
+
   @Field()
   pancardNo: string;
 
@@ -52,6 +68,16 @@ export class User {
 
   // @Field({ nullable: true })
   // accessToken?: string;
+  @Field()
+  status: string;
 
+  @Field()
+  state: string;
 
+  @Field()
+  idProofType: string;
+
+   @Field(()=>[Payment],{nullable:true})
+  payments?:Payment[];
+ 
 }

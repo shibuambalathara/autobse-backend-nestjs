@@ -8,23 +8,23 @@ export class Seller {
   @Field()
   name:string;
 
-  @Field()
-  contactPerson:string;
+  @Field({nullable:true})
+  contactPerson?:string;
 
   @Field()
-  GSTNumber:string;
+  GSTNumber?:string;
 
   @Field()
-  billingContactPerson:string;
+  billingContactPerson?:string;
 
   @Field()
-  mobile:string;
+  mobile?:string;
 
   @Field()
-  nationalHead:string;
+  nationalHead?:string;
   
   @Field()
-  logo:string;
+  logo?:string;
 
   @Field()
   createdAt?:Date;

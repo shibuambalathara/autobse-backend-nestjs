@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ExcelUpload, Prisma } from '@prisma/client';
 import * as XLSX from 'xlsx'; 
 import { createReadStream } from 'fs';
-import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
+// import graphqlUploadExpress, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import { ExcelWhereUniqueInput } from './dto/unique-excelupload.input';
 import { Excelupload } from './models/excelupload.model';
 
@@ -14,7 +14,7 @@ import { Excelupload } from './models/excelupload.model';
 export class ExceluploadService {
   constructor(private readonly prisma:PrismaService){}
 
-  async createExcelUpload(id: string,userId:string,eventId:string,createExceluploadInput: CreateExceluploadInput): Promise<ExcelUpload|null|Boolean> {
+  async createExcelUpload(id: string,eventId:string,createExceluploadInput: CreateExceluploadInput): Promise<ExcelUpload|null|Boolean> {
   try{
    const excel = await this.prisma.excelUpload.create({
       data: {
@@ -80,7 +80,7 @@ export class ExceluploadService {
       await this.prisma.vehicle.createMany({
         data: {    
           createdById:id,
-          currentBidUserId:userId,
+          // currentBidUserId:userId,
           eventId:eventId,  
           bidStartTime:bidStartTime,
           bidTimeExpire:bidTimeExpire,

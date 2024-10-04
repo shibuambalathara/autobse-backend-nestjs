@@ -9,29 +9,22 @@ export class CreateSellerInput {
   name:string;
 
   @Field({nullable:true})
-  @IsString()
-  contactPerson:string;
+    contactPerson:string;
 
   @Field({nullable:true})
-  @IsString()
   GSTNumber:string;
 
   @Field({nullable:true})
-  @IsString()
   billingContactPerson:string;
 
   @Field({nullable:true})
-  @IsString()
-  @IsPhoneNumber()
-  mobile:string;
+    mobile:string;
 
   @Field({nullable:true})
-  @IsString()
-  nationalHead:string;
+   nationalHead:string;
   
 
   @Field({nullable:true})
-  @IsString()
   logo:string;
   
 }

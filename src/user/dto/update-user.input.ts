@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
 import { IsEmail, IsString, IsOptional } from 'class-validator';
-import { UserRoleType } from 'src/role/user.role';
+import { UserIdProofTypeType, UserRoleType, UserStatusType } from 'src/role/user.roleStatus'
 
 @InputType()
 export class UpdateUserInput {
@@ -32,7 +32,6 @@ export class UpdateUserInput {
   mobile?: string;
 
   @Field({ nullable: true })
-  @IsOptional()
   password?: string;
 
   @Field({ nullable: true })
@@ -40,8 +39,7 @@ export class UpdateUserInput {
   BalanceEMDAmount?: number;
 
   @Field({ nullable: true })
-  @IsOptional()
-  pancardNo?: string;
+    pancardNo: string;
 
   @Field({ nullable: true })
   @IsOptional()
@@ -68,8 +66,12 @@ export class UpdateUserInput {
   // @Field({ nullable: true })
   // @IsOptional()
   // accessToken?: string;
+  @Field(()=>UserStatusType,{nullable:true}) 
+  status:UserStatusType;
 
   @Field(()=>StateNames,{nullable:true})
   state?:StateNames;
+  @Field(()=>UserIdProofTypeType,{nullable:true})
+  idProofType:UserIdProofTypeType;
 
 }

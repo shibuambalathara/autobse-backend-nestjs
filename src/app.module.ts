@@ -1,5 +1,5 @@
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
@@ -17,6 +17,15 @@ import { ExceluploadModule } from './excelupload/excelupload.module';
 import { StatusModule } from './status/status.module';
 import { PaymentModule } from './payment/payment.module';
 import { RecentsoldModule } from './recentsold/recentsold.module';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+// import { HttpExceptionFilter } from './common/http-exception.filter';
+import { EnquiryModule } from './enquiry/enquiry.module';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { OtpModule } from './otp/otp.module';
+import { s3Module } from './services/s3/s3.module';
+import { FileuploadModule } from './fileupload/fileupload.module';
 
 
 
@@ -29,7 +38,9 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), 
     }),
-    
+    ConfigModule.forRoot(
+      {isGlobal: true}
+    ),
     UserModule,
     AuthModule,
     StateModule,
@@ -42,11 +53,26 @@ import { RecentsoldModule } from './recentsold/recentsold.module';
     StatusModule,
     PaymentModule,
     RecentsoldModule,
-
+    EnquiryModule,
+    OtpModule,
+    s3Module,
+    FileuploadModule,
 
   ],
   providers: [
     PrismaService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe, 
+    },
+    AppService
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: HttpExceptionFilter,
+    // },
   ],
+  controllers: [
+    AppController,
+  ]
 })
 export class AppModule {}

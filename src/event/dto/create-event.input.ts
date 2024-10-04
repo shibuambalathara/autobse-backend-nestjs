@@ -1,18 +1,17 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { EventBidLockType,EventStatusType } from '@prisma/client';
 import { Seller } from 'src/seller/models/seller.model';
 import { VehicleCategory } from 'src/vehiclecategory/models/vehiclecategory.model';
 import { User } from 'src/user/models/user.model';
-import { eventCategory } from './event.category';
+import { EventBidLockType, eventCategory, EventStatusType } from './event.category';
 
 @InputType()
 export class CreateEventInput {
-  @Field(() =>eventCategory , { nullable: false })
+  @Field(() =>eventCategory)
+  @IsEnum(eventCategory)
   eventCategory:eventCategory;
 
   
-
   @Field()
   startDate:Date;
 
@@ -54,16 +53,15 @@ export class CreateEventInput {
   @Field({nullable:true})
   gapInBetweenVehicles?:number;
 
-  @Field({nullable:true})
+  @Field(() =>EventBidLockType,{nullable:true})
   @IsOptional()
   @IsEnum(EventBidLockType)
-  bidLock?:EventBidLockType = EventBidLockType.unlocked;
+  bidLock?:EventBidLockType;
 
-  @Field({nullable:true})
+  @Field(()=>EventStatusType,{nullable:true})
   @IsOptional()
   @IsEnum(EventStatusType)
-  status?:EventStatusType = EventStatusType.active;
-
+  status?:EventStatusType;
 
 
 }

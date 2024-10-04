@@ -33,7 +33,7 @@ export class SellerResolver {
 
   @Mutation(returns => Seller)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','staff')
   async updateSeller(@Args('where') where:SellerWhereUniqueInput,@Args('updateSellerInput') updateSellerInput: UpdateSellerInput):Promise<Seller|null> {
     return this.sellerService.updateSeller(where.id,updateSellerInput);
   }
@@ -66,5 +66,12 @@ export class SellerResolver {
     return this.sellerService.restoreSeller(where);
   }
 
+// temp for test purpose
+  @Mutation(returns => Seller)
+  // @UseGuards(GqlAuthGuard,RolesGuard)
+  // @Roles('admin')
+  async deleteSellerHardDelete(@Args('where') where:SellerWhereUniqueInput):Promise<Seller|null> {
+    return this.sellerService.deleteSellerHardDelete(where.id);
+  }
 
 }

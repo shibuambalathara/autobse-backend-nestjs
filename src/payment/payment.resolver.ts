@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { PaymentService } from './payment.service';
 import { Payment } from './models/payment.model';
 import { CreatePaymentInput } from './dto/create-payment.input';
@@ -15,28 +15,42 @@ export class PaymentResolver {
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('dealer')
-  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput):Promise<Payment|null> {
-    return this.paymentService.createPayment(createPaymentInput);
+  @Roles('dealer','admin','staff')
+  async createPayment(@Args('createPaymentInput') createPaymentInput: CreatePaymentInput,@Context() context,@Args('userId', { nullable: true }) userId?: string ):Promise<Payment|null> {
+    const { id, roles } = context.req.user; 
+    console.log("role",context.req.user.roles);
+  
+    if (roles === 'dealer' && userId && userId !== id) {
+      throw new Error('Dealers can only create payments for themselves.');
+    }
+
+    
+    if ((roles !== 'admin' && roles !== 'staff')  && userId && userId !== id) {
+      throw new Error('You do not have permission to create payments for other users.');
+    }
+
+    const paymentUserId = userId || id;
+
+    return this.paymentService.createPayment(createPaymentInput,paymentUserId);
   }
 
   @Query(returns => [Payment])
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','staff')
   async payments() :Promise<Payment[]|null> {
     return this.paymentService.payments();
   }
 
   @Query(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','dealer','staff')
   async payment(@Args('where') where:PaymentWhereUniqueInput):Promise<Payment|null> {
     return this.paymentService.payment(where);
   }
 
   @Mutation(returns => Payment)
   @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin')
+  @Roles('admin','dealer','staff')
   async updatePayment(@Args('where') where:PaymentWhereUniqueInput,@Args('updatePaymentInput') updatePaymentInput: UpdatePaymentInput):Promise<Payment|null> {
     return this.paymentService.updatePayment(where.id, updatePaymentInput);
   }
