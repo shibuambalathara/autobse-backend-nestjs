@@ -11,7 +11,7 @@ import { StateModule } from './state/state.module';
 import { LocationModule } from './location/location.module';
 import { VehiclecategoryModule } from './vehiclecategory/vehiclecategory.module';
 import { SellerModule } from './seller/seller.module';
-// import { VehicleModule } from './vehicle/vehicle.module';
+import { VehicleModule } from './vehicle/vehicle.module';
 import { EventModule } from './event/event.module';
 import { ExceluploadModule } from './excelupload/excelupload.module';
 import { StatusModule } from './status/status.module';
@@ -36,6 +36,7 @@ import { FileuploadModule } from './fileupload/fileupload.module';
       playground: false,
        plugins: [ApolloServerPluginLandingPageLocalDefault()],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      path:'/graphql',
       context: ({ req }) => ({ req }), 
     }),
     ConfigModule.forRoot(
@@ -47,7 +48,7 @@ import { FileuploadModule } from './fileupload/fileupload.module';
     LocationModule,
     VehiclecategoryModule,
     SellerModule,
-    // VehicleModule,
+    VehicleModule,
     EventModule,
     ExceluploadModule,
     StatusModule,
