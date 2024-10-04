@@ -29,6 +29,10 @@ export class FileuploadService {
         aadharcard_back_image: true,
         driving_license_front_image: true,
         driving_license_back_image: true,
+        firstName:true,
+        lastName:true,
+        status:true,
+        id:true
       }
     })
     if (!userProfileFiles) throw new NotFoundException('User not found.')
