@@ -61,8 +61,8 @@ export class UpdateUserInput {
   @IsOptional()
   tempToken?: number;
 
-  @Field(() => UserRoleType)
-  role: UserRoleType;  
+  @Field(() => UserRoleType,{nullable:true})
+  role?: UserRoleType;  
   // @Field({ nullable: true })
   // @IsOptional()
   // accessToken?: string;

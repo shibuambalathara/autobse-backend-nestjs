@@ -210,5 +210,5 @@ export class Vehicle {
 
   @Field({nullable:true})
   createdById?:string;
-             
+   
 }
