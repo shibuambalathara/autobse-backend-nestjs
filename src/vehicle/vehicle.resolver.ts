@@ -16,18 +16,22 @@ export class VehicleResolver {
   @Mutation(returns => Vehicle)
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
-  async createVehicle(@Args('userId') userId:string,@Args('eventId') eventId:string, @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,@Context() context):Promise<Vehicle|null> {
+  async createVehicle(
+    // @Args('userId') userId:string,
+  @Args('eventId') eventId:string, 
+  @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,
+  @Context() context):Promise<Vehicle|null> {
     if (!createVehicleInput.registrationNumber || !createVehicleInput.loanAgreementNo) {
       throw new Error('Both registrationNumber and loanAgreementNo are required fields');
     }
     const {id}=context.req.user   
-    return this.vehicleService.createVehicle(id,userId,eventId,createVehicleInput);
+    return this.vehicleService.createVehicle(id,eventId,createVehicleInput);
   }
 
-  @Mutation(returns=>Vehicle)
-  async listVehicle(@Args('eventId') eventId: string) {
-    return this.vehicleService.listVehicle(eventId);
-  }
+  // @Mutation(returns=>Vehicle)
+  // async listVehicle(@Args('eventId') eventId: string) {
+  //   return this.vehicleService.listVehicle(eventId);
+  // }
     
 
   @Query(returns => [Vehicle])

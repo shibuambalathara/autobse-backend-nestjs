@@ -4,17 +4,17 @@ import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
+// import { InjectQueue } from '@nestjs/bullmq';
+// import { Queue } from 'bullmq';
 
 @Injectable()
 export class VehicleService {
   constructor(private readonly prisma:PrismaService,
-    @InjectQueue('vehicle-bid') private readonly vehicleBidQueue: Queue
+    // @InjectQueue('vehicle-bid') private readonly vehicleBidQueue: Queue
   ){}
   
 
-  async createVehicle(id: string,userId: string,eventId: string,createVehicleInput: CreateVehicleInput): Promise<Vehicle | null> {
+  async createVehicle(id: string,eventId: string,createVehicleInput: CreateVehicleInput): Promise<Vehicle | null> {
     try {
       const event = await this.prisma.event.findUnique({
         where: { id: eventId },
@@ -49,7 +49,7 @@ export class VehicleService {
       return await this.prisma.vehicle.create({
         data: {
           ...createVehicleInput,
-          currentBidUserId: userId,
+          // currentBidUserId: userId,
           eventId: eventId,
           createdById: id,
           bidStartTime: bidStartTime,
@@ -130,19 +130,19 @@ export class VehicleService {
   }
 
 
-  async listVehicle(eventId: string) {
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: eventId },
-    });
+  // async listVehicle(eventId: string) {
+  //   const vehicle = await this.prisma.vehicle.findUnique({
+  //     where: { id: eventId },
+  //   });
 
-    if (vehicle) {
-      // Add job to queue
-      await this.vehicleBidQueue.add('bid',{ eventId, incrementTime: 1 });
+  //   if (vehicle) {
+  //     // Add job to queue
+  //     await this.vehicleBidQueue.add('bid',{ eventId, incrementTime: 1 });
 
-      return vehicle;
-    }
+  //     return vehicle;
+  //   }
 
-    throw new Error('Vehicle not found');
-  }
+  //   throw new Error('Vehicle not found');
+  // }
   }
 
