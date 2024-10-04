@@ -31,6 +31,7 @@ export class FileuploadService {
         driving_license_back_image: true,
         firstName:true,
         lastName:true,
+        statusCreatedBy:true,
         status:true,
         id:true
       }
