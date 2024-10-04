@@ -269,7 +269,7 @@ type Mutation {
   updateEvent(where: EventWhereUniqueInput!, updateEventInput: UpdateEventInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event!
   restoreEvent(where: EventWhereUniqueInput!): Event!
-  createExcelupload(userId: String!, eventId: String!, createExceluploadInput: CreateExceluploadInput!): Excelupload!
+  createExcelupload(eventId: String!, createExceluploadInput: CreateExceluploadInput!): Excelupload!
   deleteExcelupload(where: ExcelWhereUniqueInput!): Excelupload!
   restoreExcelUpload(where: ExcelWhereUniqueInput!): Excelupload!
   createStatus(createStatusInput: CreateStatusInput!): Status!

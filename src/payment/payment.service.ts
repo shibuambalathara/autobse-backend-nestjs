@@ -13,6 +13,7 @@ export class PaymentService {
     try{
       
       return await this.prisma.payment.create({
+
         data:{...createPaymentInput,
           createdById:paymentUserId,
           userId:paymentUserId,

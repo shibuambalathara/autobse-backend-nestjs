@@ -19,12 +19,14 @@ export class ExceluploadResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin', 'staff')
   @Mutation(() => Excelupload)
-  async createExcelupload(@Args('userId') userId:string,@Args('eventId') eventId:string,
+  async createExcelupload(
+    // @Args('userId') userId:string,
+    @Args('eventId') eventId:string,
     @Args('createExceluploadInput') createExceluploadInput: CreateExceluploadInput,
     @Context() context
   ): Promise<Excelupload|null|Boolean> {
     const { id } = context.req.user;
-    return this.exceluploadService.createExcelUpload( id,userId,eventId,createExceluploadInput);
+    return this.exceluploadService.createExcelUpload( id,eventId,createExceluploadInput);
   }
 
   
