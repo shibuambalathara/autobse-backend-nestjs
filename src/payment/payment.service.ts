@@ -12,7 +12,7 @@ export class PaymentService {
   async createPayment(createPaymentInput: CreatePaymentInput):Promise<Payment|null> {
     try{
       return await this.prisma.payment.create({
-        data:{...createPaymentInput,}
+        data:{...createPaymentInput}
       })
     }
     catch(error){
