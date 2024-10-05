@@ -3,15 +3,20 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class UserWhereUniqueInput {
   @Field({ nullable: true })
-  id?: string;
+  id: string;
 
   @Field({ nullable: true })
-  mobile?: string;
+  mobile: string;
 
   @Field({ nullable: true })
-  tempToken?: number;
+  tempToken: number;
 
   @Field({ nullable: true })
-  idNo?: number;
+  idNo: number;
+
+  @Field({ nullable: true })
+  pancardNo: string;
+  
+  
   
 }
