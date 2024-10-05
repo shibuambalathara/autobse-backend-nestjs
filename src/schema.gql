@@ -281,6 +281,7 @@ input UserWhereUniqueInput {
   mobile: String
   tempToken: Float
   idNo: Float
+  pancardNo: String
 }
 
 input LocationWhereUniqueInput {
