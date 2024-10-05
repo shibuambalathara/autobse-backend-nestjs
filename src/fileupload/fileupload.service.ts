@@ -37,40 +37,37 @@ export class FileuploadService {
     })
     if (!userProfileFiles) throw new NotFoundException('User not found.')
 
-      if (files.pancard_image && files.pancard_image.length) {
-        files.pancard_image[0].buffer = await this.compressService.compressImage(files.pancard_image[0].buffer, files.pancard_image[0].fieldname)
-        files.pancard_image[0].filename = userProfileFiles.pancard_image
-      }
-      
-      if (files.aadharcard_front_image && files.aadharcard_front_image.length) {
-        files.aadharcard_front_image[0].buffer = await this.compressService.compressImage(files.aadharcard_front_image[0].buffer, files.aadharcard_front_image[0].fieldname)
-        files.aadharcard_front_image[0].filename = userProfileFiles.aadharcard_front_image
-      }
-      
-      if (files.aadharcard_back_image && files.aadharcard_back_image.length) {
-        files.aadharcard_back_image[0].buffer = await this.compressService.compressImage(files.aadharcard_back_image[0].buffer, files.aadharcard_back_image[0].fieldname)
-        files.aadharcard_back_image[0].filename = userProfileFiles.aadharcard_back_image
-      }
-      
-      if (files.driving_license_front_image && files.driving_license_front_image.length) {
-        files.driving_license_front_image[0].buffer = await this.compressService.compressImage(files.driving_license_front_image[0].buffer, files.driving_license_front_image[0].fieldname)
-        files.driving_license_front_image[0].filename = userProfileFiles.driving_license_front_image
-      }
-      
-      if (files.driving_license_back_image && files.driving_license_back_image.length) {
-        files.driving_license_back_image[0].buffer = await this.compressService.compressImage(files.driving_license_back_image[0].buffer, files.driving_license_back_image[0].fieldname)
-        files.driving_license_back_image[0].filename = userProfileFiles.driving_license_back_image
-      }
+    if (files.pancard_image && files.pancard_image.length) {
+      files.pancard_image[0].buffer = await this.compressService.compressImage(files.pancard_image[0].buffer, files.pancard_image[0].fieldname)
+      files.pancard_image[0].filename = userProfileFiles.pancard_image
+    }
+
+    if (files.aadharcard_front_image && files.aadharcard_front_image.length) {
+      files.aadharcard_front_image[0].buffer = await this.compressService.compressImage(files.aadharcard_front_image[0].buffer, files.aadharcard_front_image[0].fieldname)
+      files.aadharcard_front_image[0].filename = userProfileFiles.aadharcard_front_image
+    }
+
+    if (files.aadharcard_back_image && files.aadharcard_back_image.length) {
+      files.aadharcard_back_image[0].buffer = await this.compressService.compressImage(files.aadharcard_back_image[0].buffer, files.aadharcard_back_image[0].fieldname)
+      files.aadharcard_back_image[0].filename = userProfileFiles.aadharcard_back_image
+    }
+
+    if (files.driving_license_front_image && files.driving_license_front_image.length) {
+      files.driving_license_front_image[0].buffer = await this.compressService.compressImage(files.driving_license_front_image[0].buffer, files.driving_license_front_image[0].fieldname)
+      files.driving_license_front_image[0].filename = userProfileFiles.driving_license_front_image
+    }
+
+    if (files.driving_license_back_image && files.driving_license_back_image.length) {
+      files.driving_license_back_image[0].buffer = await this.compressService.compressImage(files.driving_license_back_image[0].buffer, files.driving_license_back_image[0].fieldname)
+      files.driving_license_back_image[0].filename = userProfileFiles.driving_license_back_image
+    }
 
     const uploads: Map<string, string> = await this.uploadUserProfileFiles(files)
-    console.log(uploads, 'fields for update')
 
     if (uploads.size === 0) {
       throw new InternalServerErrorException('No files uploaded.')
     }
-
     return this.updateUserProfileDb(userId, uploads)
-
   }
 
   async uploadUserProfileFiles(files: {
@@ -100,7 +97,7 @@ export class FileuploadService {
     for (const [key, val] of uploadFilesMap) {
       updateDataObj[key] = val
     }
-    return this.prismaService.user.update({
+    const data = await this.prismaService.user.update({
       where: {
         id: userId,
       },
@@ -117,5 +114,26 @@ export class FileuploadService {
         driving_license_back_image: true,
       }
     })
+    if(data?.pancard_image) {
+      const file = await this.s3Service.getUploadedFile(data.pancard_image)
+      data.pancard_image = file? file: null
+    }
+    if(data?.aadharcard_front_image) {
+      const file = await this.s3Service.getUploadedFile(data.aadharcard_front_image)
+      data.aadharcard_front_image = file? file: null
+    }
+    if(data?.aadharcard_back_image) {
+      const file = await this.s3Service.getUploadedFile(data.aadharcard_back_image)
+      data.aadharcard_back_image = file? file: null
+    }
+    if(data?.driving_license_front_image) {
+      const file = await this.s3Service.getUploadedFile(data.driving_license_front_image)
+      data.driving_license_front_image = file? file: null
+    }
+    if(data?.driving_license_back_image) {
+      const file = await this.s3Service.getUploadedFile(data.driving_license_back_image)
+      data.driving_license_back_image = file? file: null
+    }
+    return data
   }
 }
