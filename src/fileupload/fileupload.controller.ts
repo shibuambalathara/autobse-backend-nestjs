@@ -37,6 +37,8 @@ export class FileuploadController {
       driving_license_back_image?: [Express.Multer.File],
     }
   ) {
+    console.log(files,'its files');
+    
     if (!files) throw new BadRequestException('Files should not be empty.')
     const res = await this.fileuploadService.uploadUpdateUserProfile(userId, files)
     if (!res) throw new InternalServerErrorException('User profile files upload and updation failed.')
