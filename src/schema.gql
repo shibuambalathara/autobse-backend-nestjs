@@ -182,6 +182,7 @@ type Event {
   gapInBetweenVehicles: Float
   status: String
   bidLock: String
+  vehicles: [Vehicle!]
 }
 
 type Excelupload {

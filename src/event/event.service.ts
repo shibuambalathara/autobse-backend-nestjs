@@ -22,6 +22,9 @@ export class EventService {
         locationId:locationId,
         createdById:id,
         ...createEventInput,
+      },
+      include:{
+        vehicles:true
       }
     });
   }
@@ -32,20 +35,24 @@ export class EventService {
   }
 
   async events() : Promise<Event[]|null>{
-    const result =  await this.prisma.event.findMany({where:{isDeleted:false}});  
+    const result =  await this.prisma.event.findMany({where:{isDeleted:false}, include:{
+      vehicles:true
+    }});  
     if(!result) throw new NotFoundException("Event Not Found!");    
     return result;
   }
 
   async event(@Args('where') where:EventWhereUniqueInput):Promise<Event|null> {
-    const result = await this.prisma.event.findUnique({where:{...where as Prisma.EventWhereUniqueInput,isDeleted:false}});
+    const result = await this.prisma.event.findUnique({where:{...where as Prisma.EventWhereUniqueInput,isDeleted:false}, include:{
+      vehicles:true
+    }});
     if(!result) throw new NotFoundException("Event not found")
     return result;
   }
 
   async updateEvent( id:string,updateEventInput: UpdateEventInput):Promise<Event|null> {
     try {
-      const event = await this.prisma.event.findUnique({where:{id,isDeleted:false,}})
+      const event = await this.prisma.event.findUnique({where:{id,isDeleted:false}})
       if(!event) throw new NotFoundException("Event Not Found");
       return await this.prisma.event.update({
           where:{
@@ -53,6 +60,9 @@ export class EventService {
           },
           data:{
             ...updateEventInput,
+          },
+          include:{
+            vehicles:true
           }
         });
       }
@@ -70,29 +80,39 @@ export class EventService {
         where:{id},
         data:{
           isDeleted:true,
+        },
+        include:{
+          vehicles:true
         }
       });
     }
 
   async deletedEvents():Promise<Event[]|null>{
-      const event = await this.prisma.event.findMany({where:{isDeleted:true,}});
+      const event = await this.prisma.event.findMany({where:{isDeleted:true,}, include:{
+        vehicles:true
+      }});
       if(!event) throw new NotFoundException("Event Not Found");
       return event;
     }
   
   async deletedEvent(id:string):Promise<Event|null>{
-      const result = await this.prisma.event.findUnique({where:{id,isDeleted:true}});
+      const result = await this.prisma.event.findUnique({where:{id,isDeleted:true}, include:{
+        vehicles:true
+      }});
       if(!result) throw new NotFoundException("Event Not Found");
       return result;
     }
   
   async restoreEvent(where:EventWhereUniqueInput):Promise<Event|null>{
-      const event = await this.prisma.event.findUnique({where:{...(where as Prisma.EventWhereUniqueInput),isDeleted:true}});
+      const event = await this.prisma.event.findUnique({where:{...(where as Prisma.EventWhereUniqueInput),isDeleted:true},});
       if(!event) throw new NotFoundException("Event Not Found");
       return await this.prisma.event.update({
         where:{...where as Prisma.EventWhereUniqueInput},
         data:{
           isDeleted:false,
+        },
+        include:{
+          vehicles:true
         }
       });
     }

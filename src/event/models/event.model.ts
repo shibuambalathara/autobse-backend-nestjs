@@ -80,7 +80,7 @@ export class Event {
   @Field({nullable:true})
   bidLock:string;
 
-  // @Field(()=>[Vehicle],{nullable:true})
-  // vehicles:Vehicle[]
+  @Field(()=>[Vehicle],{nullable:true})
+  vehicles:Vehicle[]
      
 }
