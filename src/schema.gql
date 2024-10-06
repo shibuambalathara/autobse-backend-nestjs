@@ -182,6 +182,7 @@ type Event {
   gapInBetweenVehicles: Float
   status: String
   bidLock: String
+  vehicles: [Vehicle!]
 }
 
 type Excelupload {
@@ -256,7 +257,7 @@ type Query {
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
-  events: [Event!]!
+  events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
@@ -306,6 +307,33 @@ input VehicleWhereUniqueInput {
 
 input EventWhereUniqueInput {
   id: String
+}
+
+input EventOrderByInput {
+  bidLock: OrderDirection
+  createdAt: OrderDirection
+  endDate: OrderDirection
+  eventCategory: OrderDirection
+  eventNo: OrderDirection
+  extraTime: OrderDirection
+  extraTimeTrigerIn: OrderDirection
+  firstVehicleBidTimeExpire: OrderDirection
+  gapInBetweenVehicles: OrderDirection
+  id: OrderDirection
+  isSpecialEvent: OrderDirection
+  noOfBids: OrderDirection
+  pauseDate: OrderDirection
+  pausedTotalTime: OrderDirection
+  startDate: OrderDirection
+  status: OrderDirection
+  termsAndConditions: OrderDirection
+  updatedAt: OrderDirection
+  vehicleLiveTimeIn: OrderDirection
+}
+
+enum OrderDirection {
+  ASC
+  DESC
 }
 
 input ExcelWhereUniqueInput {

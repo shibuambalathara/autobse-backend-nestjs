@@ -9,6 +9,7 @@ import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 import { EventWhereUniqueInput } from './dto/unique-event.input'
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
+import { EventOrderByInput } from './dto/EventOrderByInput';
 
 
 
@@ -27,8 +28,14 @@ export class EventResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff','dealer')
   @Query(returns => [Event])
-  async events() : Promise<Event[]|null>{
-    return this.eventService.events();
+  async events(@Args('where',{nullable:true}) where: EventWhereUniqueInput,
+  @Args('orderBy', { type: () => [EventOrderByInput], nullable: true }) orderBy?: EventOrderByInput[],
+  @Args('take', { type: () => Int, nullable: true }) take?: number,
+  @Args('skip', { type: () => Int, nullable: true }) skip?: number
+
+)
+   : Promise<Event[]|null>{
+    return this.eventService.events(where,orderBy,take,skip);
   }
   
   @UseGuards(GqlAuthGuard,RolesGuard)
