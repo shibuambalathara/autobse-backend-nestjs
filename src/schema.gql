@@ -184,6 +184,8 @@ type Event {
   bidLock: String
   vehicles: [Vehicle!]
   seller: Seller
+  location: Location
+  vehicleCategory: VehicleCategory
 }
 
 type Excelupload {

@@ -26,6 +26,7 @@ export class EventService {
           vehicleCategoryId: vehicleCategoryId,
           locationId: locationId,
           createdById: id,
+          firstVehicleEndDate:createEventInput?.endDate,  // currently setting based on online events only
           ...createEventInput,
         },
         include: {
