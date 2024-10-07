@@ -30,6 +30,9 @@ export class EventService {
         },
         include: {
           vehicles: true,
+          seller:true,
+          location:true,
+          vehicleCategory:true
         },
       });
     } catch (error) {
@@ -56,6 +59,9 @@ export class EventService {
 
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
     if (!result) throw new NotFoundException('Event Not Found!');
@@ -69,6 +75,9 @@ export class EventService {
       where: { ...(where as Prisma.EventWhereUniqueInput), isDeleted: false },
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
     if (!result) throw new NotFoundException('Event not found');
@@ -93,6 +102,9 @@ export class EventService {
         },
         include: {
           vehicles: true,
+          seller:true,
+          location:true,
+          vehicleCategory:true
         },
       });
     } catch (error) {
@@ -114,6 +126,9 @@ export class EventService {
       },
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
   }
@@ -123,6 +138,9 @@ export class EventService {
       where: { isDeleted: true },
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
     if (!event) throw new NotFoundException('Event Not Found');
@@ -134,6 +152,9 @@ export class EventService {
       where: { id, isDeleted: true },
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
     if (!result) throw new NotFoundException('Event Not Found');
@@ -152,6 +173,9 @@ export class EventService {
       },
       include: {
         vehicles: true,
+        seller:true,
+        location:true,
+        vehicleCategory:true
       },
     });
   }
