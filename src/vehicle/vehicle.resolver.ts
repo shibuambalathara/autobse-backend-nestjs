@@ -13,69 +13,85 @@ import { RolesGuard } from 'src/role/role.guard';
 export class VehicleResolver {
   constructor(private readonly vehicleService: VehicleService) {}
 
-  @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles('admin','staff')
+  @Mutation((returns) => Vehicle)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles('admin', 'staff')
   async createVehicle(
     // @Args('userId') userId:string,
-  @Args('eventId') eventId:string, 
-  @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,
-  @Context() context):Promise<Vehicle|null> {
-    if (!createVehicleInput.registrationNumber || !createVehicleInput.loanAgreementNo) {
-      throw new Error('Both registrationNumber and loanAgreementNo are required fields');
+    @Args('eventId') eventId: string,
+    @Args('createVehicleInput') createVehicleInput: CreateVehicleInput,
+    @Context() context,
+  ): Promise<Vehicle | null> {
+    if (
+      !createVehicleInput.registrationNumber ||
+      !createVehicleInput.loanAgreementNo
+    ) {
+      throw new Error(
+        'Both registrationNumber and loanAgreementNo are required fields',
+      );
     }
-    const {id}=context.req.user   
-    return this.vehicleService.createVehicle(id,eventId,createVehicleInput);
+    const { id } = context.req.user;
+    return this.vehicleService.createVehicle(id, eventId, createVehicleInput);
   }
 
   // @Mutation(returns=>Vehicle)
   // async listVehicle(@Args('eventId') eventId: string) {
   //   return this.vehicleService.listVehicle(eventId);
   // }
-    
 
-  @Query(returns => [Vehicle])
-  async vehicles() :Promise<Vehicle[]|null>{
+  @Query((returns) => [Vehicle])
+  async vehicles(): Promise<Vehicle[] | null> {
     return this.vehicleService.vehicles();
   }
 
-  @Query(returns => Vehicle)
-  async vehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null> {
+  @Query((returns) => Vehicle)
+  async vehicle(
+    @Args('where') where: VehicleWhereUniqueInput,
+  ): Promise<Vehicle | null> {
     return this.vehicleService.vehicle(where);
   }
 
-  @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Mutation((returns) => Vehicle)
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  updateVehicle(@Args('where') where:VehicleWhereUniqueInput,@Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput):Promise<Vehicle|null> {
-    return this.vehicleService.updateVehicle(where.id,updateVehicleInput);
+  updateVehicle(
+    @Args('where') where: VehicleWhereUniqueInput,
+    @Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput,
+  ): Promise<Vehicle | null> {
+    return this.vehicleService.updateVehicle(where.id, updateVehicleInput);
   }
 
-  @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Mutation((returns) => Vehicle)
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  async deleteVehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null> {
+  async deleteVehicle(
+    @Args('where') where: VehicleWhereUniqueInput,
+  ): Promise<Vehicle | null> {
     return this.vehicleService.deleteVehicle(where.id);
   }
 
-  @Query(returns => [Vehicle])
-  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Query((returns) => [Vehicle])
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  async deletedVehicles():Promise<Vehicle[]|null>{
+  async deletedVehicles(): Promise<Vehicle[] | null> {
     return this.vehicleService.deletedVehicles();
   }
 
-  @Query(returns => Vehicle)
-  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Query((returns) => Vehicle)
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  async deletedVehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
+  async deletedVehicle(
+    @Args('where') where: VehicleWhereUniqueInput,
+  ): Promise<Vehicle | null> {
     return this.vehicleService.deletedVehicle(where.id);
   }
 
-  @Mutation(returns => Vehicle)
-  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Mutation((returns) => Vehicle)
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  async restorevehicle(@Args('where') where:VehicleWhereUniqueInput):Promise<Vehicle|null>{
+  async restorevehicle(
+    @Args('where') where: VehicleWhereUniqueInput,
+  ): Promise<Vehicle | null> {
     return this.vehicleService.restoreVehicle(where);
   }
 }

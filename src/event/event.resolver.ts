@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context, ResolveField, Parent } from '@nestjs/graphql';
 import { EventService } from './event.service';
 import { Event } from './models/event.model';
 import { CreateEventInput } from './dto/create-event.input';
@@ -41,9 +41,22 @@ export class EventResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff','dealer')
   @Query(returns => Event)
-  async event(@Args('where') where: EventWhereUniqueInput) :Promise<Event|null>{
+  async event(
+    @Args('where') where: EventWhereUniqueInput,
+    
+  ) :Promise<Event|null>{
     return this.eventService.event(where);
   }
+
+  // @ResolveField(returns => [Vehicle])
+  // async vehicles(
+  //   @Parent() event: Event,
+  // )
+
+
+
+
+
 
   
   @UseGuards(GqlAuthGuard,RolesGuard)
