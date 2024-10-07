@@ -3,6 +3,7 @@ import { s3Service } from 'src/services/s3/s3.service';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { compressService } from 'src/services/compress/compress.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FileuploadService {
@@ -10,6 +11,7 @@ export class FileuploadService {
     private readonly s3Service: s3Service,
     private readonly compressService: compressService,
     private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService,
   ) { }
 
   async uploadUpdateUserProfile(userId: string, files: {
@@ -29,10 +31,10 @@ export class FileuploadService {
         aadharcard_back_image: true,
         driving_license_front_image: true,
         driving_license_back_image: true,
-        firstName:true,
-        lastName:true,
-        status:true,
-        id:true
+        firstName: true,
+        lastName: true,
+        status: true,
+        id: true
       }
     })
     if (!userProfileFiles) throw new NotFoundException('User not found.')
@@ -114,26 +116,76 @@ export class FileuploadService {
         driving_license_back_image: true,
       }
     })
-    if(data?.pancard_image) {
+    if (data?.pancard_image) {
       const file = await this.s3Service.getUploadedFile(data.pancard_image)
-      data.pancard_image = file? file: null
+      data.pancard_image = file ? file : null
     }
-    if(data?.aadharcard_front_image) {
+    if (data?.aadharcard_front_image) {
       const file = await this.s3Service.getUploadedFile(data.aadharcard_front_image)
-      data.aadharcard_front_image = file? file: null
+      data.aadharcard_front_image = file ? file : null
     }
-    if(data?.aadharcard_back_image) {
+    if (data?.aadharcard_back_image) {
       const file = await this.s3Service.getUploadedFile(data.aadharcard_back_image)
-      data.aadharcard_back_image = file? file: null
+      data.aadharcard_back_image = file ? file : null
     }
-    if(data?.driving_license_front_image) {
+    if (data?.driving_license_front_image) {
       const file = await this.s3Service.getUploadedFile(data.driving_license_front_image)
-      data.driving_license_front_image = file? file: null
+      data.driving_license_front_image = file ? file : null
     }
-    if(data?.driving_license_back_image) {
+    if (data?.driving_license_back_image) {
       const file = await this.s3Service.getUploadedFile(data.driving_license_back_image)
-      data.driving_license_back_image = file? file: null
+      data.driving_license_back_image = file ? file : null
     }
     return data
+  }
+
+  async uploadUpdatePaymentImage(paymentId: string, image: Express.Multer.File) {
+    const paymentExist = await this.prismaService.payment.findUnique({
+      where: {
+        id: paymentId,
+      },
+      select: {
+        id: true,
+        image: true,
+      }
+    })
+    if (!paymentExist) throw new NotFoundException('Payment not found.')
+
+    if (image) {
+      image.buffer = await this.compressService.compressImage(image.buffer, image.fieldname)
+      image.filename = paymentExist.image
+    }
+
+    const upload: string = await this.uploadPaymentImage(image)
+
+    return this.updatePaymentDb(paymentExist.id, upload)
+
+  }
+
+  async uploadPaymentImage(image: Express.Multer.File) {
+    const key: string = image.filename ? image.filename : randomUUID()
+    const res = await this.s3Service.uploadFile(image, key)
+    if (!res) throw new InternalServerErrorException('Image upload to s3 failed.')
+    return key
+  }
+
+  async updatePaymentDb(paymentId: string, upload: string) {
+
+    const payment = await this.prismaService.payment.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        image: upload,
+      },
+      select: {
+        id: true,
+        image: true,
+        amount: true,
+      }
+    })
+    if (!payment) throw new InternalServerErrorException('Payment image update to db failed.')
+    payment.image = payment.image ? `https://${this.configService.get<string>('AWS_BUCKET')}.${this.configService.get<string>('AWS_STORAGE_TYPE')}.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${payment.image}` : null
+    return payment
   }
 }
