@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Location } from 'src/location/models/location.model';
 import { Seller } from 'src/seller/models/seller.model';
 import { User } from 'src/user/models/user.model';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
@@ -82,5 +83,17 @@ export class Event {
 
   @Field(()=>[Vehicle],{nullable:true})
   vehicles:Vehicle[]
+
+  @Field(()=>Seller,{nullable:true})
+  seller:Seller
+
+  @Field(()=>Location,{nullable:true})
+  location:Location
+
+
+  
+  @Field(()=>VehicleCategory,{nullable:true})
+  vehicleCategory:VehicleCategory
+
      
 }
