@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { BullModule } from '@nestjs/bullmq';
 // import { VehicleQueueProcessor } from './vehicle.processor';
 import { BidModule } from 'src/bid/bid.module';
+import { EventService } from 'src/event/event.service';
 
 
 @Module({
@@ -14,7 +15,7 @@ import { BidModule } from 'src/bid/bid.module';
     }),
     BidModule
   ],
-  providers: [VehicleResolver, VehicleService,PrismaService],
+  providers: [VehicleResolver, VehicleService,PrismaService,EventService],
   exports: [BullModule],
 })
 export class VehicleModule {}

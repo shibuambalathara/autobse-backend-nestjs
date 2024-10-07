@@ -573,12 +573,12 @@ input UpdateVehiclecategoryInput {
 
 input CreateSellerInput {
   name: String!
-  contactPerson: String!
-  GSTNumber: String!
-  billingContactPerson: String!
-  mobile: String!
-  nationalHead: String!
-  logo: String!
+  contactPerson: String
+  GSTNumber: String
+  billingContactPerson: String
+  mobile: String
+  nationalHead: String
+  logo: String
 }
 
 input UpdateSellerInput {
