@@ -246,9 +246,10 @@ export class VehicleService {
 //         throw new Error('Failed to place bid');
 //     }
 // }
+
 async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidInput): Promise<Bid | null> {
   try {
-      // Step 1: Place the bid
+   
       const result = await this.prisma.bid.create({
           data: {
               ...createBidInput,
@@ -257,10 +258,10 @@ async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidIn
           },
       });
 
-      // Step 2: Fetch all jobs (waiting and delayed)
+      
       const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
       
-      // Step 3: Find the vehicle job for the current bid vehicle
+      
       const vehicleJob = jobs.find((job) => job.data?.vehicle?.id === bidVehicleId);
       
       if (!vehicleJob) {
@@ -268,7 +269,7 @@ async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidIn
           return result;
       }
 
-      // Step 4: Fetch the event associated with the current vehicle
+      
       const vehicleEvent = await this.prisma.event.findUnique({
           where: { id: vehicleJob.data.vehicle.eventId },
       });
@@ -278,74 +279,71 @@ async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidIn
           return result;
       }
 
-      const originalVehicleLiveTimeIn = vehicleEvent.vehicleLiveTimeIn || 0; // in minutes
-      const delayIncrementMinutes = vehicleEvent.extraTime || 0; // Extra time to extend on bid
-      const delayIncrementMs = delayIncrementMinutes * 60 * 1000; // Convert minutes to milliseconds
+      const originalVehicleLiveTimeIn = vehicleEvent.vehicleLiveTimeIn || 0; 
+      const delayIncrementMinutes = vehicleEvent.extraTime || 0; 
+      const delayIncrementMs = delayIncrementMinutes * 60 * 1000; 
 
       const startTimeDate = new Date(vehicleJob.data.vehicle.bidStartTime);
       
-      // Step 5: Calculate the current end time for this vehicle
+    
       const currentEndTime = vehicleJob.data.vehicle.nextRunTime
           ? new Date(vehicleJob.data.vehicle.nextRunTime)
-          : new Date(startTimeDate.getTime() + originalVehicleLiveTimeIn * 60 * 1000); // Default if not set
+          : new Date(startTimeDate.getTime() + originalVehicleLiveTimeIn * 60 * 1000); 
 
-      // Step 6: Add the delay to the vehicle's end time independently
       const newEndTime = new Date(currentEndTime.getTime() + delayIncrementMs);
 
-      // Step 7: Update the vehicle job with the new `nextRunTime`
+   
       await vehicleJob.updateData({
           vehicle: {
               ...vehicleJob.data.vehicle,
-              nextRunTime: newEndTime.toISOString(), // Set the new extended time
-              vehicleLiveTimeIn: originalVehicleLiveTimeIn, // Maintain the original live time
-              currentLiveTimeExtension: (vehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes, // Increment live time extension
+              nextRunTime: newEndTime.toISOString(), 
+              vehicleLiveTimeIn: originalVehicleLiveTimeIn, 
+              currentLiveTimeExtension: (vehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes, 
           },
       });
 
-      // Step 8: Apply the delay change independently for this vehicle
       await vehicleJob.changeDelay(newEndTime.getTime());
       console.log(`Job delay incremented by ${delayIncrementMs}ms. New end time: ${newEndTime.toLocaleTimeString()}.`);
 
-      // Step 9: Check if the bid has completed for this vehicle
+     
       const isBidCompleted = newEndTime.getTime() <= new Date().getTime(); 
 
       if (isBidCompleted) {
           console.log(`Bidding completed for vehicle ID ${bidVehicleId}.`);
 
-          // Reset the live time extension for the current vehicle
+          
           await vehicleJob.updateData({
               vehicle: {
                   ...vehicleJob.data.vehicle,
-                  currentLiveTimeExtension: 0, // Reset live time extension
+                  currentLiveTimeExtension: 0, 
               },
           });
 
           console.log(`Vehicle ID ${bidVehicleId} live time reset to original value.`);
       }
 
-      // Step 10: Handle the next vehicle independently
+  
       const nextVehicleJob = jobs.find((job) =>
           job.data?.vehicle?.id !== bidVehicleId &&
-          new Date(job.data?.vehicle?.bidStartTime) > new Date() // Ensure next vehicle is valid and ready
+          new Date(job.data?.vehicle?.bidStartTime) > new Date() 
       );
 
       if (nextVehicleJob) {
           const nextVehicleStartTime = nextVehicleJob.data.vehicle.nextRunTime
               ? new Date(nextVehicleJob.data.vehicle.nextRunTime)
-              : new Date(nextVehicleJob.data.vehicle.bidStartTime); // Fallback to bid start time
-
+              : new Date(nextVehicleJob.data.vehicle.bidStartTime); 
           console.log(`Next vehicle job detected. Start time: ${nextVehicleStartTime.toLocaleTimeString()}.`);
 
-          // Update the next vehicle with its new start time if needed
+          
           await nextVehicleJob.updateData({
               vehicle: {
                   ...nextVehicleJob.data.vehicle,
                   nextRunTime: nextVehicleStartTime.toISOString(),
-                  currentLiveTimeExtension: 0, // Reset live time extension for the next vehicle
+                  currentLiveTimeExtension: 0, 
               },
           });
 
-          // Apply `changeDelay` independently for the next vehicle as well
+         
           await nextVehicleJob.changeDelay(nextVehicleStartTime.getTime());
           console.log(`Next vehicle job updated. New start time: ${nextVehicleStartTime.toLocaleTimeString()}.`);
       }
@@ -370,7 +368,7 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
       const now = new Date();
       const vehiclesWithBidStartTime = [];
 
-      // Sort jobs by their creation time
+   
       jobs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
       for (const job of jobs) {
@@ -380,7 +378,7 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
           const vehicleData = job.data.vehicle;
           const bidStartTime = new Date(vehicleData.bidStartTime);
 
-          // Fetch event details from the database
+          
           const event = await this.prisma.event.findUnique({
               where: { id: vehicleData.eventId },
           });
@@ -390,15 +388,14 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
               continue;
           }
 
-          // Determine the display duration
-          let displayDuration = (event.vehicleLiveTimeIn || 0) * 60 * 1000; // Convert minutes to milliseconds
-
-          // If the vehicle has bids, extend the display duration
+         
+          let displayDuration = (event.vehicleLiveTimeIn || 0) * 60 * 1000; 
+          
           if (vehicleData.currentLiveTimeExtension && vehicleData.currentLiveTimeExtension > 0) {
               displayDuration += vehicleData.currentLiveTimeExtension * 60 * 1000;
           }
 
-          // Add the vehicle to the list if it's in the delayed state and its bid start time has passed
+         
           if (jobState === 'delayed' && now >= bidStartTime) {
               vehiclesWithBidStartTime.push({
                   vehicle: vehicleData,
@@ -412,13 +409,12 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
           return [];
       }
 
-      // Sort vehicles by bid start time
       vehiclesWithBidStartTime.sort((a, b) => a.bidStartTime.getTime() - b.bidStartTime.getTime());
 
       const startTime = vehiclesWithBidStartTime[0].bidStartTime || now;
       const elapsed = now.getTime() - startTime.getTime();
 
-      // Determine which vehicle to activate based on elapsed time and display durations
+    
       let accumulatedTime = 0;
       for (const { vehicle, displayDuration } of vehiclesWithBidStartTime) {
           accumulatedTime += displayDuration;
@@ -434,7 +430,7 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
           }
       }
 
-      // If no vehicle is found, return an empty array
+ 
       console.log('No vehicle is ready to be activated at this time.');
       return [];
   } catch (error) {
