@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -6,10 +6,14 @@ import { UserWhereUniqueInput } from './dto/user-where.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { s3Service } from 'src/services/s3/s3.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly s3Service: s3Service,
+  ) {}
 
   async getAllUsers(): Promise<User[] | null> {
     const allUsers = await this.prisma.user.findMany({
@@ -23,7 +27,7 @@ export class UserService {
     conditions: UserWhereUniqueInput,
     sortOrder: 'asc' | 'desc',
   ): Promise<User | null> {
-    return this.prisma.user.findFirst({
+    const data = await this.prisma.user.findFirst({
       where: {
         ...conditions,
         isDeleted: false,
@@ -36,6 +40,29 @@ export class UserService {
         },
       },
     });
+    if(!data) throw new NotFoundException('User not found.')
+      if (data?.pancard_image) {
+        const file = await this.s3Service.getUploadedFile(data.pancard_image)
+        data.pancard_image = file ? file : null
+      }
+      if (data?.aadharcard_front_image) {
+        const file = await this.s3Service.getUploadedFile(data.aadharcard_front_image)
+        data.aadharcard_front_image = file ? file : null
+      }
+      if (data?.aadharcard_back_image) {
+        const file = await this.s3Service.getUploadedFile(data.aadharcard_back_image)
+        data.aadharcard_back_image = file ? file : null
+      }
+      if (data?.driving_license_front_image) {
+        const file = await this.s3Service.getUploadedFile(data.driving_license_front_image)
+        data.driving_license_front_image = file ? file : null
+      }
+      if (data?.driving_license_back_image) {
+        const file = await this.s3Service.getUploadedFile(data.driving_license_back_image)
+        data.driving_license_back_image = file ? file : null
+      }
+      return data
+    
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {
     const user = await this.prisma.user.findUnique({ where: { mobile } });
