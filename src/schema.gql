@@ -767,15 +767,15 @@ input CreatePaymentInput {
 }
 
 enum PaymentStatusType {
-  Pending
-  Approved
-  Rejected
+  pending
+  approved
+  rejected
 }
 
 enum PaymentType {
-  Registrations
-  Emd
-  OpenBids
+  registrations
+  emd
+  openBids
 }
 
 input UpdatePaymentInput {
