@@ -1,7 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFiles, BadRequestException, InternalServerErrorException, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFiles, BadRequestException, InternalServerErrorException, UploadedFile, UseGuards, Req } from '@nestjs/common';
 import { FileuploadService } from './fileupload.service';
 import { UpdateUserProfileFileuploadDto } from './dto/update-userprofile.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/role/role.guard';
+import { Roles } from 'src/role/role.decorator';
+import { Request } from 'express';
 
 @Controller('api/v1/fileupload')
 export class FileuploadController {
@@ -49,9 +53,6 @@ export class FileuploadController {
     }
   }
 
-
-
-
   @Put('paymentImg/:paymentId')
   @UseInterceptors(FileInterceptor('image', {
     limits: {
@@ -81,6 +82,27 @@ export class FileuploadController {
         message: 'Payment image uploaded and updated successfully.',
         res,
       }
+  }
+
+  @Post('excel')
+  // @UseGuards(GqlAuthGuard,RolesGuard)
+  // @Roles('admin', 'staff')
+  @UseInterceptors(FileInterceptor('file'))
+  async createExcelUpload(
+    @Param('eventId') eventId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request
+  ) {
+    // const user = req.user
+    // console.log(user,'its user');
+    const res = await this.fileuploadService.createExcelUpload('dkfj','djfkd', file, 'name')
+    if (!res) throw new InternalServerErrorException('Excel upload failed.')
+      return {
+        success: true,
+        message: 'Excel uploaded sucessfully.',
+        res,
+      }
+    
   }
   
 }
