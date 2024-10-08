@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFiles, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFiles, BadRequestException, InternalServerErrorException, UploadedFile } from '@nestjs/common';
 import { FileuploadService } from './fileupload.service';
 import { UpdateUserProfileFileuploadDto } from './dto/update-userprofile.dto';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/v1/fileupload')
 export class FileuploadController {
@@ -37,7 +37,6 @@ export class FileuploadController {
       driving_license_back_image?: [Express.Multer.File],
     }
   ) {
-    console.log(files,'its files');
     
     if (!files) throw new BadRequestException('Files should not be empty.')
     const res = await this.fileuploadService.uploadUpdateUserProfile(userId, files)
@@ -49,4 +48,39 @@ export class FileuploadController {
       res,
     }
   }
+
+
+
+
+  @Put('paymentImg/:paymentId')
+  @UseInterceptors(FileInterceptor('image', {
+    limits: {
+      fileSize: 2 * 1024 * 1014,
+      files: 1,
+    },
+    fileFilter(req, file, callback) {
+      const allowedExtensions = ['image/jpeg', 'image/png']
+      if (!allowedExtensions.includes(file.mimetype)) {
+        callback(new BadRequestException(`Invalid file type for ${file.fieldname}. Only JPEG and PNG files are allowed.`), false)
+      }
+      callback(null, true)
+    },
+  }))
+  async uploadPaymentImage(
+    @Param('paymentId') paymentId: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    console.log(image,'its image');
+
+    if (!image) throw new BadRequestException('Image should not be empty.')
+      const res = await this.fileuploadService.uploadUpdatePaymentImage(paymentId, image)
+      if (!res) throw new InternalServerErrorException('Payment image upload and updation failed.')
+  
+      return {
+        success: true,
+        message: 'Payment image uploaded and updated successfully.',
+        res,
+      }
+  }
+  
 }
