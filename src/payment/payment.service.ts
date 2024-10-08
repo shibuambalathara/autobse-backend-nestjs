@@ -4,10 +4,16 @@ import { UpdatePaymentInput } from './dto/update-payment.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Payment, Prisma } from '@prisma/client';
 import { PaymentWhereUniqueInput } from './dto/unique-payment.input';
+import { s3Service } from 'src/services/s3/s3.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentService {
-  constructor(private readonly prisma:PrismaService){}
+  constructor(
+    private readonly prisma:PrismaService,
+    private readonly s3Service: s3Service,
+    private readonly configService: ConfigService,
+  ){}
 
   async createPayment(createPaymentInput: CreatePaymentInput,paymentUserId:string):Promise<Payment|null> {
     try{
@@ -44,6 +50,7 @@ export class PaymentService {
       }
     });
     if(!payment) throw new NotFoundException("Not Found")
+    payment.image = payment.image ? `https://${this.configService.get<string>('AWS_BUCKET')}.${this.configService.get<string>('AWS_STORAGE_TYPE')}.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${payment.image}` : null
     return payment;
   }
 
