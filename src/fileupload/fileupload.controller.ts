@@ -113,7 +113,7 @@ export class FileuploadController {
       files: 1,
     },
     fileFilter(req, file, callback) {
-      const allowedExtensions = [ 
+      const allowedExtensions = [
         'application/vnd.ms-excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       ]
@@ -126,7 +126,7 @@ export class FileuploadController {
   async createVehicleListExcelUpload(
     @Param('eventId') eventId: string,
     @UploadedFile() file: Express.Multer.File,
-    // @Req() req: Request
+    @Req() req: Request
   ) {
     const res = await this.fileuploadService.createVehicleListExcelUpload(file, eventId)
     if (!res) throw new InternalServerErrorException('Excel upload failed.')
