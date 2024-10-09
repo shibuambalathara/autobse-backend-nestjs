@@ -287,6 +287,8 @@ type Query {
   Enquiries: [Enquiry!]!
   Enquiry(where: EnquiryWhereUniqueInput!): Enquiry!
   deletedEnquiries: [Enquiry!]!
+  liveEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
+  upcomingEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
 }
 
 input UserWhereUniqueInput {
