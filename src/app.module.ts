@@ -26,6 +26,8 @@ import { AppService } from './app.service';
 import { OtpModule } from './otp/otp.module';
 import { s3Module } from './services/s3/s3.module';
 import { FileuploadModule } from './fileupload/fileupload.module';
+import { LiveEventModule } from './event/live event/liveEvent.module';
+import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module';
 
 
 
@@ -58,6 +60,8 @@ import { FileuploadModule } from './fileupload/fileupload.module';
     OtpModule,
     s3Module,
     FileuploadModule,
+    LiveEventModule,
+    UpcomingEventModule
 
   ],
   providers: [
