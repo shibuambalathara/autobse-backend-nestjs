@@ -7,6 +7,8 @@ import { Prisma } from '@prisma/client';
 import { Args, Int } from '@nestjs/graphql';
 import { Event } from './models/event.model';
 import { EventOrderByInput } from './dto/EventOrderByInput';
+import { Vehicle } from 'src/vehicle/models/vehicle.model';
+import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
 
 @Injectable()
 export class EventService {
@@ -67,7 +69,26 @@ export class EventService {
     });
     if (!result) throw new NotFoundException('Event Not Found!');
     return result;
+    
   }
+  // -----------
+  async getVehicles(
+    eventId: string,
+     orderBy?: VehicleOrderByInput[],
+    take?: number,
+    skip?: number
+  ): Promise<Vehicle[]> {
+    return this.prisma.vehicle.findMany({
+      where: {
+        eventId,
+      },
+       orderBy,
+      take,
+      skip,
+    });
+  }
+
+  // -------------
 
   async event(
     @Args('where') where: EventWhereUniqueInput,

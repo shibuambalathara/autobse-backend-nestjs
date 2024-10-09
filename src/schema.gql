@@ -182,10 +182,19 @@ type Event {
   gapInBetweenVehicles: Float
   status: String
   bidLock: String
-  vehicles: [Vehicle!]
+  vehicles(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]
   seller: Seller
   location: Location
   vehicleCategory: VehicleCategory
+}
+
+input VehicleOrderByInput {
+  bidTimeExpire: OrderDirection
+}
+
+enum OrderDirection {
+  ASC
+  DESC
 }
 
 type Excelupload {
@@ -332,11 +341,6 @@ input EventOrderByInput {
   termsAndConditions: OrderDirection
   updatedAt: OrderDirection
   vehicleLiveTimeIn: OrderDirection
-}
-
-enum OrderDirection {
-  ASC
-  DESC
 }
 
 input ExcelWhereUniqueInput {
