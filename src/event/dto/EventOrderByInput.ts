@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { OrderDirection } from './order-direction'
+import { OrderDirection } from '../../common/order-direction'
 
 @InputType()
 export class EventOrderByInput {
