@@ -95,5 +95,8 @@ export class Event {
   @Field(()=>VehicleCategory,{nullable:true})
   vehicleCategory:VehicleCategory
 
+  @Field(() => Int,{nullable:true})
+  vehiclesCount?: number;
+
      
 }

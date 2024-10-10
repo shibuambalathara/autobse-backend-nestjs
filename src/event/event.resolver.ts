@@ -63,10 +63,7 @@ export class EventResolver {
     return this.eventService.event(where);
   }
 
-  // @ResolveField(returns => [Vehicle])
-  // async vehicles(
-  //   @Parent() event: Event,
-  // )
+
 
 
 
