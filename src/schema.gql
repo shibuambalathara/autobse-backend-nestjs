@@ -97,6 +97,7 @@ type Vehicle {
   bidAmountUpdate: Float
   currentBidAmount: Float
   startBidAmount: Float
+  bidStatus: String!
   loanAgreementNo: String!
   registeredOwnerName: String!
   quoteIncreament: Float
@@ -158,6 +159,11 @@ type Vehicle {
   createdById: String
 }
 
+type VehicleListResponse {
+  vehicles: [Vehicle!]!
+  vehiclesCount: Int!
+}
+
 type Event {
   id: String!
   eventNo: Float!
@@ -186,6 +192,7 @@ type Event {
   seller: Seller
   location: Location
   vehicleCategory: VehicleCategory
+  vehiclesCount: Int
 }
 
 input VehicleOrderByInput {
@@ -265,7 +272,7 @@ type Query {
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  vehicles: [Vehicle!]!
+  vehicles: VehicleListResponse
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
@@ -680,6 +687,14 @@ input UpdateVehicleInput {
   lotNumber: Float
   bidTimeExpire: String
   bidStartTime: String
+  bidStatus: VehicleBidStatusType
+}
+
+enum VehicleBidStatusType {
+  pending
+  approved
+  fulfilled
+  declined
 }
 
 input CreateEventInput {
@@ -701,8 +716,8 @@ input CreateEventInput {
 }
 
 enum eventCategory {
-  Open
-  Online
+  open
+  online
 }
 
 enum eventBidLockType {

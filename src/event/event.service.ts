@@ -51,7 +51,7 @@ export class EventService {
     @Args('take', { type: () => Int, nullable: true }) take?: number,
     @Args('skip', { type: () => Int, nullable: true }) skip?: number,
   ): Promise<Event[] | null> {
-    const result = await this.prisma.event.findMany({
+    const events = await this.prisma.event.findMany({
       where: {
         isDeleted: false,
         ...where,
@@ -67,8 +67,19 @@ export class EventService {
         vehicleCategory:true
       },
     });
-    if (!result) throw new NotFoundException('Event Not Found!');
-    return result;
+    if (!events) throw new NotFoundException('Events Not Found!');
+    const eventWithVehicleCounts = await Promise.all(
+      events.map(async (event) => {
+        const vehiclesCount = await this.prisma.vehicle.count({
+          where: { eventId: event.id, isDeleted: false },
+        });
+        return { ...event, vehiclesCount }; 
+      })
+    );
+  
+    return eventWithVehicleCounts;  
+  
+ 
     
   }
   // -----------
@@ -102,8 +113,9 @@ export class EventService {
         vehicleCategory:true
       },
     });
+    const vehiclesCount=await this.prisma.vehicle.count({where:{eventId:where?.id,isDeleted:false,}})
     if (!result) throw new NotFoundException('Event not found');
-    return result;
+    return {...result,vehiclesCount};
   }
 
   async updateEvent(

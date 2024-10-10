@@ -8,6 +8,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/role/role.decorator';
 import { RolesGuard } from 'src/role/role.guard';
+import { VehicleListResponse } from './models/vehicleListModel';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
@@ -39,8 +40,8 @@ export class VehicleResolver {
   //   return this.vehicleService.listVehicle(eventId);
   // }
 
-  @Query((returns) => [Vehicle])
-  async vehicles(): Promise<Vehicle[] | null> {
+  @Query(() => VehicleListResponse, { nullable: true })
+  async vehicles(): Promise<VehicleListResponse | null> {
     return this.vehicleService.vehicles();
   }
 
