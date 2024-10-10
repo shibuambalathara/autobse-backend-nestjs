@@ -9,10 +9,14 @@ import { Event } from '../models/event.model';
 import { EventOrderByInput } from '../dto/EventOrderByInput';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
 import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
+import { s3Service } from 'src/services/s3/s3.service';
 
 @Injectable()
 export class LiveEventService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3Service: s3Service,
+  ) { }
 
   async liveEvents(
     @Args('where') where?: EventWhereUniqueInput,
@@ -26,21 +30,21 @@ export class LiveEventService {
         isDeleted: false,
         startDate: { lte: new Date().toISOString() },
         status: {
-            equals: "active",
+          equals: "active",
+        },
+        OR: [
+          {
+            endDate: { gte: new Date().toISOString() },
+            eventCategory: { equals: "open" },
           },
-          OR: [
-            {
-              endDate: { gte: new Date().toISOString() },
-              eventCategory: { equals: "open" },
-            },
-            {
-              vehicles: {
-                some: {
-                  bidTimeExpire: { gte: new Date().toISOString() },
-                },
+          {
+            vehicles: {
+              some: {
+                bidTimeExpire: { gte: new Date().toISOString() },
               },
             },
-          ],
+          },
+        ],
         ...where,
       },
       orderBy,
@@ -48,19 +52,25 @@ export class LiveEventService {
       skip,
 
       include: {
-         vehicles: true,
-        seller:true,
-        location:true,
-        vehicleCategory:true
+        vehicles: true,
+        seller: true,
+        location: true,
+        vehicleCategory: true
       },
     });
-    if (!result) throw new NotFoundException('Event Not Found!');
-    return result;
-    
+    if (!result) throw new NotFoundException('Event Not Found!')
+    for (const data of result) {
+      if (data?.downloadableFile_filename) {
+        const file = await this.s3Service.getUploadedExcelFile(data.downloadableFile_filename)
+        data.downloadableFile_filename = file ? file : null
+      }
+    }
+    return result
+
   }
   async getVehicles(
     eventId: string,
-     orderBy?: VehicleOrderByInput[],
+    orderBy?: VehicleOrderByInput[],
     take?: number,
     skip?: number
   ): Promise<Vehicle[]> {
@@ -68,7 +78,7 @@ export class LiveEventService {
       where: {
         eventId,
       },
-       orderBy,
+      orderBy,
       take,
       skip,
     });

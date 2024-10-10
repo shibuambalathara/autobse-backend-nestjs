@@ -193,7 +193,7 @@ export class FileuploadService {
   }
 
 
-  async createExcelUpload(id: string, eventId: string, file: Express.Multer.File, name: string) {
+  async createEventExcelUpload(id: string, eventId: string, file: Express.Multer.File, name: string) {
     try {
       // const excel = await this.prisma.excelUpload.create({
       //   data: {
@@ -338,6 +338,39 @@ export class FileuploadService {
     catch (error) {
       throw new Error(error.message)
     }
+  }
+
+  async createVehicleListExcelUpload(file: Express.Multer.File, eventId: string) {
+    
+    const event = await this.prismaService.event.findUnique({
+      where: {
+        id: eventId,
+      },
+      select: {
+        id: true,
+        downloadableFile_filename: true,
+      }
+    })
+    if(!event) throw new NotFoundException('Event not found.')
+
+    const key: string = event?.downloadableFile_filename ? event.downloadableFile_filename: randomUUID()
+
+    const res = await this.s3Service.uploadFile(file, key)
+    if (!res) throw new InternalServerErrorException('Image upload to s3 failed.')
+    
+    return this.prismaService.event.update({
+      where: {
+        id: event.id,
+      },
+      data: {
+        downloadableFile_filename: key,
+      },
+      select: {
+        id: true,
+        eventNo: true,
+        downloadableFile_filename: true,
+      }
+    })
   }
 
 }

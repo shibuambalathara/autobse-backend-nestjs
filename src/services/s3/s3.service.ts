@@ -44,4 +44,19 @@ export class s3Service {
             console.error('Error retrieving file from s3.')
         }
     }
+
+    async getUploadedExcelFile(key: string) {
+        const params = {
+            Bucket: this.configService.get<string>('AWS_BUCKET'),
+            Key: key,
+        }
+        try {
+            const command = new GetObjectCommand(params)
+            const url = await getSignedUrl(this.s3, command, { expiresIn: 24*60*60 })
+            return url
+
+        } catch (error) {
+            console.error('Error retrieving file from s3.')
+        }
+    }
 }
