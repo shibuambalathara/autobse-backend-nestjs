@@ -163,6 +163,7 @@ type Vehicle {
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String
+  priority: Float
 }
 
 type Bid {
@@ -425,6 +426,7 @@ input CreateVehicleInput {
   clientContactNo: String!
   additionalRemarks: String!
   lotNumber: Float
+  priority: Float
 }
 
 input UpdateVehicleInput {
@@ -488,6 +490,7 @@ input UpdateVehicleInput {
   clientContactNo: String
   additionalRemarks: String
   lotNumber: Float
+  priority: Float
   bidTimeExpire: String
   bidStartTime: String
 }

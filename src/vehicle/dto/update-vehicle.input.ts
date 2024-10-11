@@ -207,4 +207,7 @@ export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
   
   @Field({nullable:true})
   lotNumber?:number;
+
+  @Field({nullable:true})
+  priority?:number;
 }

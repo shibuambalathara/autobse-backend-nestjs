@@ -206,4 +206,7 @@ export class CreateVehicleInput {
   @Field({nullable:true})
   lotNumber?:number;
 
+  @Field({nullable:true})
+  priority?:number;
+
 }

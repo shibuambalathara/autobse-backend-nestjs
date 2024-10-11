@@ -161,6 +161,7 @@ model User {
   isDeleted               Boolean               @default(false)
   // magicAuthIssuedAt         DateTime?
   // magicAuthRedeemedAt       DateTime?
+ 
 }
 
 
@@ -297,6 +298,7 @@ model Vehicle {
   createdById            String?
   isDeleted              Boolean               @default(false)
   bidVehicle             Bid[]                  @relation("Bid_bidVehicle")
+  priority               Int?
 }
 
 model Event {

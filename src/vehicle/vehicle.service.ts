@@ -63,15 +63,16 @@ export class VehicleService {
       });
       
       if (event.eventCategory === 'offline') {
-        const eventStartTime = new Date(event.startDate).getTime(); // Event start time in milliseconds
-        const currentVehicleCount = await this.vehicleBidQueue.count(); // Count the number of vehicles in the queue
+        const eventStartTime = new Date(event.startDate).getTime(); 
+        const currentVehicleCount = await this.vehicleBidQueue.count(); 
         const vehicleDealyTime = event.vehicleLiveTimeIn;
     
-        // Calculate the delay based on the event start time and the number of vehicles already in the queue
-        const delay = Math.max(eventStartTime - Date.now(), 0) + currentVehicleCount * vehicleDealyTime * 60 * 1000; // 5 minutes per vehicle
+        const delay = Math.max(eventStartTime - Date.now(), 0) + currentVehicleCount * vehicleDealyTime * 60 * 1000; 
         const extraTimeDelay = event.extraTime
         console.log("extra",extraTimeDelay)
-        await this.vehicleBidQueue.add(vehicle.id, { vehicle, extraTimeDelay}, { delay });
+
+        const priority = vehicle.priority; 
+        await this.vehicleBidQueue.add(vehicle.id, { vehicle, extraTimeDelay}, { delay ,priority});
       }
       return vehicle;
 
@@ -93,25 +94,59 @@ export class VehicleService {
     return vehicle;
   }
 
-  async updateVehicle(id:string,updateVehicleInput: UpdateVehicleInput) : Promise<Vehicle|null>{
+  async updateVehicle(id: string, updateVehicleInput: UpdateVehicleInput): Promise<Vehicle | null> {
     try {
-      const vehicle = await this.prisma.vehicle.findUnique({where:{id,isDeleted:false,}})
-      if(!vehicle) throw new NotFoundException("Vehicle Not Found");
-      return await this.prisma.vehicle.update({
-          where:{
-            id,
-          },
-          data:{
-            ...updateVehicleInput,
-          }
-        });
-      }
-    catch (error) {
-        if (error instanceof NotFoundException) {
-          throw new Error(error.message); 
-          }
+      const vehicle = await this.prisma.vehicle.findUnique({
+        where: { id, isDeleted: false },
+        include: { event: true },
+      });
+      
+      if (!vehicle) throw new NotFoundException("Vehicle Not Found");
+  
+      const vehicledata = await this.prisma.vehicle.update({
+        where: { id },
+        data: { ...updateVehicleInput },
+      });
+  
+      if (vehicle.eventId && vehicle.event.eventCategory === 'offline') {
+        const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
+        const vehicleJob = jobs.find((job) => job.data?.vehicle?.id === vehicle.id);
+  
+        if (vehicleJob) {
+          const originalDelay = vehicleJob.opts.delay || 0; 
+          console.log(`Removing job for vehicle ${vehicle.id} and re-adding it with updated priority.`);
+          
+          await vehicleJob.remove(); 
+
+         
+          const extraTimeDelay = vehicle.event.extraTime;
+          const priority = vehicledata.priority;
+
+          console.log(`Re-adding job for vehicle ${vehicle.id} with updated priority ${priority} and original delay ${originalDelay}.`);
+          
+          await this.vehicleBidQueue.add(vehicle.id, {
+              vehicledata,
+              extraTimeDelay,
+            
+          }, {
+              delay: originalDelay, 
+              priority: priority,    
+          });
+
+        } else {
+          console.log(`Job not found for vehicle ${vehicle.id}.`);
         }
+      }
+  
+      return vehicledata;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new Error(error.message);
+      }
+      console.error("Unexpected error: ", error);
     }
+  }
+  
 
   async deleteVehicle(id: string) : Promise<Vehicle|null>{
     const vehicle = await this.prisma.vehicle.findUnique({where:{id,isDeleted:false,}});
@@ -147,211 +182,124 @@ export class VehicleService {
     });
   }
 
-//   async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidInput): Promise<Bid | null> {
-//     try {
-        
-//         const result = await this.prisma.bid.create({
-//             data: {
-//                 ...createBidInput,
-//                 userId: userId,
-//                 bidVehicleId: bidVehicleId,
-//             },
-//         });
-
-        
-//         const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
-//         const vehicleJob = jobs.find((job) => job.data?.vehicle?.id === bidVehicleId);
-
-//         if (!vehicleJob) {
-//             console.log(`Vehicle Job with ID ${bidVehicleId} not found.`);
-//             return result;
-//         }
-
-        
-//         const vehicleEvent = await this.prisma.event.findUnique({
-//             where: { id: vehicleJob.data.vehicle.eventId },
-//         });
-
-//         if (!vehicleEvent) {
-//             console.log(`Event not found for Vehicle ID ${bidVehicleId}.`);
-//             return result;
-//         }
-
-//         const originalVehicleLiveTimeIn = vehicleEvent.vehicleLiveTimeIn || 0;
-//         const delayIncrementMinutes = vehicleEvent.extraTime || 0;
-//         const delayIncrementMs = delayIncrementMinutes * 60 * 1000;
-
-       
-//         const startTimeDate = new Date(vehicleJob.data.vehicle.bidStartTime);
-//         const currentEndTime = vehicleJob.data.vehicle.nextRunTime
-//             ? new Date(vehicleJob.data.vehicle.nextRunTime)
-//             : new Date(startTimeDate.getTime() + originalVehicleLiveTimeIn * 60 * 1000);
-
-//         const newEndTime = new Date(currentEndTime.getTime() + delayIncrementMs);
-
-        
-//         await vehicleJob.updateData({
-//             vehicle: {
-//                 ...vehicleJob.data.vehicle,
-//                 nextRunTime: newEndTime.toISOString(),
-//                 vehicleLiveTimeIn: originalVehicleLiveTimeIn, 
-//                 currentLiveTimeExtension: (vehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes,
-//             },
-//         });
-
-       
-//         await vehicleJob.changeDelay(newEndTime.getTime());
-//         console.log(`Job delay incremented by ${delayIncrementMs}ms. New end time: ${newEndTime.toLocaleTimeString()}.`);
-
-
-//         const isBidCompleted = newEndTime.getTime() <= new Date().getTime(); 
-
-//         if (isBidCompleted) {
-//             console.log(`Bidding completed for vehicle ID ${bidVehicleId}.`);
-
-            
-//             await vehicleJob.updateData({
-//                 vehicle: {
-//                     ...vehicleJob.data.vehicle,
-//                     currentLiveTimeExtension: 0, 
-//                 },
-//             });
-
-//             console.log(`Vehicle ID ${bidVehicleId} live time reset to original value.`);
-
-           
-//             const nextVehicleJob = jobs.find((job) =>
-//                 job.data?.vehicle?.id !== bidVehicleId &&
-//                 new Date(job.data?.vehicle?.bidStartTime) > newEndTime
-//             );
-
-//             if (nextVehicleJob) {
-//                 const nextVehicleStartTime = newEndTime;
-
-//                 await nextVehicleJob.updateData({
-//                     vehicle: {
-//                         ...nextVehicleJob.data.vehicle,
-//                         bidStartTime: nextVehicleStartTime.toISOString(),
-//                         nextRunTime: nextVehicleStartTime.toISOString(),
-//                     },
-//                 });
-
-//                 console.log(`Next vehicle job updated. New start time: ${nextVehicleStartTime.toLocaleTimeString()}.`);
-//             }
-//         }
-
-//         return result;
-//     } catch (error) {
-//         console.error('Error placing bid:', error.message);
-//         throw new Error('Failed to place bid');
-//     }
-// }
 
 async placeBid(userId: string, bidVehicleId: string, createBidInput: CreateBidInput): Promise<Bid | null> {
   try {
-   
-      const result = await this.prisma.bid.create({
-          data: {
-              ...createBidInput,
-              userId: userId,
-              bidVehicleId: bidVehicleId,
-          },
-      });
+  
+    const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
+    const vehicleJob = jobs.find((job) => job.data?.vehicle?.id === bidVehicleId);
 
-      
-      const jobs = await this.vehicleBidQueue.getJobs(['waiting', 'delayed']);
-      
-      
-      const vehicleJob = jobs.find((job) => job.data?.vehicle?.id === bidVehicleId);
-      
-      if (!vehicleJob) {
-          console.log(`Vehicle Job with ID ${bidVehicleId} not found.`);
-          return result;
-      }
+    if (!vehicleJob) {
+      throw new Error(`Vehicle Job with ID ${bidVehicleId} not found.`);
+    }
 
-      
-      const vehicleEvent = await this.prisma.event.findUnique({
-          where: { id: vehicleJob.data.vehicle.eventId },
-      });
+    const vehicleEvent = await this.prisma.event.findUnique({
+      where: { id: vehicleJob.data.vehicle.eventId },
+    });
 
-      if (!vehicleEvent) {
-          console.log(`Event not found for Vehicle ID ${bidVehicleId}.`);
-          return result;
-      }
+    if (!vehicleEvent) {
+      throw new Error(`Event not found for Vehicle ID ${bidVehicleId}.`);
+    }
 
-      const originalVehicleLiveTimeIn = vehicleEvent.vehicleLiveTimeIn || 0; 
-      const delayIncrementMinutes = vehicleEvent.extraTime || 0; 
-      const delayIncrementMs = delayIncrementMinutes * 60 * 1000; 
+    const originalVehicleLiveTimeIn = vehicleEvent.vehicleLiveTimeIn || 0;
+    const delayIncrementMinutes = vehicleEvent.extraTime || 0;
+    const delayIncrementMs = delayIncrementMinutes * 60 * 1000;
 
-      const startTimeDate = new Date(vehicleJob.data.vehicle.bidStartTime);
-      
-    
-      const currentEndTime = vehicleJob.data.vehicle.nextRunTime
-          ? new Date(vehicleJob.data.vehicle.nextRunTime)
-          : new Date(startTimeDate.getTime() + originalVehicleLiveTimeIn * 60 * 1000); 
+    const startTimeDate = new Date(vehicleJob.data.vehicle.bidStartTime);
+    const currentEndTime = vehicleJob.data.vehicle.nextRunTime
+      ? new Date(vehicleJob.data.vehicle.nextRunTime)
+      : new Date(startTimeDate.getTime() + originalVehicleLiveTimeIn * 60 * 1000);
 
-      const newEndTime = new Date(currentEndTime.getTime() + delayIncrementMs);
-
+    const newEndTime = new Date(currentEndTime.getTime() + delayIncrementMs);
+  
    
       await vehicleJob.updateData({
-          vehicle: {
-              ...vehicleJob.data.vehicle,
-              nextRunTime: newEndTime.toISOString(), 
-              vehicleLiveTimeIn: originalVehicleLiveTimeIn, 
-              currentLiveTimeExtension: (vehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes, 
-          },
+        vehicle: {
+          ...vehicleJob.data.vehicle,
+          nextRunTime: newEndTime.toISOString(),
+          vehicleLiveTimeIn: originalVehicleLiveTimeIn,
+          currentLiveTimeExtension: (vehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes,
+        },
       });
 
+      await this.prisma.vehicle.update({
+        where: { id: bidVehicleId },
+        data: {
+          bidTimeExpire: newEndTime,
+          bidStatus:"fulfilled"
+          
+        },
+      });
+  
       await vehicleJob.changeDelay(newEndTime.getTime());
       console.log(`Job delay incremented by ${delayIncrementMs}ms. New end time: ${newEndTime.toLocaleTimeString()}.`);
+        
 
+  for (const job of jobs.filter((job) => job.data?.vehicle?.id !== bidVehicleId)) {
+    if (!job.data || !job.data.vehicle) continue;
+   
+    const nextVehicleJob = jobs.find((job) =>
+      job.data?.vehicle?.id !== bidVehicleId &&
+      new Date(job.data?.vehicle?.bidStartTime) > newEndTime 
+    );
+
+    if (nextVehicleJob) {
+      const currentNextVehicleEndTime = nextVehicleJob.data.vehicle.nextRunTime
+      ? new Date(nextVehicleJob.data.vehicle.nextRunTime)
+      : new Date(newEndTime.getTime() + originalVehicleLiveTimeIn * 60 * 1000);
+
+    
+      const newNextVehicleEndTime = new Date(currentNextVehicleEndTime.getTime() + delayIncrementMs);
      
-      const isBidCompleted = newEndTime.getTime() <= new Date().getTime(); 
-
-      if (isBidCompleted) {
-          console.log(`Bidding completed for vehicle ID ${bidVehicleId}.`);
-
-          
-          await vehicleJob.updateData({
-              vehicle: {
-                  ...vehicleJob.data.vehicle,
-                  currentLiveTimeExtension: 0, 
-              },
-          });
-
-          console.log(`Vehicle ID ${bidVehicleId} live time reset to original value.`);
-      }
-
+        await nextVehicleJob.updateData({
+          vehicle: {
+            ...nextVehicleJob.data.vehicle,
+            nextRunTime: newNextVehicleEndTime.toISOString(),
+            vehicleLiveTimeIn: originalVehicleLiveTimeIn,
+            currentLiveTimeExtension: (nextVehicleJob.data.vehicle.currentLiveTimeExtension || 0) + delayIncrementMinutes,
+          },
+        });
   
-      const nextVehicleJob = jobs.find((job) =>
-          job.data?.vehicle?.id !== bidVehicleId &&
-          new Date(job.data?.vehicle?.bidStartTime) > new Date() 
-      );
+        await this.prisma.vehicle.update({
+          where: { id: nextVehicleJob.data.vehicle.id},
+          data: {
+            bidTimeExpire: newNextVehicleEndTime,
+            bidStatus:"fulfilled"
+          },
+        });
 
-      if (nextVehicleJob) {
-          const nextVehicleStartTime = nextVehicleJob.data.vehicle.nextRunTime
-              ? new Date(nextVehicleJob.data.vehicle.nextRunTime)
-              : new Date(nextVehicleJob.data.vehicle.bidStartTime); 
-          console.log(`Next vehicle job detected. Start time: ${nextVehicleStartTime.toLocaleTimeString()}.`);
+        await nextVehicleJob.changeDelay(newNextVehicleEndTime.getTime());
+        console.log(`Next vehicle job delay incremented by ${delayIncrementMs}ms.New end time for vehicle: ${newNextVehicleEndTime.toLocaleTimeString()}.`);
+       
+  }
+}
+    const existingBid = await this.prisma.bid.findFirst({
+      where: { bidVehicleId },
+    });
 
-          
-          await nextVehicleJob.updateData({
-              vehicle: {
-                  ...nextVehicleJob.data.vehicle,
-                  nextRunTime: nextVehicleStartTime.toISOString(),
-                  currentLiveTimeExtension: 0, 
-              },
-          });
-
-         
-          await nextVehicleJob.changeDelay(nextVehicleStartTime.getTime());
-          console.log(`Next vehicle job updated. New start time: ${nextVehicleStartTime.toLocaleTimeString()}.`);
-      }
-
+    if (existingBid) {
+      const updatedBid = await this.prisma.bid.update({
+        where: { id: existingBid.id },
+        data: {
+          ...createBidInput,
+          userId,
+          updatedAt: new Date(), 
+        },
+      });
+      return updatedBid;
+    } else {
+      const result = await this.prisma.bid.create({
+        data: {
+          ...createBidInput,
+          userId,
+          bidVehicleId,
+        },
+      });
       return result;
+    }
   } catch (error) {
-      console.error('Error placing bid:', error.message);
-      throw new Error('Failed to place bid');
+    console.error('Error placing bid:', error.message);
+    throw new Error('Failed to place bid');
   }
 }
 
@@ -368,8 +316,8 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
       const now = new Date();
       const vehiclesWithBidStartTime = [];
 
-   
-      jobs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      jobs.sort((a, b) => (a.opts.priority) - (b.opts.priority));
+      // jobs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
       for (const job of jobs) {
           const jobState = await job.getState();
@@ -390,6 +338,8 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
 
          
           let displayDuration = (event.vehicleLiveTimeIn || 0) * 60 * 1000; 
+          const gapBetweenVehicles = (event.gapInBetweenVehicles || 0) * 60 * 1000; 
+         
           
           if (vehicleData.currentLiveTimeExtension && vehicleData.currentLiveTimeExtension > 0) {
               displayDuration += vehicleData.currentLiveTimeExtension * 60 * 1000;
@@ -401,6 +351,7 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
                   vehicle: vehicleData,
                   bidStartTime,
                   displayDuration,
+                  gapBetweenVehicles
               });
           }
       }
@@ -413,10 +364,11 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
 
       const startTime = vehiclesWithBidStartTime[0].bidStartTime || now;
       const elapsed = now.getTime() - startTime.getTime();
-
+      
+    
     
       let accumulatedTime = 0;
-      for (const { vehicle, displayDuration } of vehiclesWithBidStartTime) {
+      for (const { vehicle, displayDuration, gapBetweenVehicles } of vehiclesWithBidStartTime) {
           accumulatedTime += displayDuration;
           if (elapsed <= accumulatedTime) {
               return [{
@@ -428,9 +380,17 @@ async listVehicleFromQueue(): Promise<Vehicle[] | null> {
                   dateOfRegistration: new Date(vehicle.dateOfRegistration),
               }];
           }
-      }
+      
 
  
+      accumulatedTime += gapBetweenVehicles;
+
+      if (elapsed <= accumulatedTime) {
+   
+        console.log('Currently in the gap between vehicle displays.');
+        return [];
+      }
+    }
       console.log('No vehicle is ready to be activated at this time.');
       return [];
   } catch (error) {

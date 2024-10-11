@@ -210,5 +210,8 @@ export class Vehicle {
 
   @Field({nullable:true})
   createdById?:string;
+
+  @Field({nullable:true})
+  priority?:number;
              
 }
