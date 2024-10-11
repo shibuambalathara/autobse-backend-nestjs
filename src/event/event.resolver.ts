@@ -61,6 +61,9 @@ export class EventResolver {
     
   ) :Promise<Event|null>{
     return this.eventService.event(where);
+
+
+
   }
 
 
@@ -109,5 +112,10 @@ export class EventResolver {
   async restoreEvent(@Args('where') where:EventWhereUniqueInput):Promise<Event|null>{
     return this.eventService.restoreEvent(where);
   }
+
+  @Query(() => Int)
+  async eventsCount(): Promise<number> {
+  return this.eventService.countEvents();
+  } 
 
 }

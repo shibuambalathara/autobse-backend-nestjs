@@ -213,4 +213,9 @@ export class EventService {
       },
     });
   }
+
+  async countEvents():Promise<number|0>{
+    const eventsCount=await this.prisma.event.count({where:{isDeleted:false}})
+    return eventsCount
+  }
 }

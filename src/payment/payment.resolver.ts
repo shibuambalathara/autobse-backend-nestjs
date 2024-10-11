@@ -82,5 +82,10 @@ export class PaymentResolver {
   async restorePayment(@Args('where') where:PaymentWhereUniqueInput):Promise<Payment|null>{
     return this.paymentService.restorePayment(where);
   }
+
+  @Query(() => Int)
+  async paymentsCount(): Promise<number> {
+  return this.paymentService.countPayments();
+  }
   
 }

@@ -80,5 +80,8 @@ export class VehiclecategoryService {
       }
     });
   }
-
+  async countVehicleCategory():Promise<number|0>{
+    const vehicleCategoryCount=await this.prisma.vehicle.count({where:{isDeleted:false}})
+    return vehicleCategoryCount
+  }
   }

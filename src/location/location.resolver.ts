@@ -67,4 +67,8 @@ export class LocationResolver {
     return this.locationService.restoreLocation(where);
   }
 
+  @Query(() => Int)
+  async locationsCount(): Promise<number> {
+  return this.locationService.countLocations();
+  }
 }

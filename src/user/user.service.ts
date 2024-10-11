@@ -156,5 +156,10 @@ export class UserService {
     return this.prisma.user.delete({
       where: where as Prisma.UserWhereUniqueInput,
     });
-  }
+
+    }
+    async countUsers():Promise<number |0>{
+      const usersCount=await this.prisma.user.count({where:{isDeleted:false}})
+      return usersCount
+    }
 }
