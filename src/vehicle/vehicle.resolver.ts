@@ -95,4 +95,9 @@ export class VehicleResolver {
   ): Promise<Vehicle | null> {
     return this.vehicleService.restoreVehicle(where);
   }
+
+  @Query(() => Int)
+  async vehiclsCount(): Promise<number> {
+  return this.vehicleService.countVehicles();
+  }
 }

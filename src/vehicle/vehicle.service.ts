@@ -133,20 +133,10 @@ export class VehicleService {
     });
   }
 
-
-  // async listVehicle(eventId: string) {
-  //   const vehicle = await this.prisma.vehicle.findUnique({
-  //     where: { id: eventId },
-  //   });
-
-  //   if (vehicle) {
-  //     // Add job to queue
-  //     await this.vehicleBidQueue.add('bid',{ eventId, incrementTime: 1 });
-
-  //     return vehicle;
-  //   }
-
-  //   throw new Error('Vehicle not found');
-  // }
+async countVehicles():Promise<number|0>{
+  const vehicleCount=await this.prisma.vehicle.count({where:{isDeleted:false}})
+  return vehicleCount
+}
+ 
   }
 

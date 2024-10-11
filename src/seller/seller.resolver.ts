@@ -74,4 +74,9 @@ export class SellerResolver {
     return this.sellerService.deleteSellerHardDelete(where.id);
   }
 
+  @Query(() => Int)
+  async sellersCount(): Promise<number> {
+  return this.sellerService.countSellers();
+  }
+
 }
