@@ -28,6 +28,7 @@ import { s3Module } from './services/s3/s3.module';
 import { FileuploadModule } from './fileupload/fileupload.module';
 import { LiveEventModule } from './event/live event/liveEvent.module';
 import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module';
+import { BidModule } from './bid/bid.module';
 
 
 
@@ -61,7 +62,8 @@ import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module'
     s3Module,
     FileuploadModule,
     LiveEventModule,
-    UpcomingEventModule
+    UpcomingEventModule,
+    BidModule
 
   ],
   providers: [
