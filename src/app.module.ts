@@ -28,6 +28,7 @@ import { s3Module } from './services/s3/s3.module';
 import { FileuploadModule } from './fileupload/fileupload.module';
 import { LiveEventModule } from './event/live event/liveEvent.module';
 import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 
 
@@ -39,6 +40,9 @@ import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module'
        plugins: [ApolloServerPluginLandingPageLocalDefault()],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       path:'/graphql',
+      subscriptions: {
+        'graphql-ws': true,
+      },
       context: ({ req }) => ({ req }), 
     }),
     ConfigModule.forRoot(
@@ -61,7 +65,8 @@ import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module'
     s3Module,
     FileuploadModule,
     LiveEventModule,
-    UpcomingEventModule
+    UpcomingEventModule,
+    SubscriptionModule
 
   ],
   providers: [

@@ -9,10 +9,14 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/role/role.decorator';
 import { RolesGuard } from 'src/role/role.guard';
 import { VehicleListResponse } from './models/vehicleListModel';
+import { RedisService } from 'src/services/redis/redis.service';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
-  constructor(private readonly vehicleService: VehicleService) {}
+  constructor(
+    private readonly vehicleService: VehicleService,
+    private readonly redisService: RedisService,
+  ) {}
 
   @Mutation((returns) => Vehicle)
   @UseGuards(GqlAuthGuard, RolesGuard)
@@ -55,11 +59,13 @@ export class VehicleResolver {
   @Mutation((returns) => Vehicle)
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles('admin')
-  updateVehicle(
+  async updateVehicle(
     @Args('where') where: VehicleWhereUniqueInput,
     @Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput,
   ): Promise<Vehicle | null> {
-    return this.vehicleService.updateVehicle(where.id, updateVehicleInput);
+    const vehicle = await this.vehicleService.updateVehicle(where.id, updateVehicleInput);
+    this.redisService.publish('ALL_TOPICS',{allTopics: vehicle})
+    return vehicle
   }
 
   @Mutation((returns) => Vehicle)
