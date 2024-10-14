@@ -91,5 +91,8 @@ export class LocationService {
     });
   }
 
-
+  async countLocations():Promise<number|0>{
+    const locationCount=await this.prisma.location.count({where:{isDeleted:false}})
+    return locationCount
+  }
 }

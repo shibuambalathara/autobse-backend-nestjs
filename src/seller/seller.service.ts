@@ -102,4 +102,9 @@ export class SellerService {
       throw new Error(error.message);
     }
   }
+
+  async countSellers():Promise<number|0>{
+    const sellersCount=await this.prisma.seller.count({where:{isDeleted:false}})
+    return sellersCount
+  }
 }

@@ -4,6 +4,7 @@ import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
+import { VehicleListResponse } from './models/vehicleListModel';
 // import { InjectQueue } from '@nestjs/bullmq';
 // import { Queue } from 'bullmq';
 
@@ -63,10 +64,13 @@ export class VehicleService {
            }
     }
 
-  async vehicles(): Promise<Vehicle[] | null>{
-    const vehicle = await this.prisma.vehicle.findMany({where:{isDeleted:false}});
-    if(!vehicle) throw new NotFoundException("Vehicle Not Found");
-    return vehicle;
+  async vehicles(): Promise<VehicleListResponse | null>{
+    const vehicles = await this.prisma.vehicle.findMany({where:{isDeleted:false}});
+    const vehiclesCount = await this.prisma.vehicle.count({
+      where: { isDeleted: false }
+    });
+    if(!vehicles) throw new NotFoundException("Vehicle Not Found");
+    return {vehicles,vehiclesCount};
   }
 
   async vehicle(where:VehicleWhereUniqueInput) : Promise<Vehicle | null> {
@@ -129,20 +133,10 @@ export class VehicleService {
     });
   }
 
-
-  // async listVehicle(eventId: string) {
-  //   const vehicle = await this.prisma.vehicle.findUnique({
-  //     where: { id: eventId },
-  //   });
-
-  //   if (vehicle) {
-  //     // Add job to queue
-  //     await this.vehicleBidQueue.add('bid',{ eventId, incrementTime: 1 });
-
-  //     return vehicle;
-  //   }
-
-  //   throw new Error('Vehicle not found');
-  // }
+async countVehicles():Promise<number|0>{
+  const vehicleCount=await this.prisma.vehicle.count({where:{isDeleted:false}})
+  return vehicleCount
+}
+ 
   }
 

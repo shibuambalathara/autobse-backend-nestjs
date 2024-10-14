@@ -1,8 +1,8 @@
 import { registerEnumType } from "@nestjs/graphql";
 
 export enum eventCategory{
-    Open="open",
-    Online="online"
+    open="open",
+    online="online"
 }
 
 registerEnumType(eventCategory, {

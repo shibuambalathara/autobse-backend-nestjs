@@ -65,5 +65,8 @@ export class VehiclecategoryResolver {
   async restoreVehicleCategory(@Args('where') where:VehicleCategoryWhereUniqueInput):Promise<VehicleCategory|null>{
     return this.vehiclecategoryService.restoreVehicleCategory(where);
   }
-
+  @Query(() => Int)
+  async vehicleCategoryCount(): Promise<number> {
+  return this.vehiclecategoryService.countVehicleCategory();
+  }
 }

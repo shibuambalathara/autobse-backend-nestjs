@@ -26,8 +26,8 @@ export class Vehicle {
   @Field({nullable:true})
   startBidAmount?:number;
  
-  // @Field()
-  // bidStatus:string;
+  @Field()
+  bidStatus:string;
 
   @Field()
   loanAgreementNo:string;
@@ -210,5 +210,5 @@ export class Vehicle {
 
   @Field({nullable:true})
   createdById?:string;
-   
+
 }

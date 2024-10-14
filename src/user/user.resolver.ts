@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './models/user.model';
 import { CreateUserInput } from './dto/create-user.input';
@@ -90,4 +90,9 @@ return this.userService.DeleteUserPermenently(where);
   }
 
 
+
+  @Query(() => Int)
+  async usersCount(): Promise<number> {
+  return this.userService.countUsers();
+  }
 }

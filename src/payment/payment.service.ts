@@ -114,5 +114,10 @@ export class PaymentService {
       }
     });
   }
+
+  async countPayments():Promise<number|0>{
+    const paymentCount=await this.prisma.payment.count({where:{isDeleted:false}})
+    return paymentCount
+  }
   
 }

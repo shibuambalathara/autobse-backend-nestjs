@@ -97,6 +97,7 @@ type Vehicle {
   bidAmountUpdate: Float
   currentBidAmount: Float
   startBidAmount: Float
+  bidStatus: String!
   loanAgreementNo: String!
   registeredOwnerName: String!
   quoteIncreament: Float
@@ -158,6 +159,11 @@ type Vehicle {
   createdById: String
 }
 
+type VehicleListResponse {
+  vehicles: [Vehicle!]!
+  vehiclesCount: Int!
+}
+
 type Event {
   id: String!
   eventNo: Float!
@@ -186,6 +192,7 @@ type Event {
   seller: Seller
   location: Location
   vehicleCategory: VehicleCategory
+  vehiclesCount: Int
 }
 
 input VehicleOrderByInput {
@@ -253,26 +260,32 @@ type Query {
   user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
+  usersCount: Int!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
   deletedLocation(where: LocationWhereUniqueInput!): Location!
+  locationsCount: Int!
   vehicleCategories: [VehicleCategory!]!
   vehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
   deletedVehicleCategories: [VehicleCategory!]!
   deletedVehicleCategory(where: VehicleCategoryWhereUniqueInput!): VehicleCategory!
+  vehicleCategoryCount: Int!
   sellers: [Seller!]!
   seller(where: SellerWhereUniqueInput!): Seller!
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
-  vehicles: [Vehicle!]!
+  sellersCount: Int!
+  vehicles: VehicleListResponse
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
+  vehiclsCount: Int!
   events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
+  eventsCount: Int!
   excelUploads: [Excelupload!]!
   excelUpload(where: ExcelWhereUniqueInput!): Excelupload!
   statuses: [Status!]!
@@ -283,6 +296,7 @@ type Query {
   payment(where: PaymentWhereUniqueInput!): Payment!
   deletedPayments: [Payment!]!
   deletedPayment(where: PaymentWhereUniqueInput!): Payment!
+  paymentsCount: Int!
   recentSolds: [Recentsold!]!
   Enquiries: [Enquiry!]!
   Enquiry(where: EnquiryWhereUniqueInput!): Enquiry!
@@ -680,6 +694,14 @@ input UpdateVehicleInput {
   lotNumber: Float
   bidTimeExpire: String
   bidStartTime: String
+  bidStatus: VehicleBidStatusType
+}
+
+enum VehicleBidStatusType {
+  pending
+  approved
+  fulfilled
+  declined
 }
 
 input CreateEventInput {
@@ -701,8 +723,8 @@ input CreateEventInput {
 }
 
 enum eventCategory {
-  Open
-  Online
+  open
+  online
 }
 
 enum eventBidLockType {
