@@ -868,3 +868,7 @@ input VerfiyOtpDto {
   mobile: String!
   otp: String!
 }
+
+type Subscription {
+  subscriptionAllTopics: Vehicle!
+}
