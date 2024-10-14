@@ -5,6 +5,7 @@ export class CreateEventExcelUploadInput {
     @Field()
     eventId: string;
 
+
     @Field()
-    name?: string;
+    name: string;
 }
