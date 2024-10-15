@@ -88,6 +88,14 @@ type Seller {
   createdById: String!
 }
 
+type Bid {
+  id: String!
+  name: String!
+  amount: Float!
+  userId: String!
+  bidVehicleId: String!
+}
+
 type Vehicle {
   id: String!
   vehicleIndexNo: Float!
@@ -157,6 +165,7 @@ type Vehicle {
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String
+  userVehicleBids: [Bid!]
 }
 
 type VehicleListResponse {
@@ -253,14 +262,6 @@ type SendOtpResponse {
   code: String!
   description: String!
   data: OtpMessageDataDto
-}
-
-type Bid {
-  id: String!
-  name: String!
-  amount: Float!
-  userId: String!
-  bidVehicleId: String!
 }
 
 type Query {
