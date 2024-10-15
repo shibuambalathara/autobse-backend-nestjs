@@ -2,6 +2,7 @@ import { Resolver, Subscription, Query, Mutation, Args, Int } from '@nestjs/grap
 import { SubscriptionService } from './subscription.service';
 import { RedisService } from 'src/services/redis/redis.service';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
+import { resolve } from 'path';
 
 @Resolver(() => Subscription)
 export class SubscriptionResolver {
@@ -11,7 +12,7 @@ export class SubscriptionResolver {
   ) {}
 
 
-  @Subscription(()=> Vehicle, { name: 'subscriptionAllTopics'})
+  @Subscription(()=> Vehicle, { name: 'subscriptionAllTopics', resolve: (payload)=>payload.allTopics})
   getAllTopics() {
     return this.redisService.asyncIterator('ALL_TOPICS')
   }
