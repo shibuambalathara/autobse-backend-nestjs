@@ -882,12 +882,10 @@ input VerfiyOtpDto {
 }
 
 input CreateBidInput {
-  name: String!
   amount: Float!
 }
 
 input UpdateBidInput {
-  name: String!
   amount: Float!
 }
 
