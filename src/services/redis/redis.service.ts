@@ -16,6 +16,7 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
             host: this.configService.get<string>('REDIS_HOST'),
             port: parseInt(this.configService.get<string>('REDIS_PORT')),
             password: this.configService.get<string>('REDIS_PASS'),
+            
         };
 
         this.publisher = new Redis(redisOptions)
@@ -38,10 +39,10 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
     }
 
     async onModuleInit() {
-        console.log('Redis connected successfully.')
         // Optionally, you can validate Redis connection
         await this.publisher.ping()
         await this.subscriber.ping()
+        console.log('Redis connected successfully.')
     }
 
 

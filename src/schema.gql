@@ -890,3 +890,7 @@ input UpdateBidInput {
   name: String!
   amount: Float!
 }
+
+type Subscription {
+  subscriptionAllTopics: Vehicle!
+}

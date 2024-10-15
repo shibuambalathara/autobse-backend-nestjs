@@ -6,6 +6,7 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 import { Request } from 'express';
+import { CreateEventExcelUploadInput } from './dto/create-eventexcelupload.input';
 
 @Controller('api/v1/fileupload')
 export class FileuploadController {
@@ -41,7 +42,7 @@ export class FileuploadController {
       driving_license_back_image?: [Express.Multer.File],
     }
   ) {
-    
+
     if (!files) throw new BadRequestException('Files should not be empty.')
     const res = await this.fileuploadService.uploadUpdateUserProfile(userId, files)
     if (!res) throw new InternalServerErrorException('User profile files upload and updation failed.')
@@ -71,43 +72,59 @@ export class FileuploadController {
     @Param('paymentId') paymentId: string,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    console.log(image,'its image');
+    console.log(image, 'its image');
 
     if (!image) throw new BadRequestException('Image should not be empty.')
-      const res = await this.fileuploadService.uploadUpdatePaymentImage(paymentId, image)
-      if (!res) throw new InternalServerErrorException('Payment image upload and updation failed.')
-  
-      return {
-        success: true,
-        message: 'Payment image uploaded and updated successfully.',
-        res,
-      }
+    const res = await this.fileuploadService.uploadUpdatePaymentImage(paymentId, image)
+    if (!res) throw new InternalServerErrorException('Payment image upload and updation failed.')
+
+    return {
+      success: true,
+      message: 'Payment image uploaded and updated successfully.',
+      res,
+    }
   }
 
   @Post('event_excel')
-  // @UseGuards(GqlAuthGuard,RolesGuard)
-  // @Roles('admin', 'staff')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles('admin', 'staff')
+  @UseInterceptors(FileInterceptor('file', {
+    limits: {
+      fileSize: 2 * 1024 * 1014,
+      files: 1,
+    },
+    fileFilter(req, file, callback) {
+      const allowedExtensions = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ]
+      if (!allowedExtensions.includes(file.mimetype)) {
+        callback(new BadRequestException(`Invalid file type for ${file.fieldname}. Only excel files are allowed.`), false)
+      }
+      callback(null, true)
+    },
+  }))
   async createEventExcelUpload(
-    @Param('eventId') eventId: string,
+    @Body() createEventExcelUploadInput: CreateEventExcelUploadInput,
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request
   ) {
-    // const user = req.user
-    // console.log(user,'its user');
-    const res = await this.fileuploadService.createEventExcelUpload('dkfj','djfkd', file, 'name')
+    const user = req.user as { id: string, mobile: string, role: string }
+    console.log(user, 'its user');
+    if (!file) throw new BadRequestException('File should not be empty.')
+    const res = await this.fileuploadService.createEventExcelUpload(user.id, createEventExcelUploadInput, file)
     if (!res) throw new InternalServerErrorException('Excel upload failed.')
-      return {
-        success: true,
-        message: 'Excel uploaded sucessfully.',
-        res,
-      }
+    return {
+      success: true,
+      message: 'Excel uploaded sucessfully.',
+      res,
+    }
   }
 
   @Put('vehicle_list_excel/:eventId')
   // @UseGuards(GqlAuthGuard,RolesGuard)
   // @Roles('admin', 'staff')
-  @UseInterceptors(FileInterceptor('file',{
+  @UseInterceptors(FileInterceptor('file', {
     limits: {
       fileSize: 2 * 1024 * 1014,
       files: 1,
@@ -128,13 +145,14 @@ export class FileuploadController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request
   ) {
+    if (!file) throw new BadRequestException('File should not be empty.')
     const res = await this.fileuploadService.createVehicleListExcelUpload(file, eventId)
     if (!res) throw new InternalServerErrorException('Excel upload failed.')
-      return {
-        success: true,
-        message: 'Excel uploaded sucessfully.',
-        res,
-      }
+    return {
+      success: true,
+      message: 'Excel uploaded sucessfully.',
+      res,
+    }
   }
-  
+
 }
