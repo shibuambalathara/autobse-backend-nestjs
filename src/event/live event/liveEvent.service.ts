@@ -35,7 +35,7 @@ export class LiveEventService {
         OR: [
           {
             endDate: { gte: new Date().toISOString() },
-            eventCategory: { equals: "open" },
+            // eventCategory: { equals: "open" },
           },
           {
             vehicles: {
@@ -65,7 +65,19 @@ export class LiveEventService {
         data.downloadableFile_filename = file ? file : null
       }
     }
-    return result
+   const eventsWithCounts = await Promise.all(result.map(async (event) => {
+   const vehicleCount = await this.prisma.vehicle.count({
+      where: { eventId: event.id },  
+    });
+
+      return {
+        ...event,
+        vehiclesCount: vehicleCount,  
+      };
+    }));
+
+    return eventsWithCounts;  
+    
 
   }
   async getVehicles(
