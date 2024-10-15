@@ -171,7 +171,7 @@ model User {
   execlUploadCreatedBy         ExcelUpload[]        @relation("excelupload_createdBy")
   statusCreatedBy              Status[]             @relation("status_createdBy")
   activeBids                   Vehicle[]            @relation("Vehicle_currentBidUser")
-  // quotedBids                Bid[]                @relation("Bid_user")
+   quotedBids                Bid[]                @relation("Bid_user")
   // bannedSellers             Seller[]             @relation("Seller_bannedUsers")
   // coupenDetail              Coupen[]             @relation("Coupen_userDetail")
   eventDetail                  Event[]              @relation("Event_participants")
@@ -259,7 +259,10 @@ model Vehicle {
   event                  Event?                @relation("Vehicle_event", fields: [eventId], references: [id])
   eventId                String?               @default("")
   bidStatus              VehicleBidStatusType? @default(pending)
-  //userVehicleBids        Bid[]               @relation("Bid_bidVehicle")
+
+  userVehicleBids        Bid[]                 @relation("Bid_bidVehicle")
+
+
   loanAgreementNo        String                
   registeredOwnerName    String?               @default("")
   quoteIncreament        Int?                  @default(1000)
@@ -432,4 +435,16 @@ model Enquiry{
   createdAt         DateTime?             @default(now())
   updatedAt         DateTime?             @updatedAt    
   isDeleted         Boolean               @default(false)         
+}
+model Bid {
+  id           String       @id @default(cuid())
+  name         String       @default("")
+  amount       Int?
+  user         User?        @relation("Bid_user", fields: [userId], references: [id])
+  userId       String?      
+  bidVehicle   Vehicle?     @relation("Bid_bidVehicle", fields: [bidVehicleId], references: [id])
+  bidVehicleId String?      
+  createdAt    DateTime?    @default(now())
+  updatedAt    DateTime?    @updatedAt
+  isDeleted    Boolean      @default(false)
 }
