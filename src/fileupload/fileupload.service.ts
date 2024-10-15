@@ -203,6 +203,8 @@ export class FileuploadService {
         },
         select: {
           id: true,
+          file_filename:true,
+          
         }
       });
       if (!excel) throw new InternalServerErrorException('Excel metadata creation failed.')
@@ -326,7 +328,7 @@ export class FileuploadService {
           },
         });
       }
-      return 'empty';
+      return excel;
     }
     catch (error) {
       throw new Error(error.message)
