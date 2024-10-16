@@ -1,8 +1,8 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response.dto';
 import { LoginUserInput } from '../auth/dto/login-user.input';
-import { UnauthorizedException } from '@nestjs/common';
+import {  UnauthorizedException } from '@nestjs/common';
 
 @Resolver()
 export class AuthResolver {
@@ -16,4 +16,11 @@ export class AuthResolver {
       }
     return this.authService.login(user);
   }
+
+// system time
+@Query(()=>String)
+async time(){
+  return new Date().toISOString()
+}
+
 }
