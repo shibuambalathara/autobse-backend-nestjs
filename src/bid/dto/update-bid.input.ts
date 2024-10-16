@@ -3,8 +3,8 @@ import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateBidInput extends PartialType(CreateBidInput) {
-  @Field()
-  name:string;
+  // @Field()
+  // name:string;
 
   @Field()
   amount?:number;

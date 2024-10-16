@@ -88,80 +88,12 @@ type Seller {
   createdById: String!
 }
 
-type Vehicle {
+type Bid {
   id: String!
-  vehicleIndexNo: Float!
-  registrationNumber: String!
-  bidTimeExpire: DateTime!
-  bidStartTime: DateTime!
-  bidAmountUpdate: Float
-  currentBidAmount: Float
-  startBidAmount: Float
-  bidStatus: String!
-  loanAgreementNo: String!
-  registeredOwnerName: String!
-  quoteIncreament: Float
-  make: String!
-  model: String!
-  varient: String!
-  category: String!
-  fuel: String!
-  type: String!
-  rcStatus: String!
-  YOM: Float
-  ownership: Float
-  mileage: Float
-  kmReading: Float
-  insuranceStatus: String!
-  yardLocation: String!
-  startPrice: Float
-  reservePrice: Float
-  repoDt: String
-  veicleLocation: String!
-  vehicleRemarks: String!
-  auctionManager: String!
-  parkingCharges: String!
-  insurance: String!
-  insuranceValidTill: String
-  tax: String!
-  taxValidityDate: String
-  fitness: String!
-  permit: String!
-  engineNo: String!
-  chassisNo: String!
-  image: String!
-  inspectionLink: String!
-  autobseContact: String!
-  autobse_contact_person: String!
-  vehicleCondition: String!
-  powerSteering: String!
-  shape: String!
-  color: String!
-  state: String!
-  city: String!
-  area: String!
-  paymentTerms: String!
-  dateOfRegistration: String
-  hypothication: String!
-  climateControl: String!
-  doorCount: Float
-  gearBox: String!
-  buyerFees: String!
-  rtoFine: String!
-  parkingRate: String!
-  approxParkingCharges: String!
-  clientContactPerson: String!
-  clientContactNo: String!
-  additionalRemarks: String!
-  lotNumber: Float
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdById: String
-}
-
-type VehicleListResponse {
-  vehicles: [Vehicle!]!
-  vehiclesCount: Int!
+  name: String!
+  amount: Float!
+  userId: String!
+  bidVehicleId: String!
 }
 
 type Event {
@@ -202,6 +134,87 @@ input VehicleOrderByInput {
 enum OrderDirection {
   ASC
   DESC
+}
+
+type Vehicle {
+  id: String!
+  vehicleIndexNo: Float!
+  registrationNumber: String!
+  bidTimeExpire: DateTime!
+  bidStartTime: DateTime!
+  bidAmountUpdate: Float
+  currentBidAmount: Float
+  startBidAmount: Float
+  bidStatus: String!
+  loanAgreementNo: String!
+  registeredOwnerName: String
+  quoteIncreament: Float
+  make: String
+  model: String
+  varient: String
+  category: String
+  fuel: String
+  type: String
+  rcStatus: String
+  YOM: Float
+  ownership: Float
+  mileage: Float
+  kmReading: Float
+  insuranceStatus: String
+  yardLocation: String
+  startPrice: Float
+  reservePrice: Float
+  repoDt: String
+  veicleLocation: String
+  vehicleRemarks: String
+  auctionManager: String
+  parkingCharges: String
+  insurance: String
+  insuranceValidTill: String
+  tax: String
+  taxValidityDate: String
+  fitness: String
+  permit: String
+  engineNo: String
+  chassisNo: String
+  image: String
+  inspectionLink: String
+  autobseContact: String
+  autobse_contact_person: String
+  vehicleCondition: String
+  powerSteering: String
+  shape: String
+  color: String
+  state: String
+  city: String
+  area: String
+  paymentTerms: String
+  dateOfRegistration: String
+  hypothication: String
+  climateControl: String
+  doorCount: Float
+  gearBox: String
+  buyerFees: String
+  rtoFine: String
+  parkingRate: String
+  approxParkingCharges: String
+  clientContactPerson: String
+  clientContactNo: String
+  additionalRemarks: String
+  lotNumber: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
+  userVehicleBids: [Bid!]
+  event: Event
+  myBidRank: Int
+  userVehicleBidsCount: Int
+  totalBids: Int
+}
+
+type VehicleListResponse {
+  vehicles: [Vehicle!]!
+  vehiclesCount: Int!
 }
 
 type Excelupload {
@@ -255,20 +268,13 @@ type SendOtpResponse {
   data: OtpMessageDataDto
 }
 
-type Bid {
-  id: String!
-  name: String!
-  amount: Float!
-  userId: String!
-  bidVehicleId: String!
-}
-
 type Query {
   users: [User]!
   user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
   usersCount: Int!
+  time: String!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
@@ -882,12 +888,10 @@ input VerfiyOtpDto {
 }
 
 input CreateBidInput {
-  name: String!
   amount: Float!
 }
 
 input UpdateBidInput {
-  name: String!
   amount: Float!
 }
 

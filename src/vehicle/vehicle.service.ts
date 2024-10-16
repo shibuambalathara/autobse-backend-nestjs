@@ -74,7 +74,12 @@ export class VehicleService {
   }
 
   async vehicle(where:VehicleWhereUniqueInput) : Promise<Vehicle | null> {
-    const vehicle = await this.prisma.vehicle.findUnique({where:{...where as Prisma.VehicleWhereUniqueInput,isDeleted:false}});
+    const vehicle = await this.prisma.vehicle.findUnique({where:
+      {...where as Prisma.VehicleWhereUniqueInput,isDeleted:false
+
+      }
+    ,include:{event:true,userVehicleBids:true}
+  });
     if(!vehicle) throw new NotFoundException("Vehicle Not found");
     return vehicle;
   }
