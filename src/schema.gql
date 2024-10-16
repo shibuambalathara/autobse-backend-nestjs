@@ -207,6 +207,9 @@ type Vehicle {
   createdById: String
   userVehicleBids: [Bid!]
   event: Event
+  myBidRank: Int
+  userVehicleBidsCount: Int
+  totalBids: Int
 }
 
 type VehicleListResponse {

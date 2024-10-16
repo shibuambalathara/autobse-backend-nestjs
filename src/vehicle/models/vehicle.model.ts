@@ -218,4 +218,14 @@ export class Vehicle {
 
   @Field(()=>Event,{nullable:true})
   event?:Event
+
+  @Field(()=>Int,{nullable:true})
+  myBidRank?:number
+
+  @Field(()=>Int,{nullable:true})
+  userVehicleBidsCount?:number
+  
+  @Field(()=>Int,{nullable:true})
+  totalBids?:number
+  
 }
