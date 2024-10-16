@@ -896,5 +896,6 @@ input UpdateBidInput {
 }
 
 type Subscription {
-  subscriptionAllTopics: Vehicle!
+  subscriptionVehicleUpdates: Vehicle!
+  subscriptionBidCreation: Bid!
 }
