@@ -147,60 +147,60 @@ type Vehicle {
   startBidAmount: Float
   bidStatus: String!
   loanAgreementNo: String!
-  registeredOwnerName: String!
+  registeredOwnerName: String
   quoteIncreament: Float
-  make: String!
-  model: String!
-  varient: String!
-  category: String!
-  fuel: String!
-  type: String!
-  rcStatus: String!
+  make: String
+  model: String
+  varient: String
+  category: String
+  fuel: String
+  type: String
+  rcStatus: String
   YOM: Float
   ownership: Float
   mileage: Float
   kmReading: Float
-  insuranceStatus: String!
-  yardLocation: String!
+  insuranceStatus: String
+  yardLocation: String
   startPrice: Float
   reservePrice: Float
   repoDt: String
-  veicleLocation: String!
-  vehicleRemarks: String!
-  auctionManager: String!
-  parkingCharges: String!
-  insurance: String!
+  veicleLocation: String
+  vehicleRemarks: String
+  auctionManager: String
+  parkingCharges: String
+  insurance: String
   insuranceValidTill: String
-  tax: String!
+  tax: String
   taxValidityDate: String
-  fitness: String!
-  permit: String!
-  engineNo: String!
-  chassisNo: String!
-  image: String!
-  inspectionLink: String!
-  autobseContact: String!
-  autobse_contact_person: String!
-  vehicleCondition: String!
-  powerSteering: String!
-  shape: String!
-  color: String!
-  state: String!
-  city: String!
-  area: String!
-  paymentTerms: String!
+  fitness: String
+  permit: String
+  engineNo: String
+  chassisNo: String
+  image: String
+  inspectionLink: String
+  autobseContact: String
+  autobse_contact_person: String
+  vehicleCondition: String
+  powerSteering: String
+  shape: String
+  color: String
+  state: String
+  city: String
+  area: String
+  paymentTerms: String
   dateOfRegistration: String
-  hypothication: String!
-  climateControl: String!
+  hypothication: String
+  climateControl: String
   doorCount: Float
-  gearBox: String!
-  buyerFees: String!
-  rtoFine: String!
-  parkingRate: String!
-  approxParkingCharges: String!
-  clientContactPerson: String!
-  clientContactNo: String!
-  additionalRemarks: String!
+  gearBox: String
+  buyerFees: String
+  rtoFine: String
+  parkingRate: String
+  approxParkingCharges: String
+  clientContactPerson: String
+  clientContactNo: String
+  additionalRemarks: String
   lotNumber: Float
   createdAt: DateTime
   updatedAt: DateTime
