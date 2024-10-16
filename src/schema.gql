@@ -270,6 +270,7 @@ type Query {
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
   usersCount: Int!
+  time: String!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
