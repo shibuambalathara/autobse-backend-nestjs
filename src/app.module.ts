@@ -32,6 +32,7 @@ import { UpcomingEventModule } from './event/upcomingEvent/upcomingEvent.module'
 import { BidModule } from './bid/bid.module';
 
 import { SubscriptionModule } from './subscription/subscription.module';
+import { EmdupdateModule } from './emdupdate/emdupdate.module';
 
 
 
@@ -73,7 +74,9 @@ import { SubscriptionModule } from './subscription/subscription.module';
 
     BidModule,
 
-    SubscriptionModule
+    SubscriptionModule,
+
+    EmdupdateModule
 
 
   ],

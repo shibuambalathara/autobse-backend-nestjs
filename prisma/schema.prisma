@@ -156,9 +156,9 @@ model User {
   city                      String               @default("")
   role                      UserRoleType        @default(dealer)
   // watchList                 Vehicle[]            @relation("User_watchList")
-  // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
+  emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
   payments                  Payment[]            @relation("Payment_user")
-  // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
+  emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
   paymentCreatedBy            Payment[]             @relation("Payment_createdBy")
    status                    UserStatusType?      @default(pending)
   state                     StateNames        
@@ -410,7 +410,8 @@ model Payment{
   createdById        String?     
   updatedAt          DateTime?   @updatedAt
   registrationExpire DateTime?  
-  isDeleted          Boolean     @default(false)     
+  isDeleted          Boolean     @default(false) 
+  emdUpdate          EmdUpdate[] @relation("EmdUpdate_payment")    
 }
 
 model RecentSold{
@@ -447,4 +448,20 @@ model Bid {
   createdAt    DateTime?    @default(now())
   updatedAt    DateTime?    @updatedAt
   isDeleted    Boolean      @default(false)
+}
+
+model EmdUpdate {
+  id                                 String    @id @default(cuid())
+  emdNo                              Int       @default(autoincrement())
+  vehicleBuyingLimitIncrement        Int?      @default(1)
+  //specialVehicleBuyingLimitIncrement Int?      @default(0)
+  payment                            Payment?  @relation("EmdUpdate_payment", fields: [paymentId], references: [id])
+  paymentId                          String?   
+  user                               User?     @relation("EmdUpdate_user", fields: [userId], references: [id])
+  userId                             String?   
+  createdAt                          DateTime? @default(now())
+  updatedAt                          DateTime? @updatedAt
+  createdBy                          User?     @relation("EmdUpdate_createdBy", fields: [createdById], references: [id])
+  createdById                        String?   
+  isDeleted                          Boolean   @default(false)
 }

@@ -1,5 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Bid } from 'src/bid/models/bid.model';
+import { VehicleBidStatusType } from '../dto/bidStatusType';
+import { Seller } from 'src/seller/models/seller.model';
 
 @ObjectType()
 export class Vehicle {
@@ -27,7 +29,10 @@ export class Vehicle {
   @Field({nullable:true})
   startBidAmount?:number;
  
-  @Field()
+  // @Field()
+  // bidStatus:string;
+  
+  @Field({nullable:true})
   bidStatus:string;
 
   @Field()
@@ -214,4 +219,7 @@ export class Vehicle {
 
   @Field(()=>[Bid],{nullable:true})
   userVehicleBids?:Bid[]
+
+
+  
 }
