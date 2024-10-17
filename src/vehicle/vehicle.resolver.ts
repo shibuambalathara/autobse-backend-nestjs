@@ -64,7 +64,7 @@ export class VehicleResolver {
     @Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput,
   ): Promise<Vehicle | null> {
     const vehicle = await this.vehicleService.updateVehicle(where.id, updateVehicleInput);
-    this.redisService.publish('ALL_TOPICS',{allTopics: vehicle})
+    this.redisService.publish('VEHICLE_UPDATES',{vehicleUpdate: vehicle})
     return vehicle
   }
 

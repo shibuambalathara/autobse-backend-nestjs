@@ -96,6 +96,46 @@ type Bid {
   bidVehicleId: String!
 }
 
+type Event {
+  id: String!
+  eventNo: Float!
+  eventCategory: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  firstVehicleEndDate: DateTime!
+  pauseDate: DateTime
+  pausedTotalTime: Float
+  sellerId: String!
+  vehicleCategoryId: String!
+  locationId: String!
+  noOfBids: Float!
+  downloadableFile_filename: String
+  termsAndConditions: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
+  extraTimeTrigerIn: Float
+  extraTime: Float
+  vehicleLiveTimeIn: Float
+  gapInBetweenVehicles: Float
+  status: String
+  bidLock: String
+  vehicles(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]
+  seller: Seller
+  location: Location
+  vehicleCategory: VehicleCategory
+  vehiclesCount: Int
+}
+
+input VehicleOrderByInput {
+  bidTimeExpire: OrderDirection
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}
+
 type Vehicle {
   id: String!
   vehicleIndexNo: Float!
@@ -166,51 +206,15 @@ type Vehicle {
   updatedAt: DateTime
   createdById: String
   userVehicleBids: [Bid!]
+  event: Event
+  myBidRank: Int
+  userVehicleBidsCount: Int
+  totalBids: Int
 }
 
 type VehicleListResponse {
   vehicles: [Vehicle!]!
   vehiclesCount: Int!
-}
-
-type Event {
-  id: String!
-  eventNo: Float!
-  eventCategory: String!
-  startDate: DateTime!
-  endDate: DateTime!
-  firstVehicleEndDate: DateTime!
-  pauseDate: DateTime
-  pausedTotalTime: Float
-  sellerId: String!
-  vehicleCategoryId: String!
-  locationId: String!
-  noOfBids: Float!
-  downloadableFile_filename: String
-  termsAndConditions: String!
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdById: String!
-  extraTimeTrigerIn: Float
-  extraTime: Float
-  vehicleLiveTimeIn: Float
-  gapInBetweenVehicles: Float
-  status: String
-  bidLock: String
-  vehicles(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]
-  seller: Seller
-  location: Location
-  vehicleCategory: VehicleCategory
-  vehiclesCount: Int
-}
-
-input VehicleOrderByInput {
-  bidTimeExpire: OrderDirection
-}
-
-enum OrderDirection {
-  ASC
-  DESC
 }
 
 type Excelupload {
@@ -928,5 +932,6 @@ input UpdateEmdupdateInput {
 }
 
 type Subscription {
-  subscriptionAllTopics: Vehicle!
+  subscriptionVehicleUpdates: Vehicle!
+  subscriptionBidCreation: Bid!
 }
