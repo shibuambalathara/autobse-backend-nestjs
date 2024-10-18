@@ -207,6 +207,9 @@ type Vehicle {
   updatedAt: DateTime
   createdById: String
   userVehicleBids: [Bid!]
+
+  currentBidUser: User
+
   event: Event
   myBidRank: Int
   userVehicleBidsCount: Int
