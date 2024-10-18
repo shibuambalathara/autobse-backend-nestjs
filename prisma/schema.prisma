@@ -156,11 +156,12 @@ model User {
   city                      String               @default("")
   role                      UserRoleType        @default(dealer)
   // watchList                 Vehicle[]            @relation("User_watchList")
-  // emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
+
+   emdUpdates                EmdUpdate[]          @relation("EmdUpdate_user")
   payments                  Payment[]            @relation("Payment_user")
-  // emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
+   emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
   paymentCreatedBy            Payment[]             @relation("Payment_createdBy")
-   status                    UserStatusType?      @default(pending)
+  status                    UserStatusType?      @default(pending)
   state                     StateNames        
   //stateCreatedBy               State[]              @relation("state_createdBy")
   locationCreatedBy            Location[]           @relation("location_createdBy")
@@ -402,6 +403,7 @@ model Payment{
  // status             Status?     @relation(fields: [statusId], references: [id])
   //statusId           String?     @unique
   status            PaymentStatusTypes?  @default(pending)
+  emdUpdate          EmdUpdate[] @relation("EmdUpdate_payment")
   user               User?       @relation("Payment_user", fields: [userId], references: [id])
   userId             String?     
   image              String?
@@ -410,7 +412,7 @@ model Payment{
   createdById        String?     
   updatedAt          DateTime?   @updatedAt
   registrationExpire DateTime?  
-  isDeleted          Boolean     @default(false)     
+  isDeleted          Boolean     @default(false) 
 }
 
 model RecentSold{
@@ -447,4 +449,22 @@ model Bid {
   createdAt    DateTime?    @default(now())
   updatedAt    DateTime?    @updatedAt
   isDeleted    Boolean      @default(false)
+}
+
+model EmdUpdate {
+  id                                 String    @id @default(cuid())
+  emdNo                              Int       @default(autoincrement())
+  vehicleBuyingLimitIncrement        Int?      @default(1)
+
+ 
+  payment                            Payment?  @relation("EmdUpdate_payment", fields: [paymentId], references: [id])
+  paymentId                          String?   @map("payment")
+  user                               User?     @relation("EmdUpdate_user", fields: [userId], references: [id])
+  userId                             String?   @map("user")
+  createdAt                          DateTime? @default(now())
+  updatedAt                          DateTime? @updatedAt
+  createdBy                          User?     @relation("EmdUpdate_createdBy", fields: [createdById], references: [id])
+  createdById                        String?   @map("createdBy")
+  //specialVehicleBuyingLimitIncrement Int?      @default(0)
+  isDeleted                          Boolean   @default(false)
 }

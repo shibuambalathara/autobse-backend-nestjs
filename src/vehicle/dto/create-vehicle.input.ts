@@ -1,5 +1,6 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { VehicleBidStatusType } from './bidStatusType';
 
 @InputType()
 export class CreateVehicleInput {
@@ -24,9 +25,11 @@ export class CreateVehicleInput {
 
   // @Field()
   // currentBidUserId?:string;
- 
-  // @Field()
-  // bidStatus?:string;
+  
+  @Field(() =>VehicleBidStatusType,{nullable:true})
+  @IsOptional()
+  @IsEnum(VehicleBidStatusType)
+  bidStatus?:VehicleBidStatusType;
 
   @Field()
   @IsString()

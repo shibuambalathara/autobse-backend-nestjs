@@ -90,7 +90,6 @@ export class Event {
   @Field(()=>Location,{nullable:true})
   location:Location
 
-
   
   @Field(()=>VehicleCategory,{nullable:true})
   vehicleCategory:VehicleCategory
