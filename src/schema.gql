@@ -49,6 +49,7 @@ type User {
   state: String!
   idProofType: String!
   payments: [Payment!]
+  paymentsCount: Int
 }
 
 type LoginResponse {

@@ -11,7 +11,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: ['http://localhost:3000', 
+      'http://localhost:3001',
+      'https://autobse-admin-panel.vercel.app'
+    ],
   });
   // app.use('/graphql',graphqlUploadExpress({maxFileSize:1000000, maxFiles: 5}))
   await app.listen(3000);
