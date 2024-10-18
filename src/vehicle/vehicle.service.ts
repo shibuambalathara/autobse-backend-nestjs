@@ -78,7 +78,7 @@ export class VehicleService {
       {...where as Prisma.VehicleWhereUniqueInput,isDeleted:false
 
       }
-    ,include:{event:true,userVehicleBids:true}
+    ,include:{event:true,userVehicleBids:true,currentBidUser:true}
   });
     if(!vehicle) throw new NotFoundException("Vehicle Not found");
     return vehicle;

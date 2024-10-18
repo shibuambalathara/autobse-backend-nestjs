@@ -207,6 +207,7 @@ type Vehicle {
   createdById: String
   userVehicleBids: [Bid!]
   event: Event
+  currentBidUser: User
 }
 
 type VehicleListResponse {
