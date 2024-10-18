@@ -3,6 +3,7 @@ import { Bid } from 'src/bid/models/bid.model';
 import { Event } from 'src/event/models/event.model';
 import { User } from 'src/user/models/user.model';
 
+
 @ObjectType()
 export class Vehicle {
   @Field()
@@ -219,7 +220,6 @@ export class Vehicle {
 
   @Field(()=>[Bid],{nullable:true})
   userVehicleBids?:Bid[]
-
 
 
   @Field(()=>User,{nullable:true})

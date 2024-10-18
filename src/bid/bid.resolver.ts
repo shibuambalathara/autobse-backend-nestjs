@@ -9,6 +9,7 @@ import { BidWhereUniqueInput } from './dto/unique-bid.input';
 import { RedisService } from 'src/services/redis/redis.service';
 
 
+
 @Resolver(() => Bid)
 export class BidResolver {
   constructor(
