@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBidInput } from './dto/create-bid.input';
 import { UpdateBidInput } from './dto/update-bid.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Bid } from '@prisma/client';
+import { Bid, Prisma } from '@prisma/client';
+import { BidWhereUniqueInput } from './dto/unique-bid.input';
 
 @Injectable()
 export class BidService {
@@ -24,20 +25,26 @@ export class BidService {
     }
   }
 
-  // async findAll() {
-  //   return await this.prisma.bid.findMany({where:{isDeleted:false,}})
-  // }
-
-  async findOne(id: string) {
-    return await this.prisma.bid.findUnique({where:{id,isDeleted:false}})
+  async findAll(): Promise<Bid[] | null> {
+    return await this.prisma.bid.findMany({where:{isDeleted:false,}})
   }
 
-  async update(id: string, updateBidInput: UpdateBidInput) {
-    return await this.prisma.bid.update({where:{id},data:{...updateBidInput}});
+  async findOne(where:BidWhereUniqueInput): Promise<Bid | null> {
+    const bid =await this.prisma.bid.findUnique({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false}})
+    if(!bid) throw new NotFoundException(" Not Found");
+    return bid;
   }
 
-  async deleteBid(id: string) {
-    return await this.prisma.bid.update({where:{id},
+  async update(where:BidWhereUniqueInput, updateBidInput: UpdateBidInput) : Promise<Bid | null>{
+    const bid = await this.prisma.bid.update({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false},data:{...updateBidInput}});
+    if(!bid) throw new NotFoundException(" Not Found");
+    return bid;
+  }
+
+  async deleteBid(where): Promise<Bid | null> {
+    const bid =await this.prisma.bid.findUnique({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false}})
+    if(!bid) throw new NotFoundException(" Not Found");
+    return await this.prisma.bid.update({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false},
       data:{
       isDeleted:true,
     }});
