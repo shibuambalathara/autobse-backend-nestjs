@@ -90,7 +90,7 @@ export class VehicleService {
           const bidCount = await this.prisma.bid.count({
             where: { bidVehicleId: vehicle.id, isDeleted: false },
           });
-          return { ...vehicle, bidCount }; 
+          return { ...vehicle, totalBids:bidCount }; 
         })
       );
 
