@@ -79,5 +79,8 @@ export class User {
 
    @Field(()=>[Payment],{nullable:true})
   payments?:Payment[];
+
+  @Field(() => Int,{nullable:true})
+  paymentsCount?: number;
  
 }

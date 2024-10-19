@@ -19,8 +19,18 @@ export class UserService {
     const allUsers = await this.prisma.user.findMany({
       where: { isDeleted: false },
     });
-
-    return allUsers;
+    const userWithCounts = await Promise.all(allUsers.map(async (user) => {
+      const paymentCount = await this.prisma.payment.count({
+         where: { userId: user.id },  
+       });
+   
+         return {
+           ...user,
+           paymentsCount: paymentCount,  
+         };
+       }));
+   
+       return userWithCounts;  
   }
 
   async getUserByConditions(
