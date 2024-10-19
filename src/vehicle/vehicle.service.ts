@@ -78,6 +78,7 @@ export class VehicleService {
               seller: true,
             },
           },
+          
         },
       });
     
@@ -105,6 +106,7 @@ export class VehicleService {
       },
 
       include: {
+        currentBidUser:true,
         event: {
           include: { 
             seller: true,
@@ -115,6 +117,7 @@ export class VehicleService {
             user:true
           }
         }, 
+        
       },
   });
   const totalBids = await this.prisma.bid.count({

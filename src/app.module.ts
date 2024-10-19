@@ -33,6 +33,7 @@ import { BidModule } from './bid/bid.module';
 
 import { SubscriptionModule } from './subscription/subscription.module';
 import { EmdupdateModule } from './emdupdate/emdupdate.module';
+import { AcrModule } from './acr/acr.module';
 
 
 
@@ -76,7 +77,9 @@ import { EmdupdateModule } from './emdupdate/emdupdate.module';
 
     SubscriptionModule,
 
-    EmdupdateModule
+    EmdupdateModule,
+
+    AcrModule
 
 
   ],

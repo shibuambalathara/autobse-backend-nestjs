@@ -11,12 +11,14 @@ import { EventWhereUniqueInput } from './dto/unique-event.input'
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
 import { EventOrderByInput } from './dto/EventOrderByInput';
 import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
+import GraphQLJSON from 'graphql-type-json';
+import { AcrService } from 'src/acr/acr.service';
 
 
 
 @Resolver(() => Event)
 export class EventResolver {
-  constructor(private readonly eventService: EventService) {}
+  constructor(private readonly eventService: EventService,private readonly acrService:AcrService) {}
 
   @Mutation(returns => Event)
   @UseGuards(GqlAuthGuard,RolesGuard)
@@ -117,5 +119,11 @@ export class EventResolver {
   async eventsCount(): Promise<number> {
   return this.eventService.countEvents();
   } 
+
+  @ResolveField(() => GraphQLJSON, { nullable: true })
+  async Report(@Parent() event: Event) {
+    const report = await this.acrService.getAcr(event.id);
+    return report;
+  }
 
 }
