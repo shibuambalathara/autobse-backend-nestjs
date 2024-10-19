@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
+import { Emdupdate } from 'src/emdupdate/models/emdupdate.model';
 import { User } from 'src/user/models/user.model';
 
 @ObjectType()
@@ -41,8 +42,10 @@ export class Payment {
    paymentFor?:string;
 
    @Field(()=>User,{nullable:true})
-   user?:User
+   user?:User;
 
+   @Field(()=>[Emdupdate],{nullable:true})
+   emdUpdate?:Emdupdate[];
   
 
 
