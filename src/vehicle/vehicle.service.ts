@@ -64,22 +64,39 @@ export class VehicleService {
            }
     }
 
-  async vehicles(): Promise<VehicleListResponse | null>{
-    const vehicles = await this.prisma.vehicle.findMany({where:{isDeleted:false},
-      include:
-      { userVehicleBids: {
-      include:{
-        user:true
-      }
-    }
+    async vehicles(): Promise<{ vehicles: Vehicle[], vehiclesCount: number } | null> {
+      const vehicles = await this.prisma.vehicle.findMany({
+        where: { isDeleted: false },
+        include: {
+          userVehicleBids: {
+            include: {
+              user: true,
+            },
+          },
+          event: {
+            include: {
+              seller: true,
+            },
+          },
+        },
+      });
     
-    }, });
-    const vehiclesCount = await this.prisma.vehicle.count({
-      where: { isDeleted: false }
-    });
-    if(!vehicles) throw new NotFoundException("Vehicle Not Found");
-    return {vehicles,vehiclesCount};
-  }
+      const vehiclesCount = await this.prisma.vehicle.count({
+        where: { isDeleted: false },
+      });
+
+      const totalbidsCounts = await Promise.all(
+        vehicles.map(async (vehicle) => {
+          const bidCount = await this.prisma.bid.count({
+            where: { bidVehicleId: vehicle.id, isDeleted: false },
+          });
+          return { ...vehicle, totalBids:bidCount }; 
+        })
+      );
+
+      if (!vehicles) throw new NotFoundException("Vehicle Not Found");
+      return {vehicles:totalbidsCounts,vehiclesCount};
+    }
 
   async vehicle(where:VehicleWhereUniqueInput) : Promise<Vehicle& { totalBids: number} | null> {
     const vehicle = await this.prisma.vehicle.findUnique({where:
