@@ -1,7 +1,7 @@
 import { IsDate, IsOptional, IsString } from 'class-validator';
 import { CreateVehicleInput } from './create-vehicle.input';
 import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
-import { VehicleBidStatusType } from './bidStatusType';
+import { VehicleBidStatusType, vehicleEventStatus } from './bidStatusType';
 
 @InputType()
 export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
@@ -208,4 +208,7 @@ export class UpdateVehicleInput extends PartialType(CreateVehicleInput) {
   
   @Field({nullable:true})
   lotNumber?:number;
+
+  @Field(()=>vehicleEventStatus,{nullable:true})
+  vehicleEventStatus?:vehicleEventStatus
 }

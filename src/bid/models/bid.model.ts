@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { User } from 'src/user/models/user.model';
 
 @ObjectType()
 export class Bid {
@@ -16,4 +17,7 @@ export class Bid {
 
   @Field()
   bidVehicleId:string;
+
+  @Field(()=>User,{nullable:true})
+  user?:User;
 }

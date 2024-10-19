@@ -2,6 +2,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Bid } from 'src/bid/models/bid.model';
 import { Event } from 'src/event/models/event.model';
 import { User } from 'src/user/models/user.model';
+import { vehicleEventStatus } from '../dto/bidStatusType';
 
 
 @ObjectType()
@@ -237,6 +238,10 @@ export class Vehicle {
   
   @Field(()=>Int,{nullable:true})
   totalBids?:number
+
+    
+  @Field(()=>vehicleEventStatus,{nullable:true})
+  vehicleEventStatus?:vehicleEventStatus
 
   
 }

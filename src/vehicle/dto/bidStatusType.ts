@@ -12,3 +12,14 @@ registerEnumType(VehicleBidStatusType , {
   });
 
 
+export enum vehicleEventStatus {
+    completed = "completed",
+    upcoming = "upcoming",
+    live = "live",
+    abnormal = "abnormal"
+  }
+
+registerEnumType(vehicleEventStatus , {
+    name: 'vehicleEventStatus'
+  });
+

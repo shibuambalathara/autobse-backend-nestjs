@@ -65,7 +65,15 @@ export class VehicleService {
     }
 
   async vehicles(): Promise<VehicleListResponse | null>{
-    const vehicles = await this.prisma.vehicle.findMany({where:{isDeleted:false}});
+    const vehicles = await this.prisma.vehicle.findMany({where:{isDeleted:false},
+      include:
+      { userVehicleBids: {
+      include:{
+        user:true
+      }
+    }
+    
+    }, });
     const vehiclesCount = await this.prisma.vehicle.count({
       where: { isDeleted: false }
     });
@@ -73,16 +81,33 @@ export class VehicleService {
     return {vehicles,vehiclesCount};
   }
 
-  async vehicle(where:VehicleWhereUniqueInput) : Promise<Vehicle | null> {
+  async vehicle(where:VehicleWhereUniqueInput) : Promise<Vehicle& { totalBids: number} | null> {
     const vehicle = await this.prisma.vehicle.findUnique({where:
       {...where as Prisma.VehicleWhereUniqueInput,isDeleted:false
 
-      }
+      },
 
-    ,include:{event:true,userVehicleBids:true}
+      include: {
+        event: {
+          include: { 
+            seller: true,
+          },
+        },
+        userVehicleBids: {
+          include:{
+            user:true
+          }
+        }, 
+      },
   });
+  const totalBids = await this.prisma.bid.count({
+    where: {
+      bidVehicleId: where.id ,  
+    },
+  });
+
     if(!vehicle) throw new NotFoundException("Vehicle Not found");
-    return vehicle;
+    return {...vehicle,totalBids};
   }
 
   async updateVehicle(id:string,updateVehicleInput: UpdateVehicleInput) : Promise<Vehicle|null>{
