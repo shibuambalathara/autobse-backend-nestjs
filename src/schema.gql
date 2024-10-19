@@ -95,6 +95,7 @@ type Bid {
   amount: Float!
   userId: String!
   bidVehicleId: String!
+  user: User
 }
 
 type Event {
@@ -207,13 +208,19 @@ type Vehicle {
   updatedAt: DateTime
   createdById: String
   userVehicleBids: [Bid!]
-
   currentBidUser: User
-
   event: Event
   myBidRank: Int
   userVehicleBidsCount: Int
   totalBids: Int
+  vehicleEventStatus: vehicleEventStatus
+}
+
+enum vehicleEventStatus {
+  completed
+  upcoming
+  live
+  abnormal
 }
 
 type VehicleListResponse {
@@ -750,6 +757,7 @@ input UpdateVehicleInput {
   lotNumber: Float
   bidTimeExpire: String
   bidStartTime: String
+  vehicleEventStatus: vehicleEventStatus
 }
 
 input CreateEventInput {

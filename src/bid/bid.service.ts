@@ -26,11 +26,14 @@ export class BidService {
   }
 
   async findAll(): Promise<Bid[] | null> {
-    return await this.prisma.bid.findMany({where:{isDeleted:false,}})
+    return await this.prisma.bid.findMany({where:{isDeleted:false,},include:{user:true}})
   }
 
   async findOne(where:BidWhereUniqueInput): Promise<Bid | null> {
-    const bid =await this.prisma.bid.findUnique({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false}})
+    const bid =await this.prisma.bid.findUnique({where:{...where as Prisma.BidWhereUniqueInput,isDeleted:false},
+      include:{
+        user:true
+      }})
     if(!bid) throw new NotFoundException(" Not Found");
     return bid;
   }
