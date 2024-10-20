@@ -13,9 +13,6 @@ export class Emdupdate {
   @Field({nullable:true})
   vehicleBuyingLimitIncrement?:number;
   
-  // @Field({nullable:true})
-  // specialVehicleBuyingLimitIncrement?:number;
-
   
   @Field(()=>Payment,{nullable:true})
   payment:Payment

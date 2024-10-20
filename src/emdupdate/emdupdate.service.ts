@@ -11,24 +11,41 @@ export class EmdupdateService {
 
   constructor(private readonly prisma: PrismaService) {}
   
-  async createEmdUpdate(id:string,paymentId: string,userId: string, createEmdupdateInput: CreateEmdupdateInput): Promise<EmdUpdate | null> {
+  async createEmdUpdate(
+    id: string, 
+    paymentId: string, 
+    userId: string, 
+    createEmdupdateInput: CreateEmdupdateInput
+  ): Promise<EmdUpdate | null> {
     try {
-      return await this.prisma.emdUpdate.create({
-        data: {
-          ...createEmdupdateInput,
-          createdById:id,
-          userId:userId,
-          paymentId:paymentId
-        },
-       
+      return await this.prisma.$transaction(async (prisma) => {
+        
+        const createEmd = await prisma.emdUpdate.create({
+          data: {
+            ...createEmdupdateInput,
+            createdById: id,
+            userId: userId,
+            paymentId: paymentId,
+          },
+        });
+  
+        
+        const updateUserVehicleBuyingLimit = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            vehicleBuyingLimit: {
+              increment: createEmdupdateInput?.vehicleBuyingLimitIncrement ?? 0,
+            },
+          },
+        });
+  
+        return createEmd;
       });
-      
-    }
-    catch (error) {
-      throw new Error(error.message)  
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
-
+  
 
   async emdUpdates() : Promise<EmdUpdate[] | null> {
     const emd = await this.prisma.emdUpdate.findMany({
