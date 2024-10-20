@@ -82,5 +82,8 @@ export class User {
 
   @Field(() => Int,{nullable:true})
   paymentsCount?: number;
+
+  @Field(()=>Int,{nullable:true})
+  vehicleBuyingLimit?:number
  
 }

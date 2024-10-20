@@ -62,6 +62,7 @@ type User {
   idProofType: String!
   payments: [Payment!]
   paymentsCount: Int
+  vehicleBuyingLimit: Int
 }
 
 type LoginResponse {
