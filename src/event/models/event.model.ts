@@ -4,7 +4,7 @@ import { Seller } from 'src/seller/models/seller.model';
 import { User } from 'src/user/models/user.model';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
 import { VehicleCategory } from 'src/vehiclecategory/models/vehiclecategory.model';
-
+import GraphQLJSON from 'graphql-type-json';  
 
 
 @ObjectType()
@@ -97,5 +97,7 @@ export class Event {
   @Field(() => Int,{nullable:true})
   vehiclesCount?: number;
 
+  @Field(()=>GraphQLJSON,{nullable:true})
+  Report?:JSON
      
 }
