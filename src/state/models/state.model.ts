@@ -1,27 +1,29 @@
-// import { ObjectType, Field, Int } from '@nestjs/graphql';
-// import {ListOfStateNames } from '@prisma/client';
-// import { Location } from 'src/location/models/location.model';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { StateNames } from '@prisma/client';
+import { IsEnum } from 'class-validator';
+import { Location } from 'src/location/models/location.model';
 
-// @ObjectType()
-// export class State {
+@ObjectType()
+export class State {
 
-//   @Field()
-//   id:string;
+  @Field()
+  id:string;
   
-//   @Field(() => ListOfStateNames)
-//   name: ListOfStateNames;
+  @Field(() => StateNames)
+  @IsEnum(StateNames)
+  name: StateNames;
   
-//   @Field({nullable:true})
-//   createdAt?:Date;
+  @Field({nullable:true})
+  createdAt?:Date;
 
-//   @Field({nullable:true})
-//   updatedAt?:Date;
+  @Field({nullable:true})
+  updatedAt?:Date;
 
-//   @Field()
-//   createdById?:string;
+  @Field()
+  createdById?:string;
   
-//   @Field()
-//   location?:Location;
+  @Field()
+  location?:Location;
 
 
-// }
+}

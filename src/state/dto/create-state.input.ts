@@ -1,15 +1,18 @@
-// import { InputType, Field, registerEnumType } from '@nestjs/graphql';
-// import { ListOfStateNames } from '@prisma/client';
+import { InputType, Field, registerEnumType } from '@nestjs/graphql';
+import { StateNames } from '@prisma/client';
+import { IsEnum } from 'class-validator';
 
 
-// @InputType()
-// export class CreateStateInput {
+@InputType()
+export class CreateStateInput {
 
-//     @Field(()=>ListOfStateNames)
-//     name:ListOfStateNames;
+    @Field(()=>StateNames)
+    @IsEnum(StateNames)
+    name:StateNames;
  
-// }
+}
 
-// registerEnumType(ListOfStateNames, {
-//     name: 'ListOfStateNames',
-//   });
+registerEnumType(StateNames, {
+    name: 'StateNames',
+  });
+

@@ -163,8 +163,9 @@ model User {
    emdUpdatesByAdmin         EmdUpdate[]          @relation("EmdUpdate_createdBy")
   paymentCreatedBy            Payment[]             @relation("Payment_createdBy")
   status                    UserStatusType?      @default(pending)
-  state                     StateNames        
-  //stateCreatedBy               State[]              @relation("state_createdBy")
+  state                     StateNames  
+  states                    State[]              @relation("State_users")      
+  stateCreatedBy               State[]              @relation("state_createdBy")
   locationCreatedBy            Location[]           @relation("location_createdBy")
   VehicleCategoryCreatedBy     VehicleCategory[]    @relation("vehiclecategory_createdBy")
   sellerCreatedBy              Seller[]             @relation("seller_createdBy")
@@ -194,23 +195,26 @@ model User {
 }
 
 
-//model State {
-  //id                 String        @id @default(cuid())
-  //name               StateNames    @default(Kerala)
-  //createdAt          DateTime?     @default(now())
-  //updatedAt          DateTime?     @updatedAt
-  //createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
-  //createdById        String?
-  //isDeleted          Boolean       @default(false)
-  //location           Location[]
-//}
+model State {
+  id                 String        @id @default(cuid())
+  name               StateNames    @default(Kerala)
+  createdAt          DateTime?     @default(now())
+  updatedAt          DateTime?     @updatedAt
+  createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
+  createdById        String?
+  isDeleted          Boolean       @default(false)
+  location           Location[]    @relation("Location_state")
+  users              User[]        @relation("State_users")
+}
 
 model Location{
   id                String         @id @default(cuid())
   name              String         @unique @default("")
   country           String         @default("india")
-  state             StateNames         
-  createdBy         User?         @relation("location_createdBy", fields: [createdById], references: [id])             
+ // state             StateNames 
+  state             State?         @relation("Location_state", fields: [stateId], references: [id])
+  stateId           String?       
+  createdBy         User?          @relation("location_createdBy", fields: [createdById], references: [id])             
   createdById       String?
   createdAt         DateTime?      @default(now())
   updatedAt         DateTime?      @updatedAt

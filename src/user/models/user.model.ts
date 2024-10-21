@@ -1,5 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Bid } from 'src/bid/models/bid.model';
 import { Payment } from 'src/payment/models/payment.model';
+import { State } from 'src/state/models/state.model';
 
 @ObjectType()
 export class User {
@@ -86,6 +88,13 @@ export class User {
   @Field(()=>Int,{nullable:true})
   vehicleBuyingLimit?:number
  
+
+  @Field(()=>[Bid],{nullable:true})
+  bid?:Bid[];
+
+  @Field(()=>[State],{nullable:true})
+  states?:State[];
+
   @Field({nullable:true})
   createdAt?:Date;
 
@@ -94,4 +103,5 @@ export class User {
 
   @Field({nullable:true})
   createdById?:string;
+
 }

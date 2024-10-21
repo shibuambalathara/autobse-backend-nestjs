@@ -1,14 +1,11 @@
-// import { InputType, Int, Field, ID } from '@nestjs/graphql';
-// import {ListOfStateNames } from '@prisma/client';
-// import { IsString } from 'class-validator';
+import { InputType, Int, Field, ID } from '@nestjs/graphql';
 
-// @InputType()
-// export class StateWhereUniqueInput {
 
-//   @Field({nullable:true})
-//   id?:string;
+@InputType()
+export class StateWhereUniqueInput {
 
-//   // @Field(()=>ListOfStateNames,{nullable:true})
-//   // name?:ListOfStateNames;
+  @Field({nullable:true})
+  id?:string;
 
-// }
+ 
+}

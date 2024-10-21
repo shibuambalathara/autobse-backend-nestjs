@@ -17,11 +17,11 @@ export class UserService {
 
   async getAllUsers(): Promise<User[] | null> {
     const allUsers = await this.prisma.user.findMany({
-      where: { isDeleted: false },
+      where: { isDeleted: false },include:{states:true}
     });
     const userWithCounts = await Promise.all(allUsers.map(async (user) => {
       const paymentCount = await this.prisma.payment.count({
-         where: { userId: user.id },  
+         where: { userId: user.id },
        });
    
          return {
@@ -48,6 +48,7 @@ export class UserService {
             createdAt: sortOrder, 
           },
         },
+        states:true,
       },
     });
     if(!data) throw new NotFoundException('User not found.')
@@ -75,7 +76,7 @@ export class UserService {
     
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {
-    const user = await this.prisma.user.findUnique({ where: { mobile } });
+    const user = await this.prisma.user.findUnique({ where: { mobile } ,include:{states:true}});
 
     return user;
   }

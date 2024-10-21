@@ -1,6 +1,5 @@
 import { InputType, Int, Field, ID } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
-import { IsString } from 'class-validator';
 
 @InputType()
 export class LocationWhereUniqueInput {
@@ -12,7 +11,7 @@ export class LocationWhereUniqueInput {
   name?:string;
 
   @Field({nullable:true})
-  state?:StateNames;
+  state?:string;
 
 
 }
