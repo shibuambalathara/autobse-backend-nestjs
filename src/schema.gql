@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Bid {
+  id: String!
+  name: String!
+  amount: Float!
+  userId: String!
+  bidVehicleId: String!
+  user: User
+}
+
 type Emdupdate {
   id: String!
   emdNo: Float!
@@ -35,6 +44,58 @@ type Payment {
   emdUpdate: [Emdupdate!]
 }
 
+type Location {
+  id: String!
+  name: String!
+  state: State
+  createdAt: DateTime
+  updatedAt: DateTime
+  country: String
+  createdById: String
+}
+
+type State {
+  id: String!
+  name: StateNames!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String!
+  location: Location!
+}
+
+enum StateNames {
+  Maharashtra
+  Bihar
+  Chhattisgarh
+  Karnataka
+  Manipur
+  Arunachal_Pradesh
+  Assam
+  Gujarat
+  Punjab
+  Mizoram
+  Andhra_Pradesh
+  West_Bengal
+  Goa
+  Haryana
+  Himachal_Pradesh
+  Kerala
+  Rajasthan
+  Jharkhand
+  Madhya_Pradesh
+  Odisha
+  Nagaland
+  TamilNadu
+  Uttar_Pradesh
+  Telangana
+  Meghalaya
+  Sikkim
+  Tripura
+  Uttarakhand
+  Jammu_and_Kashmir
+  Delhi
+}
+
 type User {
   id: String!
   idNo: Float!
@@ -62,21 +123,13 @@ type User {
   idProofType: String!
   payments: [Payment!]
   paymentsCount: Int
+  bid: [Bid!]
+  states: [State!]
 }
 
 type LoginResponse {
   access_token: String!
   user: User!
-}
-
-type Location {
-  id: String!
-  name: String!
-  state: String!
-  createdAt: DateTime
-  updatedAt: DateTime
-  country: String
-  createdById: String
 }
 
 type VehicleCategory {
@@ -99,15 +152,6 @@ type Seller {
   createdAt: DateTime!
   updatedAt: DateTime!
   createdById: String!
-}
-
-type Bid {
-  id: String!
-  name: String!
-  amount: Float!
-  userId: String!
-  bidVehicleId: String!
-  user: User
 }
 
 type Event {
@@ -304,6 +348,11 @@ type Query {
   deletedUsers: [User]!
   usersCount: Int!
   time: String!
+  States: [State!]!
+  State(where: StateWhereUniqueInput!): State!
+  deletedStates: [State!]!
+  deletedState(where: StateWhereUniqueInput!): State!
+  restoreState(where: StateWhereUniqueInput!): State!
   locations: [Location!]!
   location(where: LocationWhereUniqueInput!): Location!
   deletedLocations: [Location!]!
@@ -359,6 +408,10 @@ input UserWhereUniqueInput {
   tempToken: Float
   idNo: Float
   pancardNo: String
+}
+
+input StateWhereUniqueInput {
+  id: String
 }
 
 input LocationWhereUniqueInput {
@@ -438,7 +491,10 @@ type Mutation {
   restoreUser(where: UserWhereUniqueInput!): User!
   DeleteUserHardDelete(where: UserWhereUniqueInput!): User!
   login(loginInput: LoginUserInput!): LoginResponse!
-  createLocation(createLocationInput: CreateLocationInput!): Location!
+  createState(createStateInput: CreateStateInput!): State!
+  deleteState(where: StateWhereUniqueInput!): State!
+  updateState(where: StateWhereUniqueInput!, updateStateInput: UpdateStateInput!): State!
+  createLocation(createLocationInput: CreateLocationInput!, stateId: String!): Location!
   updateLocation(where: LocationWhereUniqueInput!, updateLocationInput: UpdateLocationInput!): Location!
   deleteLocation(where: LocationWhereUniqueInput!): Location!
   restoreLocation(where: LocationWhereUniqueInput!): Location!
@@ -520,39 +576,6 @@ enum UserRoleType {
   dealer
 }
 
-enum StateNames {
-  Maharashtra
-  Bihar
-  Chhattisgarh
-  Karnataka
-  Manipur
-  Arunachal_Pradesh
-  Assam
-  Gujarat
-  Punjab
-  Mizoram
-  Andhra_Pradesh
-  West_Bengal
-  Goa
-  Haryana
-  Himachal_Pradesh
-  Kerala
-  Rajasthan
-  Jharkhand
-  Madhya_Pradesh
-  Odisha
-  Nagaland
-  TamilNadu
-  Uttar_Pradesh
-  Telangana
-  Meghalaya
-  Sikkim
-  Tripura
-  Uttarakhand
-  Jammu_and_Kashmir
-  Delhi
-}
-
 enum UserStatusType {
   pending
   blocked
@@ -592,14 +615,22 @@ input LoginUserInput {
   password: String!
 }
 
+input CreateStateInput {
+  name: StateNames!
+}
+
+input UpdateStateInput {
+  name: StateNames
+  createdById: String
+}
+
 input CreateLocationInput {
   name: String!
-  state: StateNames!
 }
 
 input UpdateLocationInput {
   name: String
-  state: StateNames
+  state: String
 }
 
 input CreateVehiclecategoryInput {

@@ -9,15 +9,11 @@ export class CreateLocationInput {
   @IsString()
   name:string;
 
-  @Field(()=>StateNames)
-  state:StateNames;
+  // @Field(()=>StateNames)
+  // state:StateNames;
 
 }
 
-
-registerEnumType(StateNames, {
-    name: 'StateNames',
-  });
 
 
 
