@@ -18,7 +18,7 @@ export class LocationResolver {
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff')
   async createLocation(@Args('createLocationInput') createLocationInput: CreateLocationInput ,@Context() context):Promise<Location|null> {
-    const {id}=context.req.user   
+    const {id}=context.req.user    
     return this.locationService.createLocation(id,createLocationInput);
   }
 

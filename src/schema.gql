@@ -63,6 +63,9 @@ type User {
   payments: [Payment!]
   paymentsCount: Int
   vehicleBuyingLimit: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
 }
 
 type LoginResponse {
