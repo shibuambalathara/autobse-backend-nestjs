@@ -123,8 +123,12 @@ type User {
   idProofType: String!
   payments: [Payment!]
   paymentsCount: Int
+  vehicleBuyingLimit: Int
   bid: [Bid!]
   states: [State!]
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: String
 }
 
 type LoginResponse {

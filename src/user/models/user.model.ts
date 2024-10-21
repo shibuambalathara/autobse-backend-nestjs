@@ -71,7 +71,7 @@ export class User {
   // @Field({ nullable: true })
   // accessToken?: string;
   @Field()
-  status: string;
+  status?: string;
 
   @Field()
   state: string;
@@ -84,10 +84,24 @@ export class User {
 
   @Field(() => Int,{nullable:true})
   paymentsCount?: number;
+
+  @Field(()=>Int,{nullable:true})
+  vehicleBuyingLimit?:number
  
+
   @Field(()=>[Bid],{nullable:true})
   bid?:Bid[];
 
   @Field(()=>[State],{nullable:true})
   states?:State[];
+
+  @Field({nullable:true})
+  createdAt?:Date;
+
+  @Field({nullable:true})
+  updatedAt?:Date;
+
+  @Field({nullable:true})
+  createdById?:string;
+
 }
