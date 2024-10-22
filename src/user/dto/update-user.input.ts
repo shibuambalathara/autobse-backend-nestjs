@@ -2,6 +2,7 @@ import { InputType, Field } from '@nestjs/graphql';
 import { StateNames } from '@prisma/client';
 import { IsEmail, IsString, IsOptional } from 'class-validator';
 import { UserIdProofTypeType, UserRoleType, UserStatusType } from 'src/role/user.roleStatus'
+import { State } from 'src/state/models/state.model';
 
 @InputType()
 export class UpdateUserInput {
@@ -73,5 +74,8 @@ export class UpdateUserInput {
   state?:StateNames;
   @Field(()=>UserIdProofTypeType,{nullable:true})
   idProofType:UserIdProofTypeType;
+
+  // @Field(()=>[StateNames],{nullable:true})
+  // states?:StateNames[];
 
 }

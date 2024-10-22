@@ -271,7 +271,7 @@ export class FileuploadService {
             registrationNumber  :row['Registration_Number']!== undefined ? row['Registration_Number'].toString() : null,          
             loanAgreementNo :row['Loan_Agreement_No']!== undefined ? row['Loan_Agreement_No'].toString() : null,       
             registeredOwnerName:row['Customer_Name']!== undefined ? row['Customer_Name'].toString() : null,    
-            quoteIncreament :row['Quote_Increament']??null,       
+            quoteIncreament :row['Quote_Increament'],       
             make            :row['Make']!== undefined ? row['Make'].toString() : null,      
             model           :row['Model']!== undefined ? row['Model'].toString() : null,      
             varient         :row['Variant']!== undefined ? row['Variant'].toString() : null,

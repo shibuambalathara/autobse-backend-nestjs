@@ -29,9 +29,9 @@ export class PaymentResolver {
       throw new Error('You do not have permission to create payments for other users.');
     }
 
-    const paymentUserId = userId || id;
+    const paymentUserId = userId || id ;
 
-    return this.paymentService.createPayment(createPaymentInput,paymentUserId);
+    return this.paymentService.createPayment(createPaymentInput,paymentUserId,context);
   }
 
   @Query(returns => [Payment])
