@@ -16,6 +16,7 @@ async function bootstrap() {
       'https://autobse-admin-panel.vercel.app'
     ],
   });
+  app.enableShutdownHooks()
   // app.use('/graphql',graphqlUploadExpress({maxFileSize:1000000, maxFiles: 5}))
   await app.listen(3000);
 }
