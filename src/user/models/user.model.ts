@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Bid } from 'src/bid/models/bid.model';
+import { Emdupdate } from 'src/emdupdate/models/emdupdate.model';
 import { Payment } from 'src/payment/models/payment.model';
 import { State } from 'src/state/models/state.model';
 
@@ -103,5 +104,8 @@ export class User {
 
   @Field({nullable:true})
   createdById?:string;
+
+  @Field(()=>[Emdupdate],{nullable:true})
+  emdUpdates?:Emdupdate[];
 
 }

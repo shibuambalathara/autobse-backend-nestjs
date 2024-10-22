@@ -73,6 +73,5 @@ export class UpdateUserInput {
   state?:StateNames;
   @Field(()=>UserIdProofTypeType,{nullable:true})
   idProofType:UserIdProofTypeType;
-  
 
 }

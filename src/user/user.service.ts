@@ -17,7 +17,9 @@ export class UserService {
 
   async getAllUsers(): Promise<User[] | null> {
     const allUsers = await this.prisma.user.findMany({
-      where: { isDeleted: false },include:{states:true}
+      where: { isDeleted: false },include:{states:true,
+        emdUpdates:{include:{payment:true}}
+        },
     });
     const userWithCounts = await Promise.all(allUsers.map(async (user) => {
       const paymentCount = await this.prisma.payment.count({
@@ -49,6 +51,8 @@ export class UserService {
           },
         },
         states:true,
+        emdUpdates:{include:{payment:true}}
+        
       },
     });
     if(!data) throw new NotFoundException('User not found.')
