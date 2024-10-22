@@ -5,6 +5,7 @@ import { VehicleResolver } from './vehicle.resolver';
 // import { BullModule } from '@nestjs/bullmq';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { RedisService } from 'src/services/redis/redis.service';
+import { RedisModule } from 'src/services/redis/redis.module';
 
 
 @Module({
@@ -15,8 +16,8 @@ import { RedisService } from 'src/services/redis/redis.service';
   // ],
   // providers: [VehicleResolver, VehicleService,PrismaService],
   // exports: [BullModule],
-  imports: [PrismaModule],
-  providers: [VehicleService, VehicleResolver, RedisService],
+  imports: [PrismaModule, RedisModule],
+  providers: [VehicleService, VehicleResolver],
   exports: [VehicleService],
 })
 export class VehicleModule {}

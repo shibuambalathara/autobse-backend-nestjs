@@ -42,7 +42,7 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
         // Optionally, you can validate Redis connection
         await this.publisher.ping()
         await this.subscriber.ping()
-        console.log('Redis connected successfully.')
+        console.log('RedisService: Successfully connected.')
     }
 
 
@@ -50,6 +50,6 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
         this.pubSub.close()
         this.publisher.quit()
         this.subscriber.quit()
-        console.log('Redis connection closed.')
+        console.log('RedisService: Connection closed.')
     }
 }
