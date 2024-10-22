@@ -15,25 +15,40 @@ export class PaymentService {
     private readonly configService: ConfigService,
   ){}
 
-  async createPayment(createPaymentInput: CreatePaymentInput,paymentUserId:string):Promise<Payment|null> {
-    try{
-      
-      return await this.prisma.payment.create({
-
-        data:{...createPaymentInput,
-          createdById:paymentUserId,
-          userId:paymentUserId,
-  
+  async createPayment(createPaymentInput: CreatePaymentInput, paymentUserId: string,context): Promise<Payment | null> {
+    try {
+      const userRoles = context.req.user.roles; 
+      const payment = await this.prisma.payment.create({
+        data: {
+          ...createPaymentInput,
+          createdById: paymentUserId,
+          userId: paymentUserId,
         },
         include: {
-          user: true, 
+          user: true,
         },
-      })
-    }
-    catch(error){
-      throw new Error(error.message)
+      });
+  
+     
+      if (payment.paymentFor === 'registrations' && payment.status === 'approved'&& (userRoles==='staff'|| userRoles==='admin') ) {
+        const createdAtDate = new Date(payment.createdAt);
+        const expireRegistration = new Date(createdAtDate);
+        expireRegistration.setFullYear(expireRegistration.getFullYear() + 1); 
+  
+     
+        await this.prisma.payment.update({
+          where: { id: payment.id }, 
+          data: { registrationExpire: expireRegistration },
+        });
+      }
+  
+      return payment; 
+    } catch (error) {
+      console.error('Error creating payment:', error); 
+      throw new Error(`Payment creation failed: ${error.message}`); 
     }
   }
+  
 
   async payments() : Promise<Payment[]|null> {
     const payment = await this.prisma.payment.findMany({where:{isDeleted:false},   include: {
@@ -69,15 +84,27 @@ export class PaymentService {
     try {
       const payment = await this.prisma.payment.findUnique({where:{id,isDeleted:false,}})
       if(!payment) throw new NotFoundException("Payment Not Found");
+
+      if(payment.paymentFor==='registrations' && payment.status==='approved'){
+        const createdAtDate = new Date(payment.createdAt);
+        const expireRegistration = new Date(createdAtDate);
+          expireRegistration.setFullYear(expireRegistration.getFullYear() + 1);
+          const result=       await this.prisma.payment.update({
+            where: { id: id }, 
+          data: {registrationExpire: expireRegistration },
+          });
+     }
       return await this.prisma.payment.update({
           where:{
             id,
           },
           data:{
             ...updatePaymentInput,
+          
           }
         });
       }
+    
   catch (error) {
         if (error instanceof NotFoundException) {
           throw new Error(error.message); 

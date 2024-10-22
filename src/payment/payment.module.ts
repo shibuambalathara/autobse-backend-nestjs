@@ -4,8 +4,10 @@ import { PaymentResolver } from './payment.resolver';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { s3Service } from 'src/services/s3/s3.service';
 import { ConfigService } from '@nestjs/config';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  providers: [PaymentResolver, PaymentService,PrismaService, s3Service, ConfigService],
+  imports: [PrismaModule],
+  providers: [PaymentResolver, PaymentService, s3Service, ConfigService],
 })
 export class PaymentModule {}

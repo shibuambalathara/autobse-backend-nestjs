@@ -13,9 +13,11 @@ async function bootstrap() {
     credentials: true,
     origin: ['http://localhost:3000', 
       'http://localhost:3001',
-      'https://autobse-admin-panel.vercel.app'
+      'https://autobse-admin-panel.vercel.app',
+      'https://autobse-development.vercel.app'
     ],
   });
+  app.enableShutdownHooks()
   // app.use('/graphql',graphqlUploadExpress({maxFileSize:1000000, maxFiles: 5}))
   await app.listen(3000);
 }
