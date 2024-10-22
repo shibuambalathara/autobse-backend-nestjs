@@ -197,7 +197,7 @@ model User {
 
 model State {
   id                 String        @id @default(cuid())
-  name               StateNames    @default(Kerala)
+  name               StateNames    @unique 
   createdAt          DateTime?     @default(now())
   updatedAt          DateTime?     @updatedAt
   createdBy          User?         @relation("state_createdBy", fields: [createdById], references: [id])      
