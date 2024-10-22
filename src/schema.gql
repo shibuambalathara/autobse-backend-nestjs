@@ -11,22 +11,6 @@ type Bid {
   user: User
 }
 
-type Emdupdate {
-  id: String!
-  emdNo: Float!
-  vehicleBuyingLimitIncrement: Float
-  payment: Payment
-  user: User
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Payment {
   id: String!
   refNo: Float
@@ -42,6 +26,22 @@ type Payment {
   paymentFor: String
   user: User
   emdUpdate: [Emdupdate!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Emdupdate {
+  id: String!
+  emdNo: Float!
+  vehicleBuyingLimitIncrement: Float
+  payment: Payment
+  user: User
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
 }
 
 type Location {
@@ -129,6 +129,7 @@ type User {
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String
+  emdUpdates: [Emdupdate!]
 }
 
 type LoginResponse {
