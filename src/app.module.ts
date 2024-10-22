@@ -84,7 +84,7 @@ import { AcrModule } from './acr/acr.module';
 
   ],
   providers: [
-    PrismaService,
+    // PrismaService,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe, 
