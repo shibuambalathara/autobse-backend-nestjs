@@ -31,11 +31,12 @@ export class LiveEventResolver {
     @Args('take', { type: () => Int, nullable: true }) take?: number,
     @Args('skip', { type: () => Int, nullable: true }) skip?: number
   ): Promise<Vehicle[]> {
-    const {
+    
       
       
-      id}=context.req.user
-    const liveVehicles=await this.LiveEventService.getVehicles(event.id,orderBy, take, skip,id);
+      // id}=context.req.user
+  // const id='cm2hd4lz10000cvhn70w7gc0c'
+    const liveVehicles=await this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
     // console.log("live vehicles",liveVehicles)
     return liveVehicles
   }
