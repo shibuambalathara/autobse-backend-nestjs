@@ -73,6 +73,7 @@ export class EventService {
         const vehiclesCount = await this.prisma.vehicle.count({
           where: { eventId: event.id, isDeleted: false },
         });
+
         return { ...event, vehiclesCount }; 
       })
     );
@@ -81,6 +82,7 @@ export class EventService {
   
  
     
+    
   }
   // -----------
   async getVehicles(
@@ -88,15 +90,46 @@ export class EventService {
      orderBy?: VehicleOrderByInput[],
     take?: number,
     skip?: number
-  ): Promise<Vehicle[]> {
-    return this.prisma.vehicle.findMany({
+  ): Promise<(Vehicle & { totalBids: number })[]> {
+    const vehicles=await this.prisma.vehicle.findMany({
       where: {
         eventId,
+      }, include: {
+        userVehicleBids: {
+          include: {
+            user: true,
+          },
+        },
+        // event: {
+        //   include: {
+        //     seller: true,
+        //   },
+        // },
+        
       },
        orderBy,
       take,
       skip,
     });
+
+const totalBids = await Promise.all(
+  vehicles.map(async (vehicle) => {
+    return this.prisma.bid.count({
+      where: {
+        bidVehicleId: vehicle.id,
+      },
+    });
+  })
+);
+
+const vehiclesWithTotalBids = vehicles.map((vehicle, index) => ({
+  ...vehicle,
+  totalBids: totalBids[index],
+}));
+
+return vehiclesWithTotalBids;
+
+    // return{ ...vehicles,totalBids}
   }
 
   // -------------

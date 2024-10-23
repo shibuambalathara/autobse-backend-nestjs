@@ -22,22 +22,22 @@ export class LiveEventResolver {
     return this.LiveEventService.liveEvents(where,orderBy,take,skip);
   }
   // ----------------------
-  @UseGuards(GqlAuthGuard)
-  @ResolveField(() => [Vehicle])
-  async vehiclesLive(
-    @Parent() event: Event,
-    @Context() context,
-    @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
-    @Args('take', { type: () => Int, nullable: true }) take?: number,
-    @Args('skip', { type: () => Int, nullable: true }) skip?: number
-  ): Promise<Vehicle[]> {
+  // @UseGuards(GqlAuthGuard)
+  // @ResolveField(() => [Vehicle])
+  // async vehiclesLive(
+  //   @Parent() event: Event,
+  //   @Context() context,
+  //   @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
+  //   @Args('take', { type: () => Int, nullable: true }) take?: number,
+  //   @Args('skip', { type: () => Int, nullable: true }) skip?: number
+  // ): Promise<Vehicle[]> {
     
       
       
-      // id}=context.req.user
-  // const id='cm2hd4lz10000cvhn70w7gc0c'
-    const liveVehicles=await this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
-    // console.log("live vehicles",liveVehicles)
-    return liveVehicles
-  }
+  //     // id}=context.req.user
+  // // const id='cm2hd4lz10000cvhn70w7gc0c'
+  //   const liveVehicles=await this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
+  //   // console.log("live vehicles",liveVehicles)
+  //   return liveVehicles
+  // }
 }

@@ -42,7 +42,7 @@ export class EventResolver {
   }
   // ----------------------
   @ResolveField(() => [Vehicle])
-  async vehicles(
+  async vehiclesLive(
     @Parent() event: Event,
      @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
     @Args('take', { type: () => Int, nullable: true }) take?: number,

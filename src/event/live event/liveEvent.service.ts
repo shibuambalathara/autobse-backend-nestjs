@@ -109,25 +109,9 @@ export class LiveEventService {
       take,
       skip,
     });
-// const findRank=await vehicles.map(async(vehicle)=>{
-//   const rank = await this.prisma.bid.findMany({
-//     distinct: ["userId"],
-//     where: { bidVehicle: { id: { equals:vehicle?.id  } } },
-//     orderBy: [
-//       {
-//         amount: "desc",
-//       },
-//       {
-//         createdAt: "asc",
-//       },
-//     ],
-//     skip: 0,
-//     take: 10,
-//   });
-//   // console.log(context?.session?.itemId);
-//   return rank.findIndex((x) => x?.userId === 'cm2hd4lz10000cvhn70w7gc0c') + 1;
-// })
-// console.log("rank",findRank);
+
+  // console.log(context?.session?.itemId);
+
 
     
 
