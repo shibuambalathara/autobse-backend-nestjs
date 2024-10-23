@@ -17,8 +17,9 @@ export class UserResolver {
   ) {}
 
   @Query((returns) => [User], { nullable: 'items' })
-  async users(): Promise<User[] | null> {
-    return this.userService.getAllUsers();
+  async users(    @Args('where',{ nullable: true }) where?: UserWhereUniqueInput
+): Promise<User[] | null> {
+    return this.userService.getAllUsers(where);
   }
 
   @Query((returns) => User, { nullable: true })

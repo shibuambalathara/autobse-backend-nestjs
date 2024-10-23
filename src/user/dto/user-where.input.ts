@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { StateNames } from '@prisma/client';
 
 @InputType()
 export class UserWhereUniqueInput {
@@ -16,6 +17,9 @@ export class UserWhereUniqueInput {
 
   @Field({ nullable: true })
   pancardNo: string;
+
+  @Field(()=>StateNames,{ nullable: true })
+  state?: StateNames;
   
   
   

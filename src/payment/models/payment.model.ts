@@ -44,6 +44,10 @@ export class Payment {
    @Field(()=>User,{nullable:true})
    user?:User;
 
+   
+   @Field(()=>User,{nullable:true})
+   createdBy?:User;
+
    @Field(()=>[Emdupdate],{nullable:true})
    emdUpdate?:Emdupdate[];
   
