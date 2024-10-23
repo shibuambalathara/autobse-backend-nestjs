@@ -73,6 +73,7 @@ export class EventService {
         const vehiclesCount = await this.prisma.vehicle.count({
           where: { eventId: event.id, isDeleted: false },
         });
+
         return { ...event, vehiclesCount }; 
       })
     );
@@ -81,15 +82,16 @@ export class EventService {
   
  
     
+    
   }
   // -----------
   async getVehicles(
     eventId: string,
-     orderBy?: VehicleOrderByInput[],
+    orderBy?: VehicleOrderByInput[],
     take?: number,
     skip?: number,
-    userId?:string
-  ): Promise<Vehicle[]> {
+    userId?: string
+  ): Promise<(Vehicle & { myBidRank?: number; totalBids: number })[]> {
     const vehicles = await this.prisma.vehicle.findMany({
       where: {
         eventId,
@@ -101,39 +103,43 @@ export class EventService {
           },
         },
       },
-       orderBy,
+      orderBy,
       take,
       skip,
     });
-    const findRank= await Promise.all(vehicles.map(async(vehicle)=>{
-      const rank = await this.prisma.bid.findMany({
-        distinct: ["userId"],
-        where: { bidVehicle: { id: { equals:vehicle?.id  } } },
-        orderBy: [
-          {
-            amount: "desc",
+  
+    const [findRank, totalBids] = await Promise.all([
+      Promise.all(vehicles.map(async (vehicle) => {
+        const rank = await this.prisma.bid.findMany({
+          distinct: ["userId"],
+          where: { bidVehicle: { id: { equals: vehicle?.id } } },
+          orderBy: [
+            { amount: "desc" },
+            { createdAt: "asc" },
+          ],
+          skip: 0,
+          take: 10,
+        });
+        return rank.findIndex((x) => x?.userId === userId) + 1; 
+      })),
+      Promise.all(vehicles.map(async (vehicle) => {
+        return this.prisma.bid.count({
+          where: {
+            bidVehicleId: vehicle.id,
           },
-          {
-            createdAt: "asc",
-          },
-        ],
-        skip: 0,
-        take: 10,
-      });
-      // console.log(context?.session?.itemId);
-      return rank.findIndex((x) => x?.userId === userId) + 1;
-    }))
-    
-    
-    const vehiclesWithRank = vehicles.map((vehicle, index) => ({
+        });
+      })),
+    ]);
+  
+    const vehiclesWithDetails = vehicles.map((vehicle, index) => ({
       ...vehicle,
-      myBidRank: findRank[index],
+      myBidRank: findRank[index], 
+      totalBids: totalBids[index], 
     }));
   
-    return vehiclesWithRank;
-        
+    return vehiclesWithDetails; 
   }
-
+  
   // -------------
 
   async event(

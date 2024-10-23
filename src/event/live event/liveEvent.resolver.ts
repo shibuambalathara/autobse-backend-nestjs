@@ -20,14 +20,35 @@ export class LiveEventResolver {
     return this.LiveEventService.liveEvents(where,orderBy,take,skip);
   }
   // ----------------------
-  @ResolveField(() => [Vehicle])
-  async vehicles(
-    @Parent() event: Event,
-     @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
-    @Args('take', { type: () => Int, nullable: true }) take?: number,
-    @Args('skip', { type: () => Int, nullable: true }) skip?: number
-  ): Promise<Vehicle[]> {
-    // Assuming you have a method to get vehicles in your EventService
-    return this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
-  }
+// <<<<<<< HEAD
+//   @ResolveField(() => [Vehicle])
+//   async vehicles(
+//     @Parent() event: Event,
+//      @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
+//     @Args('take', { type: () => Int, nullable: true }) take?: number,
+//     @Args('skip', { type: () => Int, nullable: true }) skip?: number
+//   ): Promise<Vehicle[]> {
+//     // Assuming you have a method to get vehicles in your EventService
+//     return this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
+//   }
+
+  // @UseGuards(GqlAuthGuard)
+  // @ResolveField(() => [Vehicle])
+  // async vehiclesLive(
+  //   @Parent() event: Event,
+  //   @Context() context,
+  //   @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
+  //   @Args('take', { type: () => Int, nullable: true }) take?: number,
+  //   @Args('skip', { type: () => Int, nullable: true }) skip?: number
+  // ): Promise<Vehicle[]> {
+    
+      
+      
+  //     // id}=context.req.user
+  // // const id='cm2hd4lz10000cvhn70w7gc0c'
+  //   const liveVehicles=await this.LiveEventService.getVehicles(event.id,orderBy, take, skip);
+  //   // console.log("live vehicles",liveVehicles)
+  //   return liveVehicles
+  // }
+//>>>>>>> 3441fd9bba883645f5379f586d48e2694ef073d5
 }
