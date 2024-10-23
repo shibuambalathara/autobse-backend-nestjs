@@ -25,6 +25,7 @@ type Payment {
   registrationExpire: DateTime
   paymentFor: String
   user: User
+  createdBy: User
   emdUpdate: [Emdupdate!]
 }
 
@@ -348,7 +349,7 @@ type SendOtpResponse {
 }
 
 type Query {
-  users: [User]!
+  users(where: UserWhereUniqueInput): [User]!
   user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
@@ -374,7 +375,7 @@ type Query {
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
   sellersCount: Int!
-  vehicles: VehicleListResponse
+  vehicles(take: Int, skip: Int): VehicleListResponse
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
@@ -414,6 +415,7 @@ input UserWhereUniqueInput {
   tempToken: Float
   idNo: Float
   pancardNo: String
+  state: StateNames
 }
 
 input StateWhereUniqueInput {
@@ -636,7 +638,7 @@ input CreateLocationInput {
 
 input UpdateLocationInput {
   name: String
-  state: String
+  stateId: String
 }
 
 input CreateVehiclecategoryInput {

@@ -15,25 +15,47 @@ export class UserService {
     private readonly s3Service: s3Service,
   ) {}
 
-  async getAllUsers(): Promise<User[] | null> {
-    const allUsers = await this.prisma.user.findMany({
-      where: { isDeleted: false },include:{states:true,
-        emdUpdates:{include:{payment:true}}
-        },
-    });
+  async getAllUsers(conditions?: UserWhereUniqueInput): Promise<User[] | null> {
+    const condition=conditions
+  
+    let allUsers;
+
+    if (condition) {
+        allUsers = await this.prisma.user.findMany({
+            where: { ...condition , isDeleted: false },
+            include: {
+                states: true,
+                emdUpdates: {
+                    include: { payment: true },
+                },
+            },
+        });
+    } else {
+        allUsers = await this.prisma.user.findMany({
+            where: { isDeleted: false },
+            include: {
+                states: true,
+                emdUpdates: {
+                    include: { payment: true },
+                },
+            },
+        });
+    }
+
     const userWithCounts = await Promise.all(allUsers.map(async (user) => {
-      const paymentCount = await this.prisma.payment.count({
-         where: { userId: user.id },
-       });
-   
-         return {
-           ...user,
-           paymentsCount: paymentCount,  
-         };
-       }));
-   
-       return userWithCounts;  
-  }
+        const paymentCount = await this.prisma.payment.count({
+            where: { userId: user.id },
+        });
+
+        return {
+            ...user,
+            paymentsCount: paymentCount,
+        };
+    }));
+
+    return userWithCounts;
+}
+
 
   async getUserByConditions(
     conditions: UserWhereUniqueInput,

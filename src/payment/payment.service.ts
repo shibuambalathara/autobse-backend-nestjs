@@ -52,7 +52,8 @@ export class PaymentService {
 
   async payments() : Promise<Payment[]|null> {
     const payment = await this.prisma.payment.findMany({where:{isDeleted:false},   include: {
-      user: true,  
+      user: true, 
+      createdBy:true, 
       emdUpdate: {
         include: {
           user: true,
@@ -68,6 +69,7 @@ export class PaymentService {
     const payment = await this.prisma.payment.findUnique({where:{...where as Prisma.PaymentWhereUniqueInput, isDeleted:false},
       include: {
         user: true,
+        createdBy:true,
         emdUpdate: {
           include: {
             user: true,
