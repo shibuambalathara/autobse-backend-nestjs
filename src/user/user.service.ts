@@ -98,7 +98,35 @@ export class UserService {
         const file = await this.s3Service.getUploadedFile(data.driving_license_back_image)
         data.driving_license_back_image = file ? file : null
       }
-      return data
+// add vehicle buying limit
+
+      const [user, normalCount] = await Promise.all([
+        this.prisma.user.findUnique({
+          where: { id: conditions?.id },
+          select: {vehicleBuyingLimit:true},
+        }),
+    
+        this.prisma.vehicle.count({
+          where: {
+            currentBidUser: { id: { equals:conditions?.id } },
+          
+            bidStatus: {
+              in: ["pending", "approved"],
+            },
+          },
+        }),
+      ]);
+      
+    const    vehicleBuyingLimit=user.vehicleBuyingLimit - normalCount;
+      
+    
+
+
+
+
+
+
+      return {...data,vehicleBuyingLimit}
     
   }
   async findOneByMobile(mobile: string): Promise<User | undefined> {

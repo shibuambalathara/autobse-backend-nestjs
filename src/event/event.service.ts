@@ -99,8 +99,9 @@ export class EventService {
       include: {
         userVehicleBids: {
           include: {
-            user: true,
+         user: true,
           },
+          orderBy:{amount:'desc'}
         },
       },
       orderBy,
