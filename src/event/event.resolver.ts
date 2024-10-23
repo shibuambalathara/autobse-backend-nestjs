@@ -41,15 +41,17 @@ export class EventResolver {
     return this.eventService.events(where,orderBy,take,skip);
   }
   // ----------------------
+  @UseGuards(GqlAuthGuard)
   @ResolveField(() => [Vehicle])
-  async vehicles(
-    @Parent() event: Event,
+  async vehiclesLive(
+    @Parent() event: Event,@Context() context,
      @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
     @Args('take', { type: () => Int, nullable: true }) take?: number,
-    @Args('skip', { type: () => Int, nullable: true }) skip?: number
+    @Args('skip', { type: () => Int, nullable: true }) skip?: number,
   ): Promise<Vehicle[]> {
+    const {id} =context.req.user
     // Assuming you have a method to get vehicles in your EventService
-    return this.eventService.getVehicles(event.id,orderBy, take, skip);
+    return this.eventService.getVehicles(event.id,orderBy, take, skip,id);
   }
 
 // ..............................

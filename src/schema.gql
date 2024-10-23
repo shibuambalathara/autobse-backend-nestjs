@@ -189,6 +189,7 @@ type Event {
   vehicleCategory: VehicleCategory
   vehiclesCount: Int
   Report: JSON
+  vehiclesLive(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]!
 }
 
 input VehicleOrderByInput {

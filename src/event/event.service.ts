@@ -87,16 +87,51 @@ export class EventService {
     eventId: string,
      orderBy?: VehicleOrderByInput[],
     take?: number,
-    skip?: number
+    skip?: number,
+    userId?:string
   ): Promise<Vehicle[]> {
-    return this.prisma.vehicle.findMany({
+    const vehicles = await this.prisma.vehicle.findMany({
       where: {
         eventId,
+      },
+      include: {
+        userVehicleBids: {
+          include: {
+            user: true,
+          },
+        },
       },
        orderBy,
       take,
       skip,
     });
+    const findRank= await Promise.all(vehicles.map(async(vehicle)=>{
+      const rank = await this.prisma.bid.findMany({
+        distinct: ["userId"],
+        where: { bidVehicle: { id: { equals:vehicle?.id  } } },
+        orderBy: [
+          {
+            amount: "desc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+        skip: 0,
+        take: 10,
+      });
+      // console.log(context?.session?.itemId);
+      return rank.findIndex((x) => x?.userId === userId) + 1;
+    }))
+    
+    
+    const vehiclesWithRank = vehicles.map((vehicle, index) => ({
+      ...vehicle,
+      myBidRank: findRank[index],
+    }));
+  
+    return vehiclesWithRank;
+        
   }
 
   // -------------
