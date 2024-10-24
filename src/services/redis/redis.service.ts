@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Bid, Vehicle } from '@prisma/client';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { Redis } from 'ioredis';
 
@@ -8,6 +9,8 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
     private pubSub: RedisPubSub
     private publisher: Redis
     private subscriber: Redis
+    private bidCreationIterator: AsyncIterator<Bid>
+    private vehicleUpdateIterator: AsyncIterator<Vehicle>
 
     constructor(
         private readonly configService: ConfigService,
@@ -27,6 +30,9 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
             publisher: this.publisher,
             subscriber: this.subscriber,
         });
+
+        this.bidCreationIterator = this.pubSub.asyncIterator('BID_CREATION')
+        this.vehicleUpdateIterator = this.pubSub.asyncIterator('VEHICLE_UPDATES')
 
     }
 
@@ -51,5 +57,13 @@ export class RedisService implements OnModuleDestroy, OnModuleInit {
         this.publisher.quit()
         this.subscriber.quit()
         console.log('RedisService: Connection closed.')
+    }
+
+    getBidCreationIterator(): AsyncIterator<Bid> {
+        return this.bidCreationIterator
+      }
+    
+    getVehicleUpdateIterator(): AsyncIterator<Vehicle> {
+        return this.vehicleUpdateIterator
     }
 }

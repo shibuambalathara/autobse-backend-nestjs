@@ -47,7 +47,18 @@ import { AcrModule } from './acr/acr.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       path:'/graphql',
       subscriptions: {
-        'graphql-ws': true,
+        'graphql-ws': {
+          onConnect(ctx) {
+            // console.log(ctx,'ctx');
+            
+            console.log('WS: Client connected.');
+            
+          },
+          onDisconnect:() => {
+            console.log('WS: Client disconnected.');
+            
+          }
+        }
       },
       context: ({ req }) => ({ req }), 
     }),
