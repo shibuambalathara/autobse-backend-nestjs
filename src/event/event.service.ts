@@ -9,6 +9,7 @@ import { Event } from './models/event.model';
 import { EventOrderByInput } from './dto/EventOrderByInput';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
 import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
+import { QueryOptionsType } from './queryOptions';
 
 @Injectable()
 export class EventService {
@@ -52,12 +53,15 @@ export class EventService {
   }
 
   async events(
-    @Args('where') where?: EventWhereUniqueInput,
-    @Args('orderBy', { type: () => [EventOrderByInput], nullable: true })
-    orderBy?: EventOrderByInput[],
-    @Args('take', { type: () => Int, nullable: true }) take?: number,
-    @Args('skip', { type: () => Int, nullable: true }) skip?: number,
+    where?: EventWhereUniqueInput,
+        orderBy?: EventOrderByInput[],
+        take?: number,
+        skip?: number,
+        options?: QueryOptionsType 
   ): Promise<Event[] | null> {
+    if (options?.enabled === false) {
+      return []; 
+  }
     const events = await this.prisma.event.findMany({
       where: {
         isDeleted: false,
@@ -96,7 +100,7 @@ export class EventService {
     const LiveEventCount = await this.prisma.event.count({
       where: {
         isDeleted: false,
-        startDate: { lte: new Date().toISOString() },
+        startDate: { lte: new Date()},
         status: {
           equals: "active",
         },
@@ -112,7 +116,9 @@ export class EventService {
     const CompletedEventCount = await this.prisma.event.count({
       where: {
         isDeleted: false,
-        endDate: { lt: new Date().toISOString() },
+
+        endDate: { lt: new Date() },
+
           status: {
             equals: "active",
           },
