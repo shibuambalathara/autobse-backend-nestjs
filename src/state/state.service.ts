@@ -25,7 +25,17 @@ export class StateService {
       }
 
   async States() : Promise<State[] | null> {
-    const state = await this.prisma.state.findMany({where:{isDeleted:false}});
+    const state = await this.prisma.state.findMany({where:{isDeleted:false},
+        include:
+        {
+        location: {
+        include: {
+          state: true,  
+        },
+      },
+      createdBy:true,
+    }
+    });
     if(!state) throw new NotFoundException("State Not Found!");    
     return state;
   }
@@ -33,6 +43,15 @@ export class StateService {
   async State(where:StateWhereUniqueInput) : Promise<State | null> {
     const state = await this.prisma.state.findUnique({
       where: {...where as Prisma.StateWhereUniqueInput,isDeleted:false},
+      include:
+        {
+        location: {
+        include: {
+          state: true,  
+        },
+      },
+      createdBy:true,
+    }
     });
     if (!state) throw new NotFoundException('State Not Found!');
     return state;

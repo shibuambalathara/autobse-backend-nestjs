@@ -22,6 +22,13 @@ export class EventService {
     createEventInput: CreateEventInput,
   ): Promise<Event | null> {
     try {
+
+    const currentDate = new Date();
+    const endDate = new Date(createEventInput?.endDate);
+
+    if (endDate <= currentDate) {
+      throw new Error('Event end date must be in the future.');
+    }
       return await this.prisma.event.create({
         data: {
           sellerId: sellerId,
