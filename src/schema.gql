@@ -61,7 +61,8 @@ type State {
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String!
-  location: Location!
+  location: [Location!]
+  createdBy: User
 }
 
 enum StateNames {
@@ -349,7 +350,7 @@ type SendOtpResponse {
 }
 
 type Query {
-  users(where: UserWhereUniqueInput): [User]!
+  users(where: UserWhereUniqueInput, take: Int, skip: Int, orderBy: [UserOrderByInput!]): [User!]
   user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
@@ -375,7 +376,7 @@ type Query {
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
   sellersCount: Int!
-  vehicles(take: Int, skip: Int): VehicleListResponse
+  vehicles(where: VehicleWhereUniqueInput, take: Int, skip: Int): VehicleListResponse
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
@@ -416,6 +417,12 @@ input UserWhereUniqueInput {
   idNo: Float
   pancardNo: String
   state: StateNames
+}
+
+input UserOrderByInput {
+  idNo: OrderDirection
+  createdAt: OrderDirection
+  id: OrderDirection
 }
 
 input StateWhereUniqueInput {
