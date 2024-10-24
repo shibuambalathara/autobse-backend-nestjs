@@ -14,6 +14,7 @@ import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
 import GraphQLJSON from 'graphql-type-json';
 import { AcrService } from 'src/acr/acr.service';
 import { QueryOptionsType } from './queryOptions';
+import { EventListResponse } from './models/eventListModel';
 
 
 
@@ -31,17 +32,17 @@ export class EventResolver {
 
   @UseGuards(GqlAuthGuard,RolesGuard)
   @Roles('admin','staff','dealer')
-  @Query(returns => [Event])
+  @Query(() => EventListResponse, { nullable: true })
   async events(@Args('where',{nullable:true}) where: EventWhereUniqueInput,
   @Args('orderBy', { type: () => [EventOrderByInput], nullable: true }) orderBy?: EventOrderByInput[],
   @Args('take', { type: () => Int, nullable: true }) take?: number,
 
   @Args('skip', { type: () => Int, nullable: true }) skip?: number,
-  @Args('options', { type: () => QueryOptionsType, nullable: true }) options?: QueryOptionsType // Use the type here
-): Promise<Event[]|null>{
+  @Args('options', { type: () => QueryOptionsType, nullable: true }) options?: QueryOptionsType 
+): Promise<EventListResponse | null>{
   if (options?.enabled === false) {
-    return null; 
-}
+            return null; 
+        }
 
     return this.eventService.events(where,orderBy,take,skip);
   }

@@ -302,6 +302,15 @@ type VehicleListResponse {
   vehiclesCount: Int!
 }
 
+type EventListResponse {
+  events: [Event!]
+  vehiclesCount: Int!
+  upcomingEventCount: Int
+  liveEventCount: Int
+  totalEventsCount: Int
+  completedEventCount: Int
+}
+
 type Excelupload {
   id: String!
   name: String
@@ -385,7 +394,7 @@ type Query {
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   vehiclsCount: Int!
-  events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int, options: QueryOptionsType): [Event!]!
+  events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int, options: QueryOptionsType): EventListResponse
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
