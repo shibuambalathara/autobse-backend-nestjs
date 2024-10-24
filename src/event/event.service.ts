@@ -53,12 +53,11 @@ export class EventService {
   }
 
   async events(
-    @Args('where') where?: EventWhereUniqueInput,
-    @Args('orderBy', { type: () => [EventOrderByInput], nullable: true })
-    orderBy?: EventOrderByInput[],
-    @Args('take', { type: () => Int, nullable: true }) take?: number,
-    @Args('skip', { type: () => Int, nullable: true }) skip?: number,
-    options?: QueryOptionsType
+    where?: EventWhereUniqueInput,
+        orderBy?: EventOrderByInput[],
+        take?: number,
+        skip?: number,
+        options?: QueryOptionsType 
   ): Promise<Event[] | null> {
     if (options?.enabled === false) {
       return []; 
