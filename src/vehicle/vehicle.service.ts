@@ -5,6 +5,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, Vehicle } from '@prisma/client';
 import { VehicleWhereUniqueInput } from './dto/unique-vehicle.input';
 import { VehicleListResponse } from './models/vehicleListModel';
+import { Args, Int } from '@nestjs/graphql';
+import { VehicleOrderByInput } from './dto/vehicleOrderByInput';
 // import { InjectQueue } from '@nestjs/bullmq';
 // import { Queue } from 'bullmq';
 
@@ -64,9 +66,14 @@ export class VehicleService {
            }
     }
 
-    async vehicles(): Promise<{ vehicles: Vehicle[], vehiclesCount: number } | null> {
+    async vehicles( @Args('where') where?: VehicleWhereUniqueInput, @Args('take', { type: () => Int, nullable: true }) take?: number,
+    @Args('skip', { type: () => Int, nullable: true }) skip?: number,     @Args('orderBy', { type: () => [VehicleOrderByInput], nullable: true }) orderBy?: VehicleOrderByInput[],
+  ): Promise<{ vehicles: Vehicle[], vehiclesCount: number } | null> {
       const vehicles = await this.prisma.vehicle.findMany({
-        where: { isDeleted: false },
+        where: { ...where,isDeleted: false }, 
+        orderBy,
+        take,
+        skip,
         include: {
           userVehicleBids: {
             include: {
@@ -80,6 +87,7 @@ export class VehicleService {
           },
           
         },
+       
       });
     
       const vehiclesCount = await this.prisma.vehicle.count({

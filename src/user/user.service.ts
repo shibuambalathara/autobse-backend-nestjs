@@ -7,6 +7,8 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { s3Service } from 'src/services/s3/s3.service';
+import { OrderInput } from './dto/order.input';
+import { UserOrderByInput } from './dto/userorderby.input';
 
 @Injectable()
 export class UserService {
@@ -15,25 +17,36 @@ export class UserService {
     private readonly s3Service: s3Service,
   ) {}
 
-  async getAllUsers(): Promise<User[] | null> {
-    const allUsers = await this.prisma.user.findMany({
-      where: { isDeleted: false },include:{states:true,
-        emdUpdates:{include:{payment:true}}
-        },
-    });
+  async getAllUsers(conditions?: UserWhereUniqueInput, skip?: number,take?:number,orderBy?:UserOrderByInput[]): Promise<User[] | null> {
+
+   
+      const  allUsers = await this.prisma.user.findMany({
+            where: { ...conditions , isDeleted: false },
+            orderBy,
+            take,
+            skip,
+            include: {
+                states: true,
+                emdUpdates: {
+                    include: { payment: true,createdBy:true },
+                },
+            },
+        });
+
     const userWithCounts = await Promise.all(allUsers.map(async (user) => {
-      const paymentCount = await this.prisma.payment.count({
-         where: { userId: user.id },
-       });
-   
-         return {
-           ...user,
-           paymentsCount: paymentCount,  
-         };
-       }));
-   
-       return userWithCounts;  
-  }
+        const paymentCount = await this.prisma.payment.count({
+            where: { userId: user.id },
+        });
+
+        return {
+            ...user,
+            paymentsCount: paymentCount,
+        };
+    }));
+
+    return userWithCounts;
+}
+
 
   async getUserByConditions(
     conditions: UserWhereUniqueInput,

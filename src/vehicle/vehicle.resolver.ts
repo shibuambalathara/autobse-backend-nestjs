@@ -45,8 +45,9 @@ export class VehicleResolver {
   // }
 
   @Query(() => VehicleListResponse, { nullable: true })
-  async vehicles(): Promise<VehicleListResponse | null> {
-    return this.vehicleService.vehicles();
+  async vehicles( @Args('where',{nullable:true}) where: VehicleWhereUniqueInput, @Args('take', { type: () => Int, nullable: true }) take?: number,
+  @Args('skip', { type: () => Int, nullable: true }) skip?: number): Promise<VehicleListResponse | null> {
+    return this.vehicleService.vehicles(where,take,skip);
   }
 
   @Query((returns) => Vehicle)

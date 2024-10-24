@@ -10,4 +10,5 @@ event:Event[]
 @Field(()=>Int)
 vehiclesCount:number
 
+
 }

@@ -10,5 +10,5 @@ export class UpdateLocationInput extends PartialType(CreateLocationInput) {
   name?: string;
 
   @Field({nullable:true})
-  state?:string;
+  stateId?:string;
 }

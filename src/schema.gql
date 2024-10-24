@@ -25,6 +25,7 @@ type Payment {
   registrationExpire: DateTime
   paymentFor: String
   user: User
+  createdBy: User
   emdUpdate: [Emdupdate!]
 }
 
@@ -60,7 +61,8 @@ type State {
   createdAt: DateTime
   updatedAt: DateTime
   createdById: String!
-  location: Location!
+  location: [Location!]
+  createdBy: User
 }
 
 enum StateNames {
@@ -189,6 +191,10 @@ type Event {
   vehicleCategory: VehicleCategory
   vehiclesCount: Int
   Report: JSON
+  upcomingEventCount: Int
+  LiveEventCount: Int
+  totalEventsCount: Int
+  CompletedEventCount: Int
   vehiclesLive(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]!
 }
 
@@ -348,7 +354,7 @@ type SendOtpResponse {
 }
 
 type Query {
-  users: [User]!
+  users(where: UserWhereUniqueInput, take: Int, skip: Int, orderBy: [UserOrderByInput!]): [User!]
   user(where: UserWhereUniqueInput!, sortOrder: String = "desc"): User
   deletedUser(where: UserWhereUniqueInput!): User
   deletedUsers: [User]!
@@ -374,7 +380,7 @@ type Query {
   deletedSellers: [Seller!]!
   deletedSeller(where: SellerWhereUniqueInput!): Seller!
   sellersCount: Int!
-  vehicles: VehicleListResponse
+  vehicles(where: VehicleWhereUniqueInput, take: Int, skip: Int): VehicleListResponse
   vehicle(where: VehicleWhereUniqueInput!): Vehicle!
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
@@ -401,6 +407,7 @@ type Query {
   deletedEnquiries: [Enquiry!]!
   liveEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
   upcomingEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
+  completedEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
   Bids: [Bid!]!
   Bid(where: BidWhereUniqueInput!): Bid!
   emdUpdates: [Emdupdate!]!
@@ -414,6 +421,13 @@ input UserWhereUniqueInput {
   tempToken: Float
   idNo: Float
   pancardNo: String
+  state: StateNames
+}
+
+input UserOrderByInput {
+  idNo: OrderDirection
+  createdAt: OrderDirection
+  id: OrderDirection
 }
 
 input StateWhereUniqueInput {
@@ -636,7 +650,7 @@ input CreateLocationInput {
 
 input UpdateLocationInput {
   name: String
-  state: String
+  stateId: String
 }
 
 input CreateVehiclecategoryInput {

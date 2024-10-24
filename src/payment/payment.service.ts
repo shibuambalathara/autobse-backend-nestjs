@@ -52,10 +52,12 @@ export class PaymentService {
 
   async payments() : Promise<Payment[]|null> {
     const payment = await this.prisma.payment.findMany({where:{isDeleted:false},   include: {
-      user: true,  
+      user: true, 
+      createdBy:true, 
       emdUpdate: {
         include: {
           user: true,
+          createdBy:true
         },
       },
       
@@ -68,9 +70,11 @@ export class PaymentService {
     const payment = await this.prisma.payment.findUnique({where:{...where as Prisma.PaymentWhereUniqueInput, isDeleted:false},
       include: {
         user: true,
+        createdBy:true,
         emdUpdate: {
           include: {
             user: true,
+            createdBy:true
           },
         },
       }
@@ -82,27 +86,31 @@ export class PaymentService {
 
   async updatePayment(id:string, updatePaymentInput: UpdatePaymentInput):Promise<Payment|null> {
     try {
-      const payment = await this.prisma.payment.findUnique({where:{id,isDeleted:false,}})
-      if(!payment) throw new NotFoundException("Payment Not Found");
-
-      if(payment.paymentFor==='registrations' && payment.status==='approved'){
-        const createdAtDate = new Date(payment.createdAt);
+      const payment = await this.prisma.payment.findUnique({
+        where: { id, isDeleted: false }
+      });
+  
+      if (!payment) throw new NotFoundException("Payment Not Found");
+  
+      const updatedPayment = await this.prisma.payment.update({
+        where: { id },
+        data: { ...updatePaymentInput },
+      });
+  
+      if (updatedPayment.paymentFor === 'registrations' && updatedPayment.status === 'approved') {
+        const createdAtDate = new Date(updatedPayment.createdAt);  
         const expireRegistration = new Date(createdAtDate);
-          expireRegistration.setFullYear(expireRegistration.getFullYear() + 1);
-          const result=       await this.prisma.payment.update({
-            where: { id: id }, 
-          data: {registrationExpire: expireRegistration },
-          });
-     }
-      return await this.prisma.payment.update({
-          where:{
-            id,
-          },
-          data:{
-            ...updatePaymentInput,
-          
-          }
+        expireRegistration.setFullYear(expireRegistration.getFullYear() + 1);  
+  
+        const finalPayment = await this.prisma.payment.update({
+          where: { id },
+          data: { registrationExpire: expireRegistration },
         });
+  
+        return finalPayment;  
+      }
+  
+      return updatedPayment;  
       }
     
   catch (error) {

@@ -9,6 +9,7 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/role/role.decorator';
 import { OrderInput } from './dto/order.input';
+import { UserOrderByInput } from './dto/userorderby.input';
 @Resolver((of) => User)
 export class UserResolver {
   private GraphQLUpload: any;
@@ -16,9 +17,12 @@ export class UserResolver {
     private userService: UserService,
   ) {}
 
-  @Query((returns) => [User], { nullable: 'items' })
-  async users(): Promise<User[] | null> {
-    return this.userService.getAllUsers();
+  @Query((returns) => [User], { nullable: true })
+  async users(    @Args('where',{ nullable: true }) where?: UserWhereUniqueInput,@Args('take', { type: () => Int, nullable: true }) take?: number,
+  @Args('skip', { type: () => Int, nullable: true }) skip?: number,
+  @Args('orderBy', { type: () => [UserOrderByInput], nullable: true }) orderBy?: UserOrderByInput[],
+): Promise<User[] | null> {
+    return this.userService.getAllUsers(where,take,skip,orderBy);
   }
 
   @Query((returns) => User, { nullable: true })

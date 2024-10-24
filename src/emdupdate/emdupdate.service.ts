@@ -52,6 +52,12 @@ export class EmdupdateService {
       where: {
         isDeleted:false,
       },
+      include:{
+        payment:true,
+        user:true,
+        createdBy:true
+      }
+      
     });
     if(!emd) throw new NotFoundException(" Not Found");
     return emd;

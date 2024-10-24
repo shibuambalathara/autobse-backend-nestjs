@@ -34,6 +34,7 @@ import { BidModule } from './bid/bid.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { EmdupdateModule } from './emdupdate/emdupdate.module';
 import { AcrModule } from './acr/acr.module';
+import { CompletedEventModule } from './event/completedEvent/completedEvent.module';
 
 
 
@@ -83,6 +84,7 @@ import { AcrModule } from './acr/acr.module';
     FileuploadModule,
     LiveEventModule,
     UpcomingEventModule,
+    CompletedEventModule,
 
     BidModule,
 

@@ -22,6 +22,13 @@ export class EventService {
     createEventInput: CreateEventInput,
   ): Promise<Event | null> {
     try {
+
+    const currentDate = new Date();
+    const endDate = new Date(createEventInput?.endDate);
+
+    if (endDate <= currentDate) {
+      throw new Error('Event end date must be in the future.');
+    }
       return await this.prisma.event.create({
         data: {
           sellerId: sellerId,
@@ -77,9 +84,41 @@ export class EventService {
         return { ...event, vehiclesCount }; 
       })
     );
+  const upcomingEventCount = await this.prisma.event.count({
+      where: {
+        isDeleted: false,
+        startDate: { gt: new Date() },
+        status: {
+          equals: 'active',
+        },
+      },
+    });
+    const LiveEventCount = await this.prisma.event.count({
+      where: {
+        isDeleted: false,
+        startDate: { lte: new Date().toISOString() },
+        status: {
+          equals: "active",
+        },
+      }
+    });
+    const totalEventsCount = await this.prisma.event.count({
+      where: {
+        isDeleted: false, status: {
+          equals: 'active',
+        },
+      }
+    });
   
-    return eventWithVehicleCounts;  
+    
+    const resultEvents = eventWithVehicleCounts.map(event => ({
+      ...event,
+      upcomingEventCount,
+      LiveEventCount,
+      totalEventsCount
+    }));
   
+    return resultEvents;  
  
     
     
@@ -156,7 +195,9 @@ export class EventService {
       },
     });
     const vehiclesCount=await this.prisma.vehicle.count({where:{eventId:where?.id,isDeleted:false,}})
+    
     if (!result) throw new NotFoundException('Event not found');
+    
     return {...result,vehiclesCount};
   }
 

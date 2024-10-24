@@ -49,7 +49,7 @@ export class LocationService {
         where: { id },
         data: {
           ...updateLocationInput,
-          state: updateLocationInput.state ? { connect: { id: updateLocationInput.state } } : undefined,
+          // state: updateLocationInput.state ? { connect: { id: updateLocationInput.state } } : undefined,
         },include: { state: true },
       });
     } catch (error) {
@@ -91,7 +91,7 @@ export class LocationService {
       where:{...where as Prisma.LocationWhereUniqueInput},
       data:{
         isDeleted:false,
-      },include: { state: true }
+      }
     });
   }
 
