@@ -10,6 +10,7 @@ import { EventOrderByInput } from './dto/EventOrderByInput';
 import { Vehicle } from 'src/vehicle/models/vehicle.model';
 import { VehicleOrderByInput } from 'src/vehicle/dto/vehicleOrderByInput';
 import { QueryOptionsType } from './queryOptions';
+import { EventListResponse } from './models/eventListModel';
 
 @Injectable()
 export class EventService {
@@ -53,89 +54,87 @@ export class EventService {
   }
 
   async events(
-    where?: EventWhereUniqueInput,
-        orderBy?: EventOrderByInput[],
-        take?: number,
-        skip?: number,
-        options?: QueryOptionsType 
-  ): Promise<Event[] | null> {
+    @Args('where') where?: EventWhereUniqueInput,
+    @Args('orderBy', { type: () => [EventOrderByInput], nullable: true }) orderBy?: EventOrderByInput[],
+    @Args('take', { type: () => Int, nullable: true }) take?: number,
+    @Args('skip', { type: () => Int, nullable: true }) skip?: number,
+    @Args('options', { type: () => QueryOptionsType, nullable: true }) options?: QueryOptionsType
+  ): Promise<EventListResponse | null> {
+
     if (options?.enabled === false) {
-      return []; 
-  }
+        return null; 
+    }
+
     const events = await this.prisma.event.findMany({
-      where: {
-        isDeleted: false,
-        ...where,
-      },
-      orderBy,
-      take,
-      skip,
-
-      include: {
-        vehicles: true,
-        seller:true,
-        location:true,
-        vehicleCategory:true
-      },
+        where: {
+            isDeleted: false,
+            ...where,
+        },
+        orderBy,
+        take,
+        skip,
+        include: {
+            vehicles: true,
+            seller: true,
+            location: true,
+            vehicleCategory: true,
+        },
     });
-    if (!events) throw new NotFoundException('Events Not Found!');
+
+    if (!events || events.length === 0) throw new NotFoundException('Events Not Found!');
+
     const eventWithVehicleCounts = await Promise.all(
-      events.map(async (event) => {
-        const vehiclesCount = await this.prisma.vehicle.count({
-          where: { eventId: event.id, isDeleted: false },
-        });
-
-        return { ...event, vehiclesCount }; 
-      })
+        events.map(async (event) => {
+            const vehiclesCount = await this.prisma.vehicle.count({
+                where: { eventId: event.id, isDeleted: false },
+            });
+            return { ...event, vehiclesCount }; 
+        })
     );
-  const upcomingEventCount = await this.prisma.event.count({
-      where: {
-        isDeleted: false,
-        startDate: { gt: new Date() },
-        status: {
-          equals: 'active',
+
+    const upcomingEventCount = await this.prisma.event.count({
+        where: {
+            isDeleted: false,
+            startDate: { gt: new Date() },
+            status: { equals: 'active' },
         },
-      },
     });
-    const LiveEventCount = await this.prisma.event.count({
-      where: {
-        isDeleted: false,
-        startDate: { lte: new Date()},
-        status: {
-          equals: "active",
+
+    const liveEventCount = await this.prisma.event.count({
+        where: {
+            isDeleted: false,
+            startDate: { lte: new Date() },
+            status: { equals: 'active' },
         },
-      }
     });
+
     const totalEventsCount = await this.prisma.event.count({
-      where: {
-        isDeleted: false, status: {
-          equals: 'active',
+        where: {
+            isDeleted: false,
+            status: { equals: 'active' },
         },
-      }
     });
-    const CompletedEventCount = await this.prisma.event.count({
-      where: {
-        isDeleted: false,
-        endDate: { lt: new Date() },
-          status: {
-            equals: "active",
-          },
-      }
+
+    const completedEventCount = await this.prisma.event.count({
+        where: {
+            isDeleted: false,
+            endDate: { lt: new Date() },
+            status: { equals: 'active' },
+        },
     });
-    
-    const resultEvents = eventWithVehicleCounts.map(event => ({
-      ...event,
-      upcomingEventCount,
-      LiveEventCount,
-      totalEventsCount,
-      CompletedEventCount
-    }));
+
   
-    return resultEvents;  
- 
-    
-    
-  }
+    const response: EventListResponse = {
+        events: eventWithVehicleCounts,
+        vehiclesCount: eventWithVehicleCounts.reduce((total, event) => total + event.vehiclesCount, 0),
+        upcomingEventCount,
+        liveEventCount,
+        totalEventsCount,
+        completedEventCount,
+    };
+
+    return response;
+}
   // -----------
   async getVehicles(
     eventId: string,
