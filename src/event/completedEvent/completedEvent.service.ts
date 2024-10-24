@@ -70,7 +70,7 @@ export class CompletedEventService {
     const CompletedEventCount = await this.prisma.event.count({
         where: {
           isDeleted: false,
-          endDate: { lt: new Date().toISOString() },
+          endDate: { lt: new Date() },
             status: {
               equals: "active",
             },

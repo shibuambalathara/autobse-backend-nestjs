@@ -78,7 +78,7 @@ export class LiveEventService {
     const LiveEventCount = await this.prisma.event.count({
       where: {
         isDeleted: false,
-        startDate: { lte: new Date().toISOString() },
+        startDate: { lte: new Date()},
         status: {
           equals: "active",
         },

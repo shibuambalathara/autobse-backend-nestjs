@@ -385,7 +385,7 @@ type Query {
   deletedVehicles: [Vehicle!]!
   deletedVehicle(where: VehicleWhereUniqueInput!): Vehicle!
   vehiclsCount: Int!
-  events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]!
+  events(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int, options: QueryOptionsType): [Event!]!
   event(where: EventWhereUniqueInput!): Event!
   deletedEvents: [Event!]!
   deletedEvent(where: EventWhereUniqueInput!): Event!
@@ -478,6 +478,10 @@ input EventOrderByInput {
   termsAndConditions: OrderDirection
   updatedAt: OrderDirection
   vehicleLiveTimeIn: OrderDirection
+}
+
+input QueryOptionsType {
+  enabled: Boolean
 }
 
 input ExcelWhereUniqueInput {
