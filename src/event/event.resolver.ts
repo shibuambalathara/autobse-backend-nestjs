@@ -34,10 +34,7 @@ export class EventResolver {
   async events(@Args('where',{nullable:true}) where: EventWhereUniqueInput,
   @Args('orderBy', { type: () => [EventOrderByInput], nullable: true }) orderBy?: EventOrderByInput[],
   @Args('take', { type: () => Int, nullable: true }) take?: number,
-  @Args('skip', { type: () => Int, nullable: true }) skip?: number
-
-)
-   : Promise<Event[]|null>{
+  @Args('skip', { type: () => Int, nullable: true }) skip?: number): Promise<Event[]|null>{
     return this.eventService.events(where,orderBy,take,skip);
   }
   // ----------------------
