@@ -191,6 +191,10 @@ type Event {
   vehicleCategory: VehicleCategory
   vehiclesCount: Int
   Report: JSON
+  upcomingEventCount: Int
+  LiveEventCount: Int
+  totalEventsCount: Int
+  CompletedEventCount: Int
   vehiclesLive(orderBy: [VehicleOrderByInput!], take: Int, skip: Int): [Vehicle!]!
 }
 
@@ -403,6 +407,7 @@ type Query {
   deletedEnquiries: [Enquiry!]!
   liveEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
   upcomingEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
+  completedEvents(where: EventWhereUniqueInput, orderBy: [EventOrderByInput!], take: Int, skip: Int): [Event!]
   Bids: [Bid!]!
   Bid(where: BidWhereUniqueInput!): Bid!
   emdUpdates: [Emdupdate!]!

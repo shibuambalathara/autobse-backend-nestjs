@@ -65,20 +65,33 @@ export class LiveEventService {
         data.downloadableFile_filename = file ? file : null
       }
     }
-   const eventsWithCounts = await Promise.all(result.map(async (event) => {
-   const vehicleCount = await this.prisma.vehicle.count({
-      where: { eventId: event.id },  
-    });
-
-      return {
-        ...event,
-        vehiclesCount: vehicleCount,  
-      };
-    }));
-
-    return eventsWithCounts;  
+    const eventWithVehicleCounts = await Promise.all(
+      result.map(async (event) => {
+        const vehiclesCount = await this.prisma.vehicle.count({
+          where: { eventId: event.id, isDeleted: false },
+        });
     
-
+        return { ...event, vehiclesCount }; 
+      })
+    );
+    
+    const LiveEventCount = await this.prisma.event.count({
+      where: {
+        isDeleted: false,
+        startDate: { lte: new Date().toISOString() },
+        status: {
+          equals: "active",
+        },
+      }
+    });
+    
+    const resultEvents = eventWithVehicleCounts.map(event => ({
+      ...event,
+      LiveEventCount,
+    }));
+    
+    return resultEvents;
+    
   }
   async getVehicles(
     eventId: string,

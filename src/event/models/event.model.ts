@@ -100,4 +100,16 @@ export class Event {
   @Field(()=>GraphQLJSON,{nullable:true})
   Report?:JSON
      
+  @Field(()=>Int,{nullable:true})
+  upcomingEventCount?:number
+
+  @Field(()=>Int,{nullable:true})
+  LiveEventCount?:number
+
+  @Field(()=>Int,{nullable:true})
+  totalEventsCount?:number
+
+  @Field(()=>Int,{nullable:true})
+  CompletedEventCount ?:number
+
 }
