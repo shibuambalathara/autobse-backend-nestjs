@@ -109,13 +109,22 @@ export class EventService {
         },
       }
     });
-  
+    const CompletedEventCount = await this.prisma.event.count({
+      where: {
+        isDeleted: false,
+        endDate: { lt: new Date().toISOString() },
+          status: {
+            equals: "active",
+          },
+      }
+    });
     
     const resultEvents = eventWithVehicleCounts.map(event => ({
       ...event,
       upcomingEventCount,
       LiveEventCount,
-      totalEventsCount
+      totalEventsCount,
+      CompletedEventCount
     }));
   
     return resultEvents;  
